@@ -1,0 +1,12 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/Sam-rst/EPSI_B3_MSPR-Backend.git
+[submodule "etl"]
+	path = etl
+	url = https://github.com/Sam-rst/EPSI_B3_MSPR-ETL.git
+[submodule "infra"]
+	path = infra
+	url = https://github.com/Sam-rst/EPSI_B3_MSPR-Infra.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Sam-rst/EPSI_B3_MSPR-Frontend.git
