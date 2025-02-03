@@ -14,3 +14,7 @@
 	path = frontend
 	name = frontend
 	url = https://github.com/Sam-rst/EPSI_B3_MSPR-Frontend.git
+[submodule "bot"]
+	path = bot
+	name = bot
+	url = https://github.com/Sam-rst/EPSI_B3_MSPR-Bot_Jira.git
