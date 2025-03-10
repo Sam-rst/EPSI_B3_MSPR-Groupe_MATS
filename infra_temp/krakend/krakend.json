@@ -1,0 +1,40 @@
+{
+    "version": 3,
+    "name": "API Gateway",
+    "port": 8080,
+    "cache_ttl": "3600s",
+    "endpoints": [
+      {
+        "endpoint": "/auth/token",
+        "method": "POST",
+        "backend": [
+          {
+            "url_pattern": "/token",
+            "host": ["http://localhost:5002"],
+            "method": "POST"
+          }
+        ]
+      },
+      {
+        "endpoint": "/api/*",
+        "method": "GET,POST,PUT,DELETE,PATCH",
+        "backend": [
+          {
+            "url_pattern": "/$1",
+            "host": ["http://localhost:5001/"],
+            "mapping": {
+              "$.path": "$1"
+            }
+          }
+        ],
+        "extra_config": {
+          "security/jwt": {
+            "issuer": ["my_issuer"],
+            "jwk_url": "http://localhost:5002/validate",
+            "alg": "HS256"
+          }
+        }
+      }
+    ]
+  }
+  
