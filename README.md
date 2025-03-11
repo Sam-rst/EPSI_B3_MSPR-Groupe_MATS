@@ -1,33 +1,49 @@
 # EPSI B3 MSPRs
 
-Voici le repository de notre groupe pour les MSPRs de la formation EPSI B3 en DEVIA et Data Science (Fullstack et DevOps :).
+Voici le repository de notre groupe pour les MSPRs de la formation EPSI B3 en DEVIA et Data Science (Fullstack + DevOps).
 
 Contributeurs :
 
-1. Samuel L. JACKSON
-2. Tom JEDUSOR
-3. Maximus ALBERTUS
-4. Alexandre LE GRAND
-
-## Guidelines
-
-```mermaid
-gantt
-    title MSPR 6.1: Guideline
-    dateFormat DD-MM-YYYY
-    section Data collection
-        Collecte des données :a1, 2025-02-03, 2w
-        Transformation    :after a1, 2w
-        Test    :after a1, 2w
-    section Data Visualisation
-        Graphiques :a1, 2025-02-03, 1w
-```
+1. Samuel RESSIOT
+2. Tom WILK-RAVOUX
+3. Alexandre PIERRE
+4. Maxime DUSSORT
 
 ---
 
+## **📜 Architecture logicielle du projet**  
+
+### **Explication**
+
+- **Docker (compose)** : Encapsule l'infrastructure logicielle.
+- **API Gateway (Backend)** : Contient l'ETL et l'API REST, qui communiquent avec la base PostgreSQL.
+- **Metabase** : Outil de visualisation de données connecté à PostgreSQL.
+- **Client** : Interagit avec Metabase.
+- **Développeur** : Accède aux services via authentification (Auth).
+
+### **Schéma**
+
+```mermaid
+graph TD;
+    subgraph "Docker (compose)"
+        direction TB
+        subgraph "API Gateway (Backend)"
+            ETL["Pipeline ETL (API Rest en FastAPI)"] -->|Écrit| DB["Base de données (POSTGRESQL)"]
+            API["API REST (en FastAPI)"] -->|Écrit| DB
+            DB -->|Lit| API["API REST (en FastAPI)"]
+        end
+
+        Metabase["Metabase (dataviz)"] -->|Lit| DB
+        Client["Client"] --> Metabase
+        Dev["Développeur"] -- Auth --> API
+        Dev -- Auth --> ETL
+        Dev -- Auth --> DB
+    end
+```
+
 ## **📜 Liste des technologies du projet**  
 
-### **1️⃣ Backend (API FastAPI pour l'IA et autres services)**  
+### **1️⃣ Backend (API REST FastAPI pour le CRUD)**  
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
@@ -40,32 +56,30 @@ gantt
 | **PostgreSQL** | 15+ | Performant et robuste pour les données relationnelles | Base de données principale |
 | **Docker** | Latest | Conteneurisation pour déploiement | Exécution en environnement isolé |
 | **Gunicorn / Uvicorn** | Latest | Serveur WSGI/ASGI performant | Déploiement de l’API |
-| **OAuth2 / JWT** | Latest | Sécurité et authentification | Gestion des utilisateurs et des permissions |
+| **OAuth2 / JWT / Keyclock** | Latest | Sécurité et authentification | Gestion des utilisateurs et des permissions |
 
 ---
 
-### **2️⃣ Frontend (Application Angular)**  
+### **2️⃣ Frontend (Application NextJS)**  
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
-| **Angular** | Latest | Framework robuste et maintenable | Développement du frontend |
+| **Next** | Latest | Framework robuste et maintenable | Développement du frontend / API |
 | **TypeScript** | Latest | Typage fort, maintenabilité | Langage principal |
-| **RxJS** | Latest | Gestion des événements et requêtes async | Communication API |
 | **TailwindCSS** | Latest | Styling moderne et flexible | UI et mise en page |
-| **Angular Material** | Latest | Composants UI préconstruits | UI cohérente et ergonomique |
 | **NGXS ou Redux** | Latest | Gestion centralisée du state | State management |
+| **Metabase** | Latest | Open source | Data visualisation |
 
 ---
 
-### **3️⃣ ETL (Traitement et nettoyage des données)**  
+### **3️⃣ ETL (Traitement et nettoyage des données en FastAPI)**  
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
-| **Apache Airflow** | Latest | Orchestration des workflows ETL | Planification des tâches |
+| **FastAPI** | Latest | Orchestration des workflows ETL | Planification des tâches |
 | **Pandas** | Latest | Manipulation des données | Nettoyage et transformation des données |
 | **DuckDB** | Latest | Traitement performant des datasets volumineux | Analyse et transformation |
-| **SQLAlchemy** | Latest | ORM pour interagir avec les bases | Stockage des données transformées |
-| **S3 / MinIO** | Latest | Stockage de fichiers volumineux | Archivage des données brutes |
+| **SQLAlchemy** | Latest | ORM pour interagir avec les bases | Stockage des données |
 
 ---
 
@@ -79,7 +93,6 @@ gantt
 | **Terraform** | Latest | Infrastructure as Code | Automatisation du déploiement |
 | **Ansible** | Latest | Configuration automatisée | Provisioning des serveurs |
 | **NGINX / Traefik** | Latest | Proxy et Load Balancer | Redirection et gestion des requêtes |
-| **Certbot (Let's Encrypt)** | Latest | Sécurisation HTTPS | Certificats SSL gratuits |
 
 ---
 
@@ -97,51 +110,34 @@ gantt
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
-| **OAuth2 / JWT** | Latest | Authentification sécurisée | API et utilisateurs |
+| **OAuth2 / JWT / Keyclock** | Latest | Authentification sécurisée | API et utilisateurs |
 | **Vault** | Latest | Gestion des secrets | Stockage des clés et credentials |
 | **Fail2Ban** | Latest | Protection contre les attaques | Sécurisation des serveurs |
 
 ## Installation
 
-Pour que les submodules Git soient bien initialisés et clonés automatiquement, voici les étapes à suivre :  
-
-### 1. **Clonage avec les submodules**  
+### 1. **Clonage du projet**  
 
 Pour cloner le dépôt principal pour la première fois, exécutez :
 
 ```bash
-git clone --recurse-submodules https://github.com/Sam-rst/EPSI_B3_MSPR-Groupe_MATS.git
+git clone https://github.com/Sam-rst/EPSI_B3_MSPR-Groupe_MATS.git
 ```
 
-Cela va cloner le dépôt principal **et** initialiser directement les submodules.
+### 2. **Initialisation de l'environnement**
 
----
-
-### 2. **Mise à jour des submodules après un simple `git clone`**  
-
-Si vous n'avez pas cloné le dépôt **sans** l'option `--recurse-submodules`, les submodules ne seront pas récupérés immédiatement. Pour les récupérer et les mettre à jour, il faut exécuter :  
+Pour initialiser l'environnement de développement, exécutez :
 
 ```bash
-cd EPSI_B3_MSPR-Groupe_MATS
-git submodule update --init --recursive
+docker-compose up -d
 ```
+
+### 3. **Accès aux services**
+
+TODO : Ajouter les liens liens des services
+
+- **API REST** : [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Metabase** : [http://localhost:3000](http://localhost:3000)
+- **Pipeline ETL** : [http://localhost:8000/etl](http://localhost:8000/etl)
 
 ---
-
-### 3. **Mettre à jour les submodules**  
-
-Les submodules ne se mettent pas à jour automatiquement quand le dépôt principal change. Si un submodule a été mis à jour dans son propre dépôt, exécutez :  
-
-```bash
-git submodule update --remote --recursive
-```
-
-Cela récupère les dernières versions des branches des submodules.
-
-## UML
-
-1. Diagramme de classes ([lien](docs/UML/class-diagram.md))
-
-2. Diagramme de séquence ([lien](docs/UML/sequence-diagram.md))
-
-3. Diagramme d'état ([lien](docs/UML/state-diagram.md))
