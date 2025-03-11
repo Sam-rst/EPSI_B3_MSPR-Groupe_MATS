@@ -8,16 +8,6 @@ CREATE TABLE continent (
    updated_by VARCHAR(50)
 );
 
--- Table Vaccine
-CREATE TABLE vaccine (
-   id SERIAL PRIMARY KEY,
-   name VARCHAR(50) NOT NULL,
-   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   created_by VARCHAR(50),
-   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   updated_by VARCHAR(50)
-);
-
 -- Table Gender
 CREATE TABLE gender (
    id SERIAL PRIMARY KEY,
@@ -36,6 +26,29 @@ CREATE TABLE role (
    created_by VARCHAR(50),
    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_by VARCHAR(50)
+);
+
+-- Table Epidemic
+CREATE TABLE epidemic (
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(50) NOT NULL,
+   type VARCHAR(50) NOT NULL,
+   description TEXT,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   created_by VARCHAR(50),
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updated_by VARCHAR(50)
+);
+
+-- Table Vaccine
+CREATE TABLE vaccine (
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(50) NOT NULL,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   created_by VARCHAR(50),
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updated_by VARCHAR(50),
+   epidemic_id INT REFERENCES epidemic(id) ON DELETE SET NULL
 );
 
 -- Table Country
@@ -80,7 +93,7 @@ CREATE TABLE daily_wise (
    created_by VARCHAR(50),
    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_by VARCHAR(50),
-   country_id INT REFERENCES country(id) ON DELETE CASCADE
+   country_id INT REFERENCES country(id) ON DELETE SET NULL
 );
 
 -- Table Statistic
@@ -94,8 +107,9 @@ CREATE TABLE statistic (
    updated_by VARCHAR(50),
    published_at TIMESTAMP,
    published_by VARCHAR(50),
-   country_id INT REFERENCES country(id) ON DELETE CASCADE,
-   dw_id INT REFERENCES daily_wise(id) ON DELETE CASCADE
+   country_id INT REFERENCES country(id) ON DELETE SET NULL,
+   dw_id INT REFERENCES daily_wise(id) ON DELETE SET NULL,
+   epidemic_id INT REFERENCES epidemic(id) ON DELETE SET NULL
 );
 
 -- Table pivot DailyWise <-> Vaccine
@@ -129,7 +143,7 @@ BEGIN
    FOR table_name IN 
       SELECT tablename 
       FROM pg_tables 
-      WHERE schemaname = 'public' AND tablename IN ('continent', 'vaccine', 'gender', 'role', 'country', 'users', 'daily_wise', 'statistic') 
+      WHERE schemaname = 'public' AND tablename IN ('continent', 'vaccine', 'epidemic', 'gender', 'role', 'country', 'users', 'daily_wise', 'statistic') 
    LOOP
       EXECUTE format('
          CREATE TRIGGER set_timestamp_%I
