@@ -122,6 +122,7 @@ Pour cloner le dépôt principal pour la première fois, exécutez :
 
 ```bash
 git clone https://github.com/Sam-rst/EPSI_B3_MSPR-Groupe_MATS.git
+cd EPSI_B3_MSPR-Groupe_MATS
 ```
 
 ### 2. **Initialisation de l'environnement**
@@ -129,15 +130,20 @@ git clone https://github.com/Sam-rst/EPSI_B3_MSPR-Groupe_MATS.git
 Pour initialiser l'environnement de développement, exécutez :
 
 ```bash
-docker-compose up -d
+docker-compose up --build -d
+```
+
+Pour regarder les logs d'un container, exécutez :
+
+```bash
+docker logs -f MSPR-ETL
 ```
 
 ### 3. **Accès aux services**
 
 TODO : Ajouter les liens liens des services
 
-- **API REST** : [http://localhost:8000/docs](http://localhost:8000/docs)
-- **Metabase** : [http://localhost:3000](http://localhost:3000)
-- **Pipeline ETL** : [http://localhost:8000/etl](http://localhost:8000/etl)
+- **API ETL** : [http://localhost:8000/docs](http://localhost:8000/docs)
+- **API REST** : [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ---
