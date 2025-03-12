@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS country CASCADE;
 DROP TABLE IF EXISTS role CASCADE;
 DROP TABLE IF EXISTS gender CASCADE;
 DROP TABLE IF EXISTS vaccine CASCADE;
+DROP TABLE IF EXISTS epidemic CASCADE;
 DROP TABLE IF EXISTS continent CASCADE;
 
 -- Supprimer la fonction de mise à jour automatique des updated_at
