@@ -8,6 +8,9 @@ from src.app.continent.infrastructure.repository.continent_repo_in_postgres impo
 from src.app.continent.application.usecase.add_continent_usecase import (
     AddContinentUseCase,
 )
+from src.app.continent.application.usecase.find_all_continents_usecase import (
+    FindAllContinentsUseCase,
+)
 
 
 class ContinentRepositoriesContainer:
@@ -33,6 +36,7 @@ class ContinentRepositoriesContainer:
 
 class ContinentUseCasesContainer:
     _add_continent_usecase: AddContinentUseCase = None
+    _find_all_continents_usecase: FindAllContinentsUseCase = None
 
     @staticmethod
     def get_add_continent_usecase(repository: ContinentRepository) -> AddContinentUseCase:
@@ -41,6 +45,14 @@ class ContinentUseCasesContainer:
                 AddContinentUseCase(repository)
             )
         return ContinentUseCasesContainer._add_continent_usecase
+
+    @staticmethod
+    def get_find_all_continents_usecase(repository: ContinentRepository) -> FindAllContinentsUseCase:
+        if not ContinentUseCasesContainer._find_all_continents_usecase:
+            ContinentUseCasesContainer._find_all_continents_usecase = (
+                FindAllContinentsUseCase(repository)
+            )
+        return ContinentUseCasesContainer._find_all_continents_usecase
 
 class ContinentContainer:
     _continent_repositories_container: ContinentRepositoriesContainer = None

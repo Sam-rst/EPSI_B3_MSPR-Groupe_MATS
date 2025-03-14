@@ -48,7 +48,10 @@ class BaseEntity:
     def created_by(self, value: str):
         if not value:
             raise ValueError("Le nom du créateur ne peut pas être vide.")
-        self._created_by = value
+        if value is None:
+            self._updated_by = "system"
+        else:
+            self._updated_by = value   
         self.update("system")
 
     @property
@@ -68,7 +71,10 @@ class BaseEntity:
     def updated_by(self, value: str):
         if not value:
             raise ValueError("Le nom du modifieur ne peut pas être vide.")
-        self._updated_by = value
+        if value is None:
+            self._updated_by = "system"
+        else:
+            self._updated_by = value   
         self.update("system")
 
     @property

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, Request
 from dependency_injector.wiring import inject
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
 from src.app.continent.container import ContinentContainer
 from src.app.continent.presentation.model.payload.create_continent_pauload import (
@@ -26,7 +27,21 @@ continent_router = APIRouter(
 @continent_router.get("")
 @inject
 def endpoint_usecase_get_all_continents():
-    pass
+    try:
+        continent_repository = (
+            ContinentContainer.get_repositories_container().get_repository_in_memory()
+        )
+        find_all_continents_usecase = (
+            ContinentContainer.get_usecases_container().get_find_all_continents_usecase(
+                continent_repository
+            )
+        )
+
+        continents = find_all_continents_usecase.execute()
+        content = {"items": jsonable_encoder(continents)}
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
+    except Exception as e:
+        raise e
 
 
 @continent_router.post("")
