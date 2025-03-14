@@ -16,9 +16,6 @@ class ContinentEntity(BaseEntity):
         self._code = code
         self._population = population
 
-    def __str__(self) -> str:
-        return self.print()
-
     def print(self) -> str:
         return f"Continent n°{self.id}: {self.name} ({self.code}) a {self.population} habitants"
 

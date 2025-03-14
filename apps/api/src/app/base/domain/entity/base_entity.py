@@ -21,6 +21,12 @@ class BaseEntity:
         self._deleted_by: Optional[str] = None
         self._is_deleted: bool = False
 
+    def __str__(self) -> str:
+        return self.print()
+
+    def print(self) -> str:
+        return ""
+
     @property
     def id(self) -> int:
         return self._id

@@ -8,7 +8,11 @@ from src.app.continent.domain.entity.continent_entity import ContinentEntity
 class ContinentRepository(BaseRepository, ABC):
     @abstractmethod
     def __init__(self):
-        self._data = []
+        self._data: List[ContinentEntity] = []
+
+    @property
+    def data(self) -> List[ContinentEntity]:
+        return self._data
 
     @abstractmethod
     def create(self, entity: ContinentEntity) -> ContinentEntity:
