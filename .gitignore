@@ -49,3 +49,7 @@ Thumbs.db
 *.wmv
 
 .env
+venv/
+env/
+
+__pycache__/

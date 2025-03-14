@@ -22,10 +22,22 @@ services:
     env_file:
       - .env  # Ce fichier sera copié dynamiquement depuis config/env/
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./apps/etl:/app
-      
+
+  api:
+    build: ./apps/api
+    container_name: MSPR-API
+    restart: unless-stopped
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./apps/api:/app
 
 volumes:
   postgres_data:
