@@ -8,3 +8,4 @@ python-dotenv
 pytest
 httpx
 python-multipart
+dependency_injector
