@@ -21,23 +21,26 @@ Contributeurs :
 - **Client** : Interagit avec Metabase.
 - **Développeur** : Accède aux services via authentification (Auth).
 
-### **Schéma**
+### **Schéma :**
 
 ```mermaid
 graph TD;
-    subgraph "Docker (compose)"
-        direction TB
-        subgraph "API Gateway (Backend)"
-            ETL["Pipeline ETL (API Rest en FastAPI)"] -->|Écrit| DB["Base de données (POSTGRESQL)"]
-            API["API REST (en FastAPI)"] -->|Écrit| DB
-            DB -->|Lit| API["API REST (en FastAPI)"]
+    subgraph "ENVIRONNEMENT"
+        subgraph "Docker (compose) - All services"
+            direction TB
+            subgraph "API Gateway - Backend"
+                ETL["API ETL"] -->|HTTP| API["API REST"]
+                API -->|Send SQL query| DB["PostgreSQL"]
+                DB -->|Receive| API["API Rest"]
+            end
+
+            Metabase["Metabase (dataviz)"] -->|Read| DB
         end
 
-        Metabase["Metabase (dataviz)"] -->|Lit| DB
+        Dev["Developer"] -- Auth --> API
+        Dev -- HTTP (auth) --> ETL
+        Dev -- Connexion - HOST --> DB
         Client["Client"] --> Metabase
-        Dev["Développeur"] -- Auth --> API
-        Dev -- Auth --> ETL
-        Dev -- Auth --> DB
     end
 ```
 
@@ -48,14 +51,14 @@ graph TD;
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
 | **FastAPI** | Latest | Performant, async natif, doc automatique | API REST |
-| **Python** | 3.11+ | Langage flexible et puissant | Dev de l’API et de l’IA |
+| **Python** | 3.11+ | Langage flexible et puissant | Dev de l'API et de l'IA |
 | **SQLAlchemy** | Latest | ORM puissant et compatible avec PostgreSQL | Gestion de la base de données |
 | **Pydantic** | Latest | Validation et sérialisation des données | Modèles de données |
 | **Celery** | Latest | Gestion des tâches asynchrones | Traitements en arrière-plan |
 | **Redis** | Latest | Caching et gestion des files de tâches | Optimisation des performances |
 | **PostgreSQL** | 15+ | Performant et robuste pour les données relationnelles | Base de données principale |
 | **Docker** | Latest | Conteneurisation pour déploiement | Exécution en environnement isolé |
-| **Gunicorn / Uvicorn** | Latest | Serveur WSGI/ASGI performant | Déploiement de l’API |
+| **Gunicorn / Uvicorn** | Latest | Serveur WSGI/ASGI performant | Déploiement de l'API |
 | **OAuth2 / JWT / Keyclock** | Latest | Sécurité et authentification | Gestion des utilisateurs et des permissions |
 
 ---
@@ -114,6 +117,110 @@ graph TD;
 | **Vault** | Latest | Gestion des secrets | Stockage des clés et credentials |
 | **Fail2Ban** | Latest | Protection contre les attaques | Sécurisation des serveurs |
 
+## **Workflow de Développement**
+
+### **Branches de Développement**
+
+- **`develop` (Environnement de développement)** :
+  - Protégée contre les pushs directs.
+  - Merge accepté uniquement avec des branches de `feature/`, `bugfix/`, ou `hotfix/`.
+  - Pull requests non obligatoires pour accélérer le développement.
+  - Pipeline CI/CD adaptée pour le développement (à intégrer).
+
+- **`test` (Environnement de test)** :
+  - Protégée contre les pushs directs.
+  - Merge impossible sans pull request depuis `develop`.
+  - Pull requests obligatoires pour garantir la qualité avant la mise en environnemnt de test.
+  - Pipeline CI/CD adaptée pour l'intégration des tests (à intégrer).
+
+- **`release/MSPR-{tag}` (Préparation de la version)** :
+  - Protégée contre les pushs directs.
+  - Merge impossible sans pull request depuis `test`.
+  - Pull requests obligatoires pour garantir la qualité avant la mise en production.
+  - Pipeline CI adaptée pour l'intégration (à intégrer).
+
+- **`main` (Environnement de production)** :
+  - Protégée contre les pushs directs.
+  - Merge impossible sans pull request depuis `release` ou `hotfix`.
+  - Pull requests obligatoires pour assurer la stabilité et la qualité.
+  - Pipeline CI/CD adaptée pour la production (à intégrer).
+
+- **`feature/MSPR-{code_projet}_nom_de_la_branche` (Nouvelle fonctionnalité)** :
+  - Aucune protection spécifique.
+  - Pipeline CI adaptée pour la branche (à intégrer).
+  - Merge possible en `develop` après validation.
+
+- **`bugfix/MSPR-{code_projet}_nom_de_la_branche` (Correction de bug)** :
+  - Aucune protection spécifique.
+  - Pipeline CI adaptée pour la branche (à intégrer).
+  - Merge possible en `develop` après validation.
+
+- **`hotfix/MSPR-{code_projet}_nom_de_la_branche` (Correction critique)** :
+  - Aucune protection spécifique.
+  - Pipeline CI adaptée pour la branche (à intégrer).
+  - Merge possible en `develop` et `main` après validation.
+  - Pull request obligatoire pour `main`.
+
+### **Schéma :**
+
+```mermaid
+%%{init: { 'logLevel': 'debug', 'theme': 'base' } }%%
+
+---
+title: Workflow de Développement (GitFlow)
+---
+gitGraph
+  commit
+  branch release/MSPR-1.0
+  branch test
+  branch hotfix/MSPR-001_nom_de_la_branche
+  checkout hotfix/MSPR-001_nom_de_la_branche
+  branch develop
+  checkout develop
+  commit id:"ash" tag:"abc"
+  branch feature/MSPR-1_nom_de_la_branche
+  checkout feature/MSPR-1_nom_de_la_branche
+  commit type:HIGHLIGHT
+  checkout main
+  checkout hotfix/MSPR-001_nom_de_la_branche
+  commit type:NORMAL
+  checkout develop
+  commit type:REVERSE
+  checkout feature/MSPR-1_nom_de_la_branche
+  commit
+  checkout main
+  merge hotfix/MSPR-001_nom_de_la_branche
+  checkout feature/MSPR-1_nom_de_la_branche
+  commit
+  checkout develop
+  branch bugfix/MSPR-2_nom_de_la_branche
+  commit
+  checkout develop
+  merge hotfix/MSPR-001_nom_de_la_branche
+  checkout bugfix/MSPR-2_nom_de_la_branche
+  commit
+  checkout feature/MSPR-1_nom_de_la_branche
+  commit
+  checkout develop
+  merge bugfix/MSPR-2_nom_de_la_branche
+  commit type:REVERSE
+  checkout test
+  merge develop
+  checkout feature/MSPR-1_nom_de_la_branche
+  commit
+  commit
+  checkout develop
+  merge feature/MSPR-1_nom_de_la_branche
+  checkout release/MSPR-1.0
+  merge test
+  checkout main
+  commit
+  checkout main
+  merge release/MSPR-1.0
+  checkout develop
+  merge release/MSPR-1.0
+```
+
 ## Installation
 
 ### 1. **Clonage du projet**  
@@ -126,6 +233,14 @@ cd EPSI_B3_MSPR-Groupe_MATS
 ```
 
 ### 2. **Initialisation de l'environnement**
+
+Bien penser à créer un fichier `.env` à la racine du projet avec les variables d'environnement nécessaires.
+
+```bash
+cp config/env/dev.conf .env
+```
+
+Note : Insérer vos credentials dans le fichier `.env`.
 
 Pour initialiser l'environnement de développement, exécutez :
 
@@ -141,9 +256,7 @@ docker logs -f MSPR-ETL
 
 ### 3. **Accès aux services**
 
-TODO : Ajouter les liens liens des services
-
-- **API ETL** : [http://localhost:8000/docs](http://localhost:8000/docs)
-- **API REST** : [http://localhost:8080/docs](http://localhost:8080/docs)
+- **API REST** : [http://localhost:8000/docs](http://localhost:8000/docs)
+- **API ETL** : [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ---
