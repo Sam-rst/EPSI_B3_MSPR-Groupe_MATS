@@ -79,12 +79,6 @@ def endpoint_usecase_patch_continent_by_id():
     pass
 
 
-@continent_router.put("/{id}")
-@inject
-def endpoint_usecase_update_continent_by_id():
-    pass
-
-
 @inject
 @continent_router.delete("/{id}")
 def endpoint_usecase_delete_continent_by_id():
