@@ -1,4 +1,10 @@
 fastapi[all]
+uvicorn
 sqlalchemy
+pandas
+psycopg2-binary
 alembic
-dependency_injector
+python-dotenv
+pytest
+httpx
+python-multipart
