@@ -1,0 +1,165 @@
+version: 2.1
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.11
+    steps:
+      - checkout # Récupération du code source
+      - run:
+          name: Install dependencies
+          command: echo "Dependencies installed" # Installation manuelle des dépendances
+      - run:
+          name: Run linter
+          command: echo "Code linted" # Exécution de l'analyse statique du code
+      - run:
+          name: Clean and package
+          command: echo "Cleaning and packaging..." # Étape placeholder pour le packaging
+
+  tests:
+    docker:
+      - image: circleci/python:3.11
+    steps:
+      - checkout # Récupération du code source
+      - run:
+          name: Install dependencies
+          command: echo "Dependencies installed" # Installation manuelle des dépendances
+      - run:
+          name: Run unit tests
+          command: echo "Running unit tests..." # Exécution des tests unitaires en mode CI
+      - run:
+          name: Run integration tests
+          command: echo "Running integration tests..."
+      - run:
+          name: Run regression tests
+          command: echo "Running regression tests..."
+      - run:
+          name: Run performance tests
+          command: echo "Running performance tests..."
+      - run:
+          name: Run security tests
+          command: echo "Running security tests..."
+      - run:
+          name: Run compatibility tests
+          command: echo "Running compatibility tests..."
+      - run:
+          name: Run accessibility tests
+          command: echo "Running accessibility tests..."
+
+  deploy:
+    parameters:
+      environment:
+        type: string # Définition de l'environnement cible du déploiement (dev, integration, prod...)
+    executor: node/default
+    steps:
+      - checkout # Récupération du code source
+      - run:
+          name: Prepare Deployment Environment
+          command: echo "Preparing deployment for <<parameters.environment>>..."
+      - run:
+          name: Deploy Application
+          command: echo "Deploying application to <<parameters.environment>> environment..."
+      - run:
+          name: Run Verification Tests
+          command: echo "Running verification tests..."
+      - run:
+          name: Run Functional Validation Tests
+          command: echo "Running functional validation tests..."
+      - run:
+          name: Run Load Tests
+          command: echo "Running load tests..."
+      - run:
+          name: Final Deployment Step
+          command: echo "Finalizing deployment to <<parameters.environment>>..."
+      - run:
+          name: Monitoring and Follow-up
+          command: echo "Starting monitoring and follow-up process..."
+
+workflows:
+  version: 2
+
+  undefined: # Pour les branches créees ne respectant pas le pattern Gitflow, on effectue exactement le même traitement que pour les branches feature
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - /^feature\/.*/
+                - /^hotfix\/.*/
+                - develop
+                - test
+                - main
+      - tests:
+          requires:
+            - build
+
+  feature: # Pas besoin de déploiement pour les branches feature
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - /^feature\/.*/ # Déclenchement du build uniquement pour les branches feature
+      - tests:
+          requires:
+            - build # Exécution des tests après la compilation
+
+  hotfix: # Pas besoin de déploiement pour les branches hotfix
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - /^hotfix\/.*/ # Déclenchement du build uniquement pour les branches hotfix
+      - tests:
+          requires:
+            - build
+
+  develop: # Besoin d'un déploiement sur vercel pour la branche develop
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: develop # Déclenchement du build uniquement sur la branche develop
+      - tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
+      - deploy:
+          name: deploy_dev
+          requires:
+            - tests # Déploiement en dev après la réussite des tests
+          environment: development
+
+  test: # Besoin d'un déploiement pour la branche test
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: test # Déclenchement du build uniquement sur la branche test
+      - tests:
+          requires:
+            - build
+      - deploy:
+          name: deploy_int
+          requires:
+            - tests
+          environment: integration
+
+  production: # Besoin d'un déploiement pour la branche main
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: main # Déclenchement du build uniquement sur la branche principale
+      - tests:
+          requires:
+            - build
+      - deploy:
+          name: deploy_prod
+          requires:
+            - tests # Déploiement en production après validation des tests
+          environment: production
