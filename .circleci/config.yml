@@ -1,10 +1,11 @@
 version: 2.1
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
+
+orbs:
+  python: circleci/python@2.0.3
+
 jobs:
   build:
-    docker:
-      - image: circleci/python:3.11
+    executor: python/default
     steps:
       - checkout # Récupération du code source
       - run:
@@ -18,8 +19,7 @@ jobs:
           command: echo "Cleaning and packaging..." # Étape placeholder pour le packaging
 
   tests:
-    docker:
-      - image: circleci/python:3.11
+    executor: python/default
     steps:
       - checkout # Récupération du code source
       - run:
@@ -51,8 +51,7 @@ jobs:
     parameters:
       environment:
         type: string # Définition de l'environnement cible du déploiement (dev, integration, prod...)
-    docker:
-      - image: circleci/python:3.11
+    executor: python/default
     steps:
       - checkout # Récupération du code source
       - run:
