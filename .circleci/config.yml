@@ -51,7 +51,8 @@ jobs:
     parameters:
       environment:
         type: string # Définition de l'environnement cible du déploiement (dev, integration, prod...)
-    executor: node/default
+    docker:
+      - image: circleci/python:3.11
     steps:
       - checkout # Récupération du code source
       - run:
