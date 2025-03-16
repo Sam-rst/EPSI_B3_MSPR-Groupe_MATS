@@ -20,9 +20,6 @@ from src.app.continent.application.usecase.find_continent_by_id_usecase import (
 from src.app.continent.presentation.model.payload.create_continent_payload import (
     CreateContinentPayload
 )
-from src.app.continent.presentation.model.payload.find_continent_by_id_payload import (
-    FindContinentByIdPayload
-)
 
 continent_router = APIRouter(
     tags=["continents"],
@@ -75,17 +72,19 @@ def endpoint_usecase_add_continent(
 @continent_router.get("/{id}")
 @inject
 def endpoint_usecase_get_continent_by_id(
-    payload: FindContinentByIdPayload,
+    id: int,
     usecase: FindContinentByIdUseCase = Depends(
         Provide[ContinentContainer.find_continent_by_id_usecase]
     ),
 ):
     try:
-        continent = usecase.execute(payload)
+        continent = usecase.execute(id)
         content = {"message": jsonable_encoder(continent)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
-        raise e
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @continent_router.patch("/{id}")
 @inject
