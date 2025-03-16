@@ -1,6 +1,5 @@
-from src.app.base.domain.interface.base_repository import BaseRepository
 from src.app.continent.domain.entity.continent_entity import ContinentEntity
-from src.app.continent.presentation.model.payload.create_continent_pauload import (
+from src.app.continent.presentation.model.payload.create_continent_payload import (
     CreateContinentPayload,
 )
 from src.app.continent.domain.interface.continent_repository import ContinentRepository

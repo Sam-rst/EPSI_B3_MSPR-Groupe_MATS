@@ -3,13 +3,13 @@ services:
   db:
     image: postgres:latest
     container_name: MSPR-POSTGRES
-    restart: unless-stopped
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "2345:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     env_file:
-      - .env  # Ce fichier sera copié dynamiquement depuis config/env/
+      - .env
     ports:
       - "8001:8000"
     volumes:
@@ -29,15 +29,41 @@ services:
   api:
     build: ./apps/api
     container_name: MSPR-API
-    restart: unless-stopped
+    restart: always
     depends_on:
       - db
     env_file:
-      - .env
+      - ./apps/api/.env
     ports:
       - "8000:8000"
     volumes:
       - ./apps/api:/app
 
+  metabase:
+    image: metabase/metabase:latest
+    container_name: MSPR-METABASE
+    restart: unless-stopped
+    hostname: metabase
+    depends_on:
+      - db
+    volumes:
+      - metabase_data:/dev/random:ro
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${MB_DB_DBNAME}
+      MB_DB_PORT: ${MB_DB_PORT}
+      MB_DB_USER: ${MB_DB_USER}
+      MB_DB_PASS: ${MB_DB_PASS}
+      MB_DB_HOST: ${MB_DB_HOST}
+    healthcheck:
+      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 5
 volumes:
   postgres_data:
+  metabase_data:

@@ -8,10 +8,8 @@ class ContinentEntity(BaseEntity):
         name: str,
         code: str,
         population: int,
-        created_by: str | None = None,
-        updated_by: str | None = None,
     ):
-        super().__init__(created_by, updated_by)
+        super().__init__()
         self._name = name
         self._code = code
         self._population = population

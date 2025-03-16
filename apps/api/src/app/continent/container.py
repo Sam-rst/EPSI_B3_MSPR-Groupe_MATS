@@ -1,4 +1,7 @@
-from src.app.continent.domain.interface.continent_repository import ContinentRepository
+from dependency_injector import containers, providers
+
+from src.config.config import Config
+
 from src.app.continent.infrastructure.repository.continent_repo_in_memory import (
     ContinentRepositoryInMemory,
 )
@@ -13,63 +16,25 @@ from src.app.continent.application.usecase.find_all_continents_usecase import (
 )
 
 
-class ContinentRepositoriesContainer:
-    _continent_repository_in_memory: ContinentRepository = None
-    _continent_repository_in_postgres: ContinentRepository = None
+class ContinentContainer(containers.DeclarativeContainer):
+    modules = ["src.app.continent.presentation.router"]
+    config = providers.Singleton(Config)
 
-    @staticmethod
-    def get_repository_in_memory() -> ContinentRepository:
-        if not ContinentRepositoriesContainer._continent_repository_in_memory:
-            ContinentRepositoriesContainer._continent_repository_in_memory = (
-                ContinentRepositoryInMemory()
-            )
-        return ContinentRepositoriesContainer._continent_repository_in_memory
+    # Définir les repositories
+    repository_in_memory = providers.Singleton(ContinentRepositoryInMemory)
+    repository_in_postgres = providers.Singleton(ContinentRepositoryInPostgres)
 
-    @staticmethod
-    def get_repository_in_postgres() -> ContinentRepository:
-        if not ContinentRepositoriesContainer._continent_repository_in_postgres:
-            ContinentRepositoriesContainer._continent_repository_in_postgres = (
-                ContinentRepositoryInPostgres()
-            )
-        return ContinentRepositoriesContainer._continent_repository_in_postgres
+    # Sélectionner le repository en fonction de la configuration
+    repository = providers.Selector(
+        config.provided.REPOSITORY_TYPE,
+        in_memory=repository_in_memory,
+        in_postgres=repository_in_postgres,
+    )
 
-
-class ContinentUseCasesContainer:
-    _add_continent_usecase: AddContinentUseCase = None
-    _find_all_continents_usecase: FindAllContinentsUseCase = None
-
-    @staticmethod
-    def get_add_continent_usecase(repository: ContinentRepository) -> AddContinentUseCase:
-        if not ContinentUseCasesContainer._add_continent_usecase:
-            ContinentUseCasesContainer._add_continent_usecase = (
-                AddContinentUseCase(repository)
-            )
-        return ContinentUseCasesContainer._add_continent_usecase
-
-    @staticmethod
-    def get_find_all_continents_usecase(repository: ContinentRepository) -> FindAllContinentsUseCase:
-        if not ContinentUseCasesContainer._find_all_continents_usecase:
-            ContinentUseCasesContainer._find_all_continents_usecase = (
-                FindAllContinentsUseCase(repository)
-            )
-        return ContinentUseCasesContainer._find_all_continents_usecase
-
-class ContinentContainer:
-    _continent_repositories_container: ContinentRepositoriesContainer = None
-    _continent_usecases_container: ContinentUseCasesContainer = None
-
-    @staticmethod
-    def get_repositories_container() -> ContinentRepositoriesContainer:
-        if not ContinentContainer._continent_repositories_container:
-            ContinentContainer._continent_repositories_container = (
-                ContinentRepositoriesContainer()
-            )
-        return ContinentContainer._continent_repositories_container
-
-    @staticmethod
-    def get_usecases_container() -> ContinentUseCasesContainer:
-        if not ContinentContainer._continent_usecases_container:
-            ContinentContainer._continent_usecases_container = (
-                ContinentUseCasesContainer()
-            )
-        return ContinentContainer._continent_usecases_container
+    # Définir les usecases
+    add_continent_usecase = providers.Factory(
+        AddContinentUseCase, repository=repository
+    )
+    find_all_continents_usecase = providers.Factory(
+        FindAllContinentsUseCase, repository=repository
+    )

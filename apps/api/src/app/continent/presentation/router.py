@@ -1,15 +1,24 @@
-from fastapi import APIRouter, status, Request
-from dependency_injector.wiring import inject
+from fastapi import APIRouter, status
+from dependency_injector.wiring import inject, Provide
+from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
+# =====Containers=====
 from src.app.continent.container import ContinentContainer
-from src.app.continent.presentation.model.payload.create_continent_pauload import (
-    CreateContinentPayload,
+
+# =====Usecases=====
+from src.app.continent.application.usecase.add_continent_usecase import AddContinentUseCase
+from src.app.continent.application.usecase.find_all_continents_usecase import (
+    FindAllContinentsUseCase
+)
+
+# =====Payloads=====
+from src.app.continent.presentation.model.payload.create_continent_payload import (
+    CreateContinentPayload
 )
 
 continent_router = APIRouter(
-    prefix="/continents",
     tags=["continents"],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
@@ -26,20 +35,15 @@ continent_router = APIRouter(
 
 @continent_router.get("")
 @inject
-def endpoint_usecase_get_all_continents():
+def endpoint_usecase_get_all_continents(
+    usecase: FindAllContinentsUseCase = Depends(
+        Provide[ContinentContainer.find_all_continents_usecase]
+    ),
+):
     try:
-        continent_repository = (
-            ContinentContainer.get_repositories_container().get_repository_in_memory()
-        )
-        find_all_continents_usecase = (
-            ContinentContainer.get_usecases_container().get_find_all_continents_usecase(
-                continent_repository
-            )
-        )
-
-        continents = find_all_continents_usecase.execute()
-        content = {"items": jsonable_encoder(continents)}
-        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
+        continents = usecase.execute()
+        content = {"count": len(continents), "items": jsonable_encoder(continents)}
+        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except Exception as e:
         raise e
 
@@ -48,20 +52,13 @@ def endpoint_usecase_get_all_continents():
 @inject
 def endpoint_usecase_add_continent(
     payload: CreateContinentPayload,
-    request: Request,
-) -> JSONResponse:
+    usecase: AddContinentUseCase = Depends(
+        Provide[ContinentContainer.add_continent_usecase]
+    ),
+):
     try:
-        continent_repository = (
-            ContinentContainer.get_repositories_container().get_repository_in_memory()
-        )
-        add_continent_usecase = (
-            ContinentContainer.get_usecases_container().get_add_continent_usecase(
-                continent_repository
-            )
-        )
-
-        continent = add_continent_usecase.execute(payload)
-        content = {"message": continent.print()}
+        continent = usecase.execute(payload)
+        content = {"message": jsonable_encoder(continent)}
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except Exception as e:
         raise e
