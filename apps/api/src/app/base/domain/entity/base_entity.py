@@ -6,17 +6,15 @@ class BaseEntity:
     _id_counter = 0
 
     def __init__(
-        self,
-        created_by: Optional[str] = None,
-        updated_by: Optional[str] = None,
+        self
     ):
         BaseEntity._id_counter += 1
 
         self._id = BaseEntity._id_counter
         self._created_at: datetime = datetime.now()
-        self._created_by: str = created_by
+        self._created_by: str = "system"
         self._updated_at: datetime = datetime.now()
-        self._updated_by: str = updated_by
+        self._updated_by: str = "system"
         self._deleted_at: Optional[datetime] = None
         self._deleted_by: Optional[str] = None
         self._is_deleted: bool = False
@@ -48,10 +46,7 @@ class BaseEntity:
     def created_by(self, value: str):
         if not value:
             raise ValueError("Le nom du créateur ne peut pas être vide.")
-        if value is None:
-            self._updated_by = "system"
-        else:
-            self._updated_by = value   
+        self._updated_by = value
         self.update("system")
 
     @property
@@ -71,10 +66,7 @@ class BaseEntity:
     def updated_by(self, value: str):
         if not value:
             raise ValueError("Le nom du modifieur ne peut pas être vide.")
-        if value is None:
-            self._updated_by = "system"
-        else:
-            self._updated_by = value   
+        self._updated_by = value
         self.update("system")
 
     @property
@@ -107,10 +99,10 @@ class BaseEntity:
         self.update("system")
 
     def update(self, updated_by: str):
-        self._updated_at = datetime.now()
-        self._updated_by = updated_by
+        self.updated_at = datetime.now()
+        self.updated_by = updated_by
 
     def delete(self, deleted_by: str):
-        self._is_deleted = True
-        self._deleted_at = datetime.now()
-        self._deleted_by = deleted_by
+        self.is_deleted = True
+        self.deleted_at = datetime.now()
+        self.deleted_by = deleted_by

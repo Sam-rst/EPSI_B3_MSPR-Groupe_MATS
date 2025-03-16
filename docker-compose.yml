@@ -29,11 +29,11 @@ services:
   api:
     build: ./apps/api
     container_name: MSPR-API
-    restart: unless-stopped
+    restart: always
     depends_on:
       - db
     env_file:
-      - .env
+      - ./apps/api/.env
     ports:
       - "8000:8000"
     volumes:
