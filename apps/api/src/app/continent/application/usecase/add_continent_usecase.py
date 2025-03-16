@@ -11,7 +11,17 @@ class AddContinentUseCase(BaseUseCase):
         super().__init__(repository)
 
     def execute(self, payload: CreateContinentPayload) -> ContinentEntity:
-        continentCreated = ContinentEntity(
+        existing_continent = self.repository.find_by_code(payload.code)
+        
+        if existing_continent:
+            if not existing_continent.is_deleted:
+                raise ValueError("Le code continent existe déjà")
+            else:
+                existing_continent.is_deleted = False
+                self.repository.update(existing_continent)
+                raise ValueError("Le code existe sur un continent supprimé, le continent a été réactivé veuillez utiliser la requête PATCH pour modifier")
+        
+        continent_created = ContinentEntity(
             name=payload.name, code=payload.code, population=payload.population
         )
-        return self.repository.create(continentCreated)
+        return self.repository.create(continent_created)
