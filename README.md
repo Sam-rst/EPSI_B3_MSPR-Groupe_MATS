@@ -79,11 +79,13 @@ graph TD;
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
+| **Figma** | Latest | Outil de prédilection dans le domaine du design | Maquettage de l'application |
 | **FastAPI** | Latest | Orchestration des workflows ETL | Planification des tâches |
 | **Pandas** | Latest | Manipulation des données | Nettoyage et transformation des données |
 | **DuckDB** | Latest | Traitement performant des datasets volumineux | Analyse et transformation |
 | **SQLAlchemy** | Latest | ORM pour interagir avec les bases | Stockage des données |
 
+Figma: https://www.figma.com/design/cxpRAZDMdKamEO0bJfrakk/Untitled?node-id=0-1&m=dev&t=Dhto1i5tmhtfQGOh-1
 ---
 
 ### **4️⃣ Infrastructure & DevOps**  
