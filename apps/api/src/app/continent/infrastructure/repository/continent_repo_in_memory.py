@@ -2,6 +2,7 @@ from typing import List
 
 from src.app.continent.domain.interface.continent_repository import ContinentRepository
 from src.app.continent.domain.entity.continent_entity import ContinentEntity
+from src.app.continent.infrastructure.utils.continent_mapping_utils import ContinentMappingUtils
 
 
 class ContinentRepositoryInMemory(ContinentRepository):
@@ -80,6 +81,13 @@ class ContinentRepositoryInMemory(ContinentRepository):
 
         raise ValueError("Le continent n'a pas été trouvé")
 
+
+    def find_by_code(self, code: str) -> ContinentEntity:
+        for model in self._data:
+            if model.code == code:
+                return ContinentMappingUtils.model_to_entity(model)
+        return None
+    
     def find_all(self) -> List[ContinentEntity]:
         """Find all continents
 

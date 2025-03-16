@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, HTTPException, status
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse
@@ -12,10 +12,16 @@ from src.app.continent.application.usecase.add_continent_usecase import AddConti
 from src.app.continent.application.usecase.find_all_continents_usecase import (
     FindAllContinentsUseCase
 )
+from src.app.continent.application.usecase.find_continent_by_id_usecase import (
+    FindContinentByIdUseCase
+)
 
 # =====Payloads=====
 from src.app.continent.presentation.model.payload.create_continent_payload import (
     CreateContinentPayload
+)
+from src.app.continent.presentation.model.payload.find_continent_by_id_payload import (
+    FindContinentByIdPayload
 )
 
 continent_router = APIRouter(
@@ -60,15 +66,26 @@ def endpoint_usecase_add_continent(
         continent = usecase.execute(payload)
         content = {"message": jsonable_encoder(continent)}
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
-    except Exception as e:
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @continent_router.get("/{id}")
 @inject
-def endpoint_usecase_get_continent_by_id():
-    pass
-
+def endpoint_usecase_get_continent_by_id(
+    payload: FindContinentByIdPayload,
+    usecase: FindContinentByIdUseCase = Depends(
+        Provide[ContinentContainer.find_continent_by_id_usecase]
+    ),
+):
+    try:
+        continent = usecase.execute(payload)
+        content = {"message": jsonable_encoder(continent)}
+        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except Exception as e:
+        raise e
 
 @continent_router.patch("/{id}")
 @inject
