@@ -51,9 +51,3 @@ class ContinentEntity(BaseEntity):
             raise ValueError("La population ne peut pas être nulle.")
         self._population = value
         self.update("system")
-
-    def update(self, updated_by: str):
-        return super().update(updated_by)
-
-    def delete(self, deleted_by: str):
-        return super().delete(deleted_by)

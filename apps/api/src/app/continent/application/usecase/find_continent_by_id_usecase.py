@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from src.app.continent.domain.entity.continent_entity import ContinentEntity
 from src.app.continent.domain.interface.continent_repository import ContinentRepository
 from src.app.base.application.usecase.base_usecase import BaseUseCase
@@ -9,11 +10,16 @@ class FindContinentByIdUseCase(BaseUseCase):
 
     def execute(self, id: int) -> ContinentEntity:
         continent = self.repository.find_by_id(id)
-        
+
         if not continent:
-            raise ValueError("Le continent n’existe pas")
-        
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Le continent n’existe pas"
+            )
         if continent.is_deleted:
-            raise ValueError("Le continent a été supprimé")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Le continent a été supprimé"
+            )
         
         return continent

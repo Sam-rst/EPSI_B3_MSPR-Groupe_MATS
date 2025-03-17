@@ -99,10 +99,10 @@ class BaseEntity:
         self.update("system")
 
     def update(self, updated_by: str):
-        self.updated_at = datetime.now()
-        self.updated_by = updated_by
+        self._updated_at = datetime.now()
+        self._updated_by = updated_by
 
     def delete(self, deleted_by: str):
-        self.is_deleted = True
-        self.deleted_at = datetime.now()
-        self.deleted_by = deleted_by
+        self._is_deleted = True
+        self._deleted_at = datetime.now()
+        self._deleted_by = deleted_by

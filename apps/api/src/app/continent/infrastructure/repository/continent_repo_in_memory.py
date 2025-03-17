@@ -38,14 +38,8 @@ class ContinentRepositoryInMemory(ContinentRepository):
         Returns:
             ContinentEntity: _description_
         """
-        for index, continent in enumerate(self.data):
-            if continent.id == entity.id:
-                entityToUpdate = self.data[index]
-                entityToUpdate.update("system")
-                self.data[index] = entityToUpdate
-                return entityToUpdate
-
-        raise ValueError("Le continent n'a pas été trouvé")
+        self._data = [entity if continent.id == entity.id else continent for continent in self.data]
+        return entity
 
 
     def delete(self, entity: ContinentEntity) -> ContinentEntity:
