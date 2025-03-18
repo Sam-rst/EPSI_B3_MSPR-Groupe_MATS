@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from src.config.container import Container
 
-from src.app.continent.container import ContinentContainer
-from src.app.continent.presentation.router import continent_router
+from src.config.container import Container
+from src.config.database import Database
+from src.app.base.infrastructure.model.base_model import Base
 
 
 class Application:
@@ -14,6 +14,9 @@ class Application:
             app = FastAPI(docs_url="/docs", openapi_url="/docs/openapi.json")
             app.include_router(Container.router)
             Application._app = app
+
+            db = Database()
+            Base.metadata.create_all(bind=db.engine)
         return Application._app
 
 
