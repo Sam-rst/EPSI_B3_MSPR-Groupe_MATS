@@ -4,6 +4,8 @@ from fastapi import APIRouter
 from src.app.continent.presentation.router import continent_router
 from src.app.continent.container import ContinentContainer
 
+from src.config.database import Database
+
 
 class Container(containers.DeclarativeContainer):
     containers = [ContinentContainer]

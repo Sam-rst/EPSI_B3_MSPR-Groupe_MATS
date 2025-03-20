@@ -3,27 +3,25 @@ from typing import List
 
 from src.app.base.domain.interface.base_repository import BaseRepository
 from src.app.continent.domain.entity.continent_entity import ContinentEntity
+from src.app.continent.presentation.model.payload.create_continent_payload import CreateContinentPayload
 
 
 class ContinentRepository(BaseRepository, ABC):
     @abstractmethod
     def __init__(self):
-        self._data: List[ContinentEntity] = []
-
-    @property
-    def data(self) -> List[ContinentEntity]:
-        return self._data
-
-    @abstractmethod
-    def create(self, entity: ContinentEntity) -> ContinentEntity:
         pass
 
     @abstractmethod
-    def update(self, entity: ContinentEntity) -> ContinentEntity:
+    def create(self, payload: CreateContinentPayload) -> ContinentEntity:
         pass
 
     @abstractmethod
-    def delete(self, entity: ContinentEntity) -> ContinentEntity:
+    def update(self, payload) -> ContinentEntity:
+        # TODO: Implement this payload
+        pass
+
+    @abstractmethod
+    def delete(self, id: int) -> ContinentEntity:
         pass
 
     @abstractmethod

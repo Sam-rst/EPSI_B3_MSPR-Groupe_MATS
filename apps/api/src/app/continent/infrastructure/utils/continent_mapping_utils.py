@@ -21,12 +21,7 @@ class ContinentMappingUtils(BaseMappingUtils):
             name=model.name,
             code=model.code,
             population=model.population,
+            created_by=model.created_by,
+            updated_by=model.updated_by,
         )
-        entity._created_by=model.created_by,
-        entity._updated_by=model.updated_by,
-        entity._created_at = model.created_at
-        entity._updated_at = model.updated_at
-        entity._deleted_at = model.deleted_at
-        entity._deleted_by = model.deleted_by
-        entity._is_deleted = model.is_deleted
         return entity
