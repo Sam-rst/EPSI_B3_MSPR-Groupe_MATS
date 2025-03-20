@@ -68,14 +68,21 @@ class ContinentRepositoryInMemory(ContinentRepository):
         for continent in self.data:
             if continent.id == id:
                 return continent
-
-        raise ValueError("Le continent n'a pas été trouvé")
+        return None
 
 
     def find_by_code(self, code: str) -> ContinentEntity:
-        for model in self._data:
-            if model.code == code:
-                return ContinentMappingUtils.model_to_entity(model)
+        """Find continent by code
+
+        Args:
+            code (str): _description_
+
+        Returns:
+            ContinentEntity: _description_
+        """
+        for continent in self.data:
+            if continent.code == code:
+                return continent
         return None
     
     def find_all(self) -> List[ContinentEntity]:
@@ -84,7 +91,8 @@ class ContinentRepositoryInMemory(ContinentRepository):
         Returns:
             List[ContinentEntity]: _description_
         """
-        return self.data
+        data = [continent for continent in self.data if not continent.is_deleted]
+        return data
 
     def exists(self, id: int) -> bool:
         """Search if continent exists

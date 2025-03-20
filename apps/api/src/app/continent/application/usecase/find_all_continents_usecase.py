@@ -11,5 +11,4 @@ class FindAllContinentsUseCase(BaseUseCase):
 
     def execute(self) -> List[ContinentEntity]:
         all_continents = self.repository.find_all()
-        not_deleted_continents = [continent for continent in all_continents if not continent.is_deleted]
-        return not_deleted_continents
+        return all_continents
