@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, HTTPException, status
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
@@ -25,6 +26,9 @@ from src.app.continent.presentation.model.payload.create_continent_payload impor
 )
 from src.app.continent.presentation.model.payload.update_continent_payload import (
     UpdateContinentPayload
+)
+from src.app.continent.application.usecase.delete_continent_usecase import (
+    DeleteContinentUseCase
 )
 
 continent_router = APIRouter(
@@ -83,7 +87,7 @@ def endpoint_usecase_get_continent_by_id(
 ):
     try:
         continent = usecase.execute(id)
-        content = {"message": jsonable_encoder(continent)}
+        content = {"message": jsonable_encoder(continent.name),}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})
@@ -105,7 +109,17 @@ def endpoint_usecase_patch_continent_by_id(
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})
 
 
-@inject
 @continent_router.delete("/{id}")
-def endpoint_usecase_delete_continent_by_id():
-    pass
+@inject
+def endpoint_usecase_delete_continent_by_id(
+    id: int,
+    usecase: DeleteContinentUseCase = Depends(
+        Provide[ContinentContainer.delete_continent_usecase]
+    ),
+):
+    try:
+        continent = usecase.execute(id)
+        content = {"message": f"Le continent '{continent.name}' a bien été supprimé."}
+        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})

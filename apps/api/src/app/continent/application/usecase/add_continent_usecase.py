@@ -26,4 +26,4 @@ class AddContinentUseCase(BaseUseCase):
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Le code existe sur un continent supprimé, le continent a été réactivé veuillez utiliser la requête PATCH pour modifier"
                 )
-        return self.repository.create(continent_created)
+        return self.repository.create(payload)

@@ -36,10 +36,5 @@ class UpdateContinentUseCase(BaseUseCase):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="La population ne peut pas être vide"
             )
-            
-        
-        continent.name = payload.name
-        continent.code = payload.code
-        continent.population = payload.population
-        self.repository.update(continent)
+        self.repository.update(continent, payload)
         return continent

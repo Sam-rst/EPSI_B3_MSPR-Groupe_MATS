@@ -36,7 +36,6 @@ class BaseEntity:
     @created_at.setter
     def created_at(self, value: datetime):
         self._created_at = value
-        self.update("system")
 
     @property
     def created_by(self) -> Optional[str]:
@@ -47,7 +46,6 @@ class BaseEntity:
         if not value:
             raise ValueError("Le nom du créateur ne peut pas être vide.")
         self._updated_by = value
-        self.update("system")
 
     @property
     def updated_at(self) -> datetime:
@@ -56,7 +54,6 @@ class BaseEntity:
     @updated_at.setter
     def updated_at(self, value: datetime):
         self._updated_at = value
-        self.update("system")
 
     @property
     def updated_by(self) -> Optional[str]:
@@ -67,7 +64,6 @@ class BaseEntity:
         if not value:
             raise ValueError("Le nom du modifieur ne peut pas être vide.")
         self._updated_by = value
-        self.update("system")
 
     @property
     def deleted_at(self) -> Optional[datetime]:
@@ -76,7 +72,6 @@ class BaseEntity:
     @deleted_at.setter
     def deleted_at(self, value: datetime):
         self._deleted_at = value
-        self.update("system")
 
     @property
     def deleted_by(self) -> Optional[str]:
@@ -87,7 +82,6 @@ class BaseEntity:
         if not value:
             raise ValueError("Le nom du supprimeur ne peut pas être vide.")
         self._deleted_by = value
-        self.update("system")
 
     @property
     def is_deleted(self) -> bool:
@@ -96,13 +90,13 @@ class BaseEntity:
     @is_deleted.setter
     def is_deleted(self, value: bool):
         self._is_deleted = value
-        self.update("system")
 
     def update(self, updated_by: str):
-        self._updated_at = datetime.now()
-        self._updated_by = updated_by
+        self.updated_at = datetime.now()
+        self.updated_by = updated_by
 
     def delete(self, deleted_by: str):
-        self._is_deleted = True
-        self._deleted_at = datetime.now()
-        self._deleted_by = deleted_by
+        self.is_deleted = True
+        self.deleted_at = datetime.now()
+        self.deleted_by = deleted_by
+        self.update(deleted_by)
