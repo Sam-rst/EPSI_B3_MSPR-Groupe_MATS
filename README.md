@@ -29,16 +29,16 @@ graph TD;
         subgraph "Docker (compose) - All services"
             direction TB
             subgraph "API Gateway - Backend"
-                ETL["API ETL"] -->|HTTP| API["API REST"]
-                API -->|Send SQL query| DB["PostgreSQL"]
+                ETL["ETL"] --> |Write| DB["PostgreSQL"]
+                API -->|CRUD| DB["PostgreSQL"]
                 DB -->|Receive| API["API Rest"]
             end
 
             Metabase["Metabase (dataviz)"] -->|Read| DB
         end
 
-        Dev["Developer"] -- Auth --> API
-        Dev -- HTTP (auth) --> ETL
+        Dev["Developer"] -- HTTP (Auth) --> API
+        Dev -- HTTP (Auth) --> ETL
         Dev -- Connexion - HOST --> DB
         Client["Client"] --> Metabase
     end
@@ -252,6 +252,18 @@ Pour regarder les logs d'un container, exécutez :
 
 ```bash
 docker logs -f MSPR-ETL
+```
+
+Pour rentrer dans un container, exécutez :
+
+```bash
+docker exec -it <container> /bin/bash
+```
+
+Pour effectuer tous les tests dans le container :
+
+```bash
+python -m unittest discover -f tests -v
 ```
 
 ### 3. **Accès aux services**
