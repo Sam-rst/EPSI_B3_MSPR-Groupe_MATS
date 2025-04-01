@@ -1,4 +1,3 @@
-# Couleurs principales
 MAIN_BG_COLOR = "#C5D5F0"
 ACCENT_COLOR = "#4A7CFF"
 TEXT_COLOR = "#000000"

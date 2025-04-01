@@ -1,6 +1,6 @@
 import tkinter as tk
 from ui.main_window import MainWindow
-from config import APP_TITLE, DEFAULT_SIZE
+from configapp import APP_TITLE, DEFAULT_SIZE, MIN_WIDTH, MIN_HEIGHT
 
 # Gestion du drag & drop
 try:
@@ -12,26 +12,19 @@ except ImportError:
 
 def main():
     if has_dnd:
-        root = TkinterDnD.Tk()  # Utiliser TkinterDnD.Tk au lieu de tk.Tk
+        root = TkinterDnD.Tk()
     else:
         root = tk.Tk()
         
     root.title(APP_TITLE)
     root.geometry(DEFAULT_SIZE)
     
-    # Création de la fenêtre principale
-    app = MainWindow(root)
+    # Définir la taille minimale de la fenêtre
+    root.minsize(MIN_WIDTH, MIN_HEIGHT)
     
-    # Démarrage de l'application
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
-
-def main():
-    root = tk.Tk()
-    root.title(APP_TITLE)
-    root.geometry(DEFAULT_SIZE)
+    # Configurer le redimensionnement
+    root.grid_rowconfigure(0, weight=1)
+    root.grid_columnconfigure(0, weight=1)
     
     app = MainWindow(root)
     

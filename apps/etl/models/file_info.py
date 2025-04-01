@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from config import SUPPORTED_FORMATS
+from configapp import SUPPORTED_FORMATS
 
 class FileInfo:
     def __init__(self, file_path):
