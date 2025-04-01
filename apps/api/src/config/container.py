@@ -23,5 +23,5 @@ class Container(containers.DeclarativeContainer):
         return {"message": "Application is running"}
 
     router.include_router(continent_router, prefix="/continents")
-    router.include_router(continent_router, prefix="/countrys")
+    router.include_router(continent_router, prefix="/countries")
     router.include_router(continent_router, prefix="/vaccines")
