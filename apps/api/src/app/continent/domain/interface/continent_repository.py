@@ -29,6 +29,10 @@ class ContinentRepository(BaseRepository, ABC):
         pass
 
     @abstractmethod
+    def find_by_code(self, code: str) -> ContinentEntity:
+        pass
+
+    @abstractmethod
     def find_all(self) -> List[ContinentEntity]:
         pass
 

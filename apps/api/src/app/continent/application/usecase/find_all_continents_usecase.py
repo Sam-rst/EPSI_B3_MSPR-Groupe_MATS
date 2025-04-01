@@ -10,4 +10,5 @@ class FindAllContinentsUseCase(BaseUseCase):
         super().__init__(repository)
 
     def execute(self) -> List[ContinentEntity]:
-        return self.repository.find_all()
+        all_continents = self.repository.find_all()
+        return all_continents
