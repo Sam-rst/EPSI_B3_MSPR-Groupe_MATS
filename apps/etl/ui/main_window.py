@@ -303,7 +303,7 @@ class MainWindow:
         # Fonction pour tester la connexion
         def test_connection():
             try:
-                from etl.database import PostgresConnector
+                from pipelines.load import PostgresConnector
                 
                 db = PostgresConnector(
                     host=host_var.get(),
