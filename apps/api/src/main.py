@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from src.config.container import Container
 from src.config.database import Database
 from src.app.base.infrastructure.model.base_model import Base
+from src.config.models import *
 
 
 class Application:

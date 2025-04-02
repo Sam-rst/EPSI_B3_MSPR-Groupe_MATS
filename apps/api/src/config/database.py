@@ -21,12 +21,9 @@ class Database:
         database_url = (
             f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
         )
-        print("******** Database URL ********")
-        print(database_url)
-        print("******** Database URL ********")
         self._engine = create_engine(database_url)
         self._SessionLocal = sessionmaker(
-            autocommit=False, autoflush=False, bind=self.engine
+            autocommit=True, autoflush=True, bind=self.engine
         )
 
     def get_db(self):

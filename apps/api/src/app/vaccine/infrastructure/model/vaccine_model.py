@@ -1,7 +1,6 @@
 from sqlalchemy import Column, String, DateTime
 from src.app.base.infrastructure.model.base_model import BaseModel
 
-
 class VaccineModel(BaseModel):
     __tablename__ = "vaccine"
 
