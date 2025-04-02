@@ -5,7 +5,7 @@ import sys
 sys.path.append('..')
 
 from pipelines.extract import FileListPanel
-# from etl.pipeline import ETLPipeline
+from pipelines.pipeline import ETLPipeline
 from configapp import DEFAULT_OUTPUT_DIR
 # Importer les styles existants
 from ui.styles import (
