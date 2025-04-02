@@ -4,7 +4,7 @@ import os
 import sys
 sys.path.append('..')
 
-# from etl.extractor import FileListPanel
+from pipelines.extract import FileListPanel
 # from etl.pipeline import ETLPipeline
 from configapp import DEFAULT_OUTPUT_DIR
 # Importer les styles existants
@@ -72,11 +72,11 @@ class MainWindow:
         file_list_container.pack(fill=tk.BOTH, expand=True, pady=10)
         
         # Panneau de liste de fichiers avec scrollbar
-        # self.file_list_panel = FileListPanel(
-        #     file_list_container,
-        #     on_remove=self.on_file_removed,
-        #     on_selection_change=self.on_selection_changed
-        # )
+        self.file_list_panel = FileListPanel(
+            file_list_container,
+            on_remove=self.on_file_removed,
+            on_selection_change=self.on_selection_changed
+        )
         
         # Frame pour le choix du répertoire de sortie
         output_dir_frame = tk.Frame(self.main_frame, bg=MAIN_BG_COLOR)
