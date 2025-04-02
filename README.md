@@ -82,6 +82,7 @@ graph TD;
 | **FastAPI** | Latest | Orchestration des workflows ETL | Planification des tâches |
 | **Pandas** | Latest | Manipulation des données | Nettoyage et transformation des données |
 | **DuckDB** | Latest | Traitement performant des datasets volumineux | Analyse et transformation |
+| **TKinter**| Latest | Bibliothèque standard pour les interfaces graphiques en Python | Interface graphique et la sélection de fichiers |
 | **SQLAlchemy** | Latest | ORM pour interagir avec les bases | Stockage des données |
 
 ---
