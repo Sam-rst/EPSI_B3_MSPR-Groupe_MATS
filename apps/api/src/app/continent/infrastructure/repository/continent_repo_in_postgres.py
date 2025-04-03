@@ -3,13 +3,12 @@ from sqlalchemy.orm import Session
 
 from src.config.database import db
 from src.app.continent.domain.interface.continent_repository import ContinentRepository
-from src.app.continent.domain.entity.continent_entity import ContinentEntity
 from src.app.continent.infrastructure.model.continent_model import ContinentModel
-from src.app.continent.infrastructure.utils.continent_mapping_utils import (
-    ContinentMappingUtils,
-)
 from src.app.continent.presentation.model.payload.create_continent_payload import (
     CreateContinentPayload,
+)
+from src.app.continent.presentation.model.payload.update_continent_payload import (
+    UpdateContinentPayload,
 )
 
 
@@ -27,89 +26,142 @@ class ContinentRepositoryInPostgres(ContinentRepository):
     def session(self) -> Session:
         return self._session
 
-    def create(self, payload: CreateContinentPayload) -> ContinentEntity:
-        """
-        Crée un continent dans la base de données.
+    def create(self, payload: CreateContinentPayload) -> ContinentModel:
+        """_summary_
 
         Args:
-            entity (ContinentModel): L'entité du continent à insérer.
+            payload (CreateContinentPayload): _description_
+
+        Raises:
+            e: _description_
 
         Returns:
-            ContinentModel: L'entité après insertion.
+            ContinentModel: _description_
         """
-
-        entity = ContinentEntity(
-            name=payload.name, code=payload.code, population=payload.population
-        )
-        model = ContinentMappingUtils.entity_to_model(entity)
-        self.session.add(model)
-        self.session.commit()
-        return entity
-
-    def update(self, id: int, payload: CreateContinentPayload) -> ContinentEntity:
-        """
-        Met à jour un continent dans la base de données.
-
-        Args:
-            entity (ContinentModel): L'entité à mettre à jour.
-
-        Returns:
-            ContinentModel: L'entité après mise à jour.
-        """
-        # TODO : Changer le payload par l'autre payload d'update
-        pass
-
-    def delete(self, id: int) -> ContinentEntity:
-        """
-        Supprime un continent de la base de données.
-
-        Args:
-            entity (ContinentModel): L'entité à supprimer.
-
-        Returns:
-            ContinentModel: L'entité supprimée.
-        """
-        entity = self.find_by_id(id)
-        if entity:
-            self.session.delete(entity)
+        try:
+            model = ContinentModel(
+                name=payload.name, code=payload.code, population=payload.population
+            )
+            self.session.add(model)
             self.session.commit()
-            return entity
-        # TODO : Gérer l'erreur
-        return None
 
-    def find_by_id(self, id: int) -> Optional[ContinentEntity]:
-        """
-        Recherche un continent par son ID.
+            return model
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def update(
+        self, continent: ContinentModel, payload: UpdateContinentPayload
+    ) -> ContinentModel:
+        """_summary_
 
         Args:
-            id (int): L'ID du continent.
+            continent (ContinentModel): _description_
+            payload (UpdateContinentPayload): _description_
+
+        Raises:
+            e: _description_
 
         Returns:
-            Optional[ContinentModel]: L'entité trouvée ou None.
+            ContinentModel: _description_
         """
-        model = self.session.query(ContinentModel).filter(ContinentModel.id == id).first()
-        if model:
-            return ContinentMappingUtils.model_to_entity(model)
-        # TODO : Gérer l'erreur
-        return None
+        try:
+            if payload.name is not None:
+                continent.name = payload.name
+            if payload.code is not None:
+                continent.code = payload.code
+            if payload.population is not None:
+                continent.population = payload.population
+            continent.update("system")
+            self.session.commit()
+
+            return continent
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def delete(self, continent: ContinentModel) -> ContinentModel:
+        """_summary_
+
+        Args:
+            continent (ContinentModel): _description_
+
+        Raises:
+            e: _description_
+
+        Returns:
+            ContinentModel: _description_
+        """
+        try:
+            continent.delete("system")
+            self.session.commit()
+
+            return continent
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def find_by_id(self, id: int) -> Optional[ContinentModel]:
+        """_summary_
+
+        Args:
+            id (int): _description_
+
+        Raises:
+            e: _description_
+
+        Returns:
+            Optional[ContinentModel]: _description_
+        """
+        try:
+            continent = (
+                self.session.query(ContinentModel)
+                .filter(ContinentModel.id == id)
+                .first()
+            )
+
+            return continent
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def find_by_code(self, code: str) -> ContinentModel:
+        """_summary_
+
+        Args:
+            code (str): _description_
+
+        Raises:
+            e: _description_
+
+        Returns:
+            ContinentModel: _description_
+        """
+        try:
+            continent = (
+                self.session.query(ContinentModel)
+                .filter(ContinentModel.code == code)
+                .first()
+            )
+
+            return continent
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
     def find_all(self) -> List[ContinentModel]:
-        """
-        Récupère tous les continents de la base de données.
+        """_summary_
+
+        Raises:
+            e: _description_
 
         Returns:
-            List[ContinentModel]: Liste des continents.
+            List[ContinentModel]: _description_
         """
-        return self.session.query(ContinentModel).all()
+        try:
+            continents = self.session.query(ContinentModel).all()
 
-    def exists(self, id: int) -> bool:
-        """
-        Vérifie si un continent existe dans la base de données.
-
-        Args:
-            id (int): L'ID du continent.
-
-        Returns:
-            bool: True si le continent existe, False sinon.
-        """
-        pass
+            return continents
+        except Exception as e:
+            self.session.rollback()
+            raise e

@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from typing import List
 
 from src.app.continent.domain.entity.continent_entity import ContinentEntity
@@ -10,5 +11,19 @@ class FindAllContinentsUseCase(BaseUseCase):
         super().__init__(repository)
 
     def execute(self) -> List[ContinentEntity]:
-        all_continents = self.repository.find_all()
-        return all_continents
+        try:
+            continents = self.repository.find_all()
+            return continents
+
+        except HTTPException as http_exc:
+            # On relance les erreurs HTTP explicites (404, 400, etc.)
+            raise HTTPException(
+                status_code=http_exc.status_code,
+                detail=http_exc.detail,
+            )
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Une erreur inattendue est survenue: {str(e)}",
+            )

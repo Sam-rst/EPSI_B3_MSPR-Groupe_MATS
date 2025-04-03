@@ -3,7 +3,13 @@ from typing import List
 
 from src.app.base.domain.interface.base_repository import BaseRepository
 from src.app.continent.domain.entity.continent_entity import ContinentEntity
-from src.app.continent.presentation.model.payload.create_continent_payload import CreateContinentPayload
+from src.app.continent.infrastructure.model.continent_model import ContinentModel
+from src.app.continent.presentation.model.payload.create_continent_payload import (
+    CreateContinentPayload,
+)
+from src.app.continent.presentation.model.payload.update_continent_payload import (
+    UpdateContinentPayload,
+)
 
 
 class ContinentRepository(BaseRepository, ABC):
@@ -12,30 +18,29 @@ class ContinentRepository(BaseRepository, ABC):
         pass
 
     @abstractmethod
-    def create(self, payload: CreateContinentPayload) -> ContinentEntity:
+    def create(self, payload: CreateContinentPayload) -> ContinentEntity | ContinentModel:
         pass
 
     @abstractmethod
-    def update(self, payload) -> ContinentEntity:
-        # TODO: Implement this payload
+    def update(
+        self,
+        continent: ContinentEntity | ContinentModel,
+        payload: UpdateContinentPayload,
+    ) -> ContinentEntity | ContinentModel:
         pass
 
     @abstractmethod
-    def delete(self, id: int) -> ContinentEntity:
+    def delete(self, continent: ContinentEntity | ContinentModel) -> ContinentEntity | ContinentModel:
         pass
 
     @abstractmethod
-    def find_by_id(self, id: int) -> ContinentEntity:
+    def find_by_id(self, id: int) -> ContinentEntity | ContinentModel:
         pass
 
     @abstractmethod
-    def find_by_code(self, code: str) -> ContinentEntity:
+    def find_by_code(self, code: str) -> ContinentEntity | ContinentModel:
         pass
 
     @abstractmethod
-    def find_all(self) -> List[ContinentEntity]:
-        pass
-
-    @abstractmethod
-    def exists(self, id: int) -> bool:
+    def find_all(self) -> List[ContinentEntity] | List[ContinentModel]:
         pass

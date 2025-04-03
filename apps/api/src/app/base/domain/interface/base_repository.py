@@ -28,7 +28,3 @@ class BaseRepository(ABC):
     @abstractmethod
     def find_all(self) -> List[BaseEntity]:
         pass
-
-    @abstractmethod
-    def exists(self, id: int) -> bool:
-        pass

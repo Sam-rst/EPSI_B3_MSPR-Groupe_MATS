@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException, status
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
@@ -9,26 +8,28 @@ from fastapi.encoders import jsonable_encoder
 from src.app.continent.container import ContinentContainer
 
 # =====Usecases=====
-from src.app.continent.application.usecase.add_continent_usecase import AddContinentUseCase
+from src.app.continent.application.usecase.add_continent_usecase import (
+    AddContinentUseCase,
+)
 from src.app.continent.application.usecase.find_all_continents_usecase import (
-    FindAllContinentsUseCase
+    FindAllContinentsUseCase,
 )
 from src.app.continent.application.usecase.find_continent_by_id_usecase import (
-    FindContinentByIdUseCase
+    FindContinentByIdUseCase,
 )
 from src.app.continent.application.usecase.update_continent_usecase import (
-    UpdateContinentUseCase
+    UpdateContinentUseCase,
 )
 
 # =====Payloads=====
 from src.app.continent.presentation.model.payload.create_continent_payload import (
-    CreateContinentPayload
+    CreateContinentPayload,
 )
 from src.app.continent.presentation.model.payload.update_continent_payload import (
-    UpdateContinentPayload
+    UpdateContinentPayload,
 )
 from src.app.continent.application.usecase.delete_continent_usecase import (
-    DeleteContinentUseCase
+    DeleteContinentUseCase,
 )
 
 continent_router = APIRouter(
@@ -57,8 +58,14 @@ def endpoint_usecase_get_all_continents(
         continents = usecase.execute()
         content = {"count": len(continents), "items": jsonable_encoder(continents)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @continent_router.post("")
@@ -71,10 +78,18 @@ def endpoint_usecase_add_continent(
 ):
     try:
         continent = usecase.execute(payload)
-        content = {"message": jsonable_encoder(continent)}
+        content = {
+            "message": f"Le continent '{continent.name}' a bien été créé portant l'id : {continent.id}."
+        }
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @continent_router.get("/{id}")
@@ -87,10 +102,17 @@ def endpoint_usecase_get_continent_by_id(
 ):
     try:
         continent = usecase.execute(id)
-        content = {"message": jsonable_encoder(continent),}
+        content = {"item": jsonable_encoder(continent)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
+
 
 @continent_router.patch("/{id}")
 @inject
@@ -103,10 +125,18 @@ def endpoint_usecase_patch_continent_by_id(
 ):
     try:
         continent = usecase.execute(id, payload)
-        content = {"message": jsonable_encoder(continent)}
+        content = {
+            "message": f"Le continent '{continent.name}' a bien été modifié."
+        }
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @continent_router.delete("/{id}")
@@ -121,5 +151,11 @@ def endpoint_usecase_delete_continent_by_id(
         continent = usecase.execute(id)
         content = {"message": f"Le continent '{continent.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)})
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )

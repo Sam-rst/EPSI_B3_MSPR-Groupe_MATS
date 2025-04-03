@@ -56,8 +56,14 @@ def endpoint_usecase_get_all_countries(
         countries = usecase.execute()
         content = {"count": len(countries), "items": jsonable_encoder(countries)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise e
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @country_router.post("")
@@ -70,12 +76,18 @@ def endpoint_usecase_add_country(
 ):
     try:
         country = usecase.execute(payload)
-        content = {"message": jsonable_encoder(country)}
+        content = {
+            "message": f"Le pays '{country.name}' a bien été créé portant l'id : {country.id}."
+        }
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
-    except HTTPException as e:
-        raise e
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @country_router.get("/{id}")
@@ -88,12 +100,16 @@ def endpoint_usecase_get_country_by_id(
 ):
     try:
         country = usecase.execute(id)
-        content = jsonable_encoder(country)
+        content = {"item": jsonable_encoder(country)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @country_router.patch("/{id}")
@@ -107,12 +123,18 @@ def endpoint_usecase_patch_country_by_id(
 ):
     try:
         country = usecase.execute(id, payload)
-        content = {"message": jsonable_encoder(country)}
+        content = {
+            "message": f"Le pays '{country.name}' a bien été modifié."
+        }
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except HTTPException as e:
-        raise e
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @country_router.delete("/{id}")
@@ -125,9 +147,13 @@ def endpoint_usecase_delete_country_by_id(
 ):
     try:
         country = usecase.execute(id)
-        content = {"message": jsonable_encoder(country)}
+        content = {"message": f"Le pays '{country.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except HTTPException as e:
-        raise e
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )

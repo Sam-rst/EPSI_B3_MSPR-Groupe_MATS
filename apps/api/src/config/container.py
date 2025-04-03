@@ -1,4 +1,3 @@
-
 from dependency_injector import containers, providers
 from fastapi import APIRouter
 
@@ -13,7 +12,11 @@ from src.config.database import Database
 
 
 class Container(containers.DeclarativeContainer):
-    containers = [ContinentContainer, CountryContainer, VaccineContainer] # A ajouter les autres containers si il y en a d'autres
+    containers = [
+        ContinentContainer,
+        CountryContainer,
+        VaccineContainer,
+    ]  # A ajouter les autres containers si il y en a d'autres
     [container().wire(modules=container.modules) for container in containers]
 
     router = APIRouter()

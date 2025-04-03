@@ -32,4 +32,4 @@ class BaseModel(Base):
         self.deleted_at = datetime.now()
         self.deleted_by = deleted_by
         self.is_deleted = True
-        self.updated(deleted_by)
+        self.update(deleted_by)

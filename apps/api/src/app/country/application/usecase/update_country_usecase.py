@@ -26,11 +26,6 @@ class UpdateCountryUseCase(BaseUseCase):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Le nom ne peut pas être vide"
             )
-        if payload.code3 is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Le code ne peut pas être vide"
-            )
         if payload.population is None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
