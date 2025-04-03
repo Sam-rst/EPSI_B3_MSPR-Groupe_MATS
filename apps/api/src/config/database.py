@@ -23,7 +23,7 @@ class Database:
         )
         self._engine = create_engine(database_url)
         self._SessionLocal = sessionmaker(
-            autocommit=True, autoflush=True, bind=self.engine
+            autoflush=False, bind=self.engine
         )
 
     def get_db(self):

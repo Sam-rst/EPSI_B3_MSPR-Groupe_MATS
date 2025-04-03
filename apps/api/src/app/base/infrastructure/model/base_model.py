@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, DateTime, Boolean
+from sqlalchemy import Column, BigInteger, String, DateTime, Boolean, event, text
 from sqlalchemy.orm import declarative_base
 from datetime import datetime
 
@@ -9,10 +9,15 @@ class BaseModel(Base):
     __abstract__ = True
 
     id = Column(BigInteger, primary_key=True, autoincrement=True, index=True)
-    created_at = Column(DateTime, default=datetime.now)
-    created_by = Column(String, nullable=True)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    updated_by = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
+    created_by = Column(String, nullable=True, server_default="system")
+    updated_at = Column(
+        DateTime,
+        server_default=text("CURRENT_TIMESTAMP"),
+        onupdate=datetime.now,
+        server_onupdate=text("CURRENT_TIMESTAMP"),
+    )
+    updated_by = Column(String, nullable=True, server_default="system")
     deleted_at = Column(DateTime, nullable=True)
     deleted_by = Column(String, nullable=True)
-    is_deleted = Column(Boolean, default=False)
+    is_deleted = Column(Boolean, server_default=text("FALSE"))

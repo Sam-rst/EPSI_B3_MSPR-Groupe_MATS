@@ -17,7 +17,7 @@ class Application:
             Application._app = app
 
             db = Database()
-            Base.metadata.create_all(bind=db.engine)
+            # Base.metadata.create_all(bind=db.engine)
         return Application._app
 
 
