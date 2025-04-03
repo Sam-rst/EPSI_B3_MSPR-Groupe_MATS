@@ -1,6 +1,5 @@
 from sqlalchemy import Column, BigInteger, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
-from enum import Enum
 
 from src.app.base.infrastructure.model.base_model import BaseModel
 

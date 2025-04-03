@@ -1,8 +1,8 @@
-"""00.initialisation des tables
+"""00-Initialisation de la base
 
-Revision ID: 2b420208e4f4
+Revision ID: 1ee5ec9ff954
 Revises: 
-Create Date: 2025-04-02 23:27:04.182694
+Create Date: 2025-04-03 01:32:17.389815
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2b420208e4f4'
+revision: str = '1ee5ec9ff954'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -91,19 +91,6 @@ def upgrade() -> None:
     sa.UniqueConstraint('email')
     )
     op.create_index(op.f('ix_user_id'), 'user', ['id'], unique=False)
-    op.create_table('vaccine',
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by', sa.String(), nullable=True),
-    sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('deleted_at', sa.DateTime(), nullable=True),
-    sa.Column('deleted_by', sa.String(), nullable=True),
-    sa.Column('is_deleted', sa.Boolean(), server_default=sa.text('FALSE'), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_vaccine_id'), 'vaccine', ['id'], unique=False)
     op.create_table('country',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('iso2', sa.String(), nullable=True),
@@ -138,6 +125,26 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_role_id'), 'user_role', ['id'], unique=False)
+    op.create_table('vaccine',
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('laboratory', sa.String(), nullable=False),
+    sa.Column('technology', sa.String(), nullable=True),
+    sa.Column('dose', sa.String(), nullable=True),
+    sa.Column('efficacy', sa.Float(), nullable=True),
+    sa.Column('storage_temperature', sa.String(), nullable=True),
+    sa.Column('epidemic_id', sa.BigInteger(), nullable=False),
+    sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('created_by', sa.String(), server_default='system', nullable=True),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('updated_by', sa.String(), server_default='system', nullable=True),
+    sa.Column('deleted_at', sa.DateTime(), nullable=True),
+    sa.Column('deleted_by', sa.String(), nullable=True),
+    sa.Column('is_deleted', sa.Boolean(), server_default=sa.text('FALSE'), nullable=True),
+    sa.ForeignKeyConstraint(['epidemic_id'], ['epidemic.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_vaccine_id'), 'vaccine', ['id'], unique=False)
     op.create_table('daily_wise',
     sa.Column('date', sa.DateTime(), nullable=False),
     sa.Column('province', sa.String(), nullable=True),
@@ -206,12 +213,12 @@ def downgrade() -> None:
     op.drop_table('daily_wise_vaccine')
     op.drop_index(op.f('ix_daily_wise_id'), table_name='daily_wise')
     op.drop_table('daily_wise')
+    op.drop_index(op.f('ix_vaccine_id'), table_name='vaccine')
+    op.drop_table('vaccine')
     op.drop_index(op.f('ix_user_role_id'), table_name='user_role')
     op.drop_table('user_role')
     op.drop_index(op.f('ix_country_id'), table_name='country')
     op.drop_table('country')
-    op.drop_index(op.f('ix_vaccine_id'), table_name='vaccine')
-    op.drop_table('vaccine')
     op.drop_index(op.f('ix_user_id'), table_name='user')
     op.drop_table('user')
     op.drop_index(op.f('ix_role_id'), table_name='role')

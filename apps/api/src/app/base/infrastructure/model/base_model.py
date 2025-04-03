@@ -21,3 +21,15 @@ class BaseModel(Base):
     deleted_at = Column(DateTime, nullable=True)
     deleted_by = Column(String, nullable=True)
     is_deleted = Column(Boolean, server_default=text("FALSE"))
+
+    @classmethod
+    def update(self, update_by: str):
+        self.updated_at = datetime.now()
+        self.updated_by = update_by
+
+    @classmethod
+    def delete(self, deleted_by: str):
+        self.deleted_at = datetime.now()
+        self.deleted_by = deleted_by
+        self.is_deleted = True
+        self.updated(deleted_by)
