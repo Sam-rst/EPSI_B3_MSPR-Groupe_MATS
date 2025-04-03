@@ -18,4 +18,8 @@ class UserModel(BaseModel):
     birthdate = Column(String(10), nullable=True)
 
     # Relation Many-to-Many avec RoleModel
-    roles = relationship("RoleModel", secondary=UserRoleAssociation, back_populates="users")
+    roles = relationship(
+        "RoleModel",
+        secondary=UserRoleAssociation.__table__,
+        back_populates="users"
+    )

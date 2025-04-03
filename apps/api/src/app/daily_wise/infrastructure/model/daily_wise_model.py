@@ -18,8 +18,9 @@ class DailyWiseModel(BaseModel):
     country_id = Column(BigInteger, ForeignKey("country.id"), nullable=False)
     country = relationship("CountryModel", back_populates="daylies")
 
+    # Make sure this matches the property name in StatisticModel
     statistics = relationship("StatisticModel", back_populates="daily_wise")
 
     vaccines = relationship(
-        "VaccineModel", secondary=DailyWiseVaccineAssociation, back_populates="daylies"
+        "VaccineModel", secondary=DailyWiseVaccineAssociation.__table__, back_populates="daylies"
     )

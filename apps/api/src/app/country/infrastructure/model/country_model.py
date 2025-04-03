@@ -15,4 +15,6 @@ class CountryModel(BaseModel):
     continent_id = Column(BigInteger, ForeignKey("continent.id"))
     continent = relationship("ContinentModel", back_populates="countries")
 
+    statistics = relationship("StatisticModel", back_populates="country")
+
     daylies = relationship("DailyWiseModel", back_populates="country")

@@ -18,5 +18,5 @@ class StatisticModel(BaseModel):
     epidemic_id = Column(BigInteger, ForeignKey("epidemic.id"), nullable=False)
     epidemic = relationship("EpidemicModel", back_populates="statistics")
 
-    dayly_wise_id = Column(BigInteger, ForeignKey("daily_wise.id"), nullable=False)
-    dayly_wise = relationship("DailyWiseModel", back_populates="statistics")
+    daily_wise_id = Column(BigInteger, ForeignKey("daily_wise.id"), nullable=False)
+    daily_wise = relationship("DailyWiseModel", back_populates="statistics")

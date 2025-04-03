@@ -13,4 +13,4 @@ class RoleModel(BaseModel):
     description = Column(String(100), nullable=True)
 
     # Relation Many-to-Many avec UserModel
-    users = relationship("UserModel", secondary=UserRoleAssociation, back_populates="roles")
+    users = relationship("UserModel", secondary=UserRoleAssociation.__table__, back_populates="roles")

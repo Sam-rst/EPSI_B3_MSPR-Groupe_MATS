@@ -1,6 +1,5 @@
 from sqlalchemy import Column, BigInteger, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
-from enum import Enum
 
 from src.app.base.infrastructure.model.base_model import BaseModel
 from src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association import DailyWiseVaccineAssociation
@@ -19,4 +18,8 @@ class VaccineModel(BaseModel):
     epidemic_id = Column(BigInteger, ForeignKey("epidemic.id"), nullable=False)
     epidemic = relationship("EpidemicModel", back_populates="vaccines")
 
-    daylies = relationship("DailyWiseModel", secondary=DailyWiseVaccineAssociation, back_populates="vaccines")
+    daylies = relationship(
+        "DailyWiseModel",
+        secondary=DailyWiseVaccineAssociation.__table__,
+        back_populates="vaccines"
+    )

@@ -1,8 +1,8 @@
-"""00-Initialisation de la base
+"""00-Initialisation de la base de données
 
-Revision ID: 1ee5ec9ff954
+Revision ID: e79a277e666d
 Revises: 
-Create Date: 2025-04-03 01:32:17.389815
+Create Date: 2025-04-03 01:57:02.989571
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '1ee5ec9ff954'
+revision: str = 'e79a277e666d'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -186,7 +186,7 @@ def upgrade() -> None:
     sa.Column('published_by', sa.String(), nullable=True),
     sa.Column('country_id', sa.BigInteger(), nullable=False),
     sa.Column('epidemic_id', sa.BigInteger(), nullable=False),
-    sa.Column('dayly_wise_id', sa.BigInteger(), nullable=False),
+    sa.Column('daily_wise_id', sa.BigInteger(), nullable=False),
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=True),
     sa.Column('created_by', sa.String(), server_default='system', nullable=True),
@@ -196,7 +196,7 @@ def upgrade() -> None:
     sa.Column('deleted_by', sa.String(), nullable=True),
     sa.Column('is_deleted', sa.Boolean(), server_default=sa.text('FALSE'), nullable=True),
     sa.ForeignKeyConstraint(['country_id'], ['country.id'], ),
-    sa.ForeignKeyConstraint(['dayly_wise_id'], ['daily_wise.id'], ),
+    sa.ForeignKeyConstraint(['daily_wise_id'], ['daily_wise.id'], ),
     sa.ForeignKeyConstraint(['epidemic_id'], ['epidemic.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

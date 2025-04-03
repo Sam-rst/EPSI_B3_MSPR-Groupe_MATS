@@ -16,8 +16,7 @@ class Application:
             app.include_router(Container.router)
             Application._app = app
 
-            db = Database()
-            # Base.metadata.create_all(bind=db.engine)
+            Database()
         return Application._app
 
 
