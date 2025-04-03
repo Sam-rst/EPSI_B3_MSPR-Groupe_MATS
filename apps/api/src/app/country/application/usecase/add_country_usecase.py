@@ -22,11 +22,11 @@ class AddCountryUseCase(BaseUseCase):
                         detail="Le code iso3 existe déjà",
                     )
                 else:
-                    existing_country.is_deleted = False
-                    self.repository.update(existing_country)
+                    # Si le pays existe mais est supprimé, on le restaure
+                    self.repository.reactivate(existing_country)
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Le code iso3 existe sur un pays supprimé, le pays a été réactivé veuillez utiliser la requête PATCH pour modifier",
+                        detail="Le pays existe déjà mais a été supprimé. Il a été restauré.",
                     )
             return self.repository.create(payload)
 

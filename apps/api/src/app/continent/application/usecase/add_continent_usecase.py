@@ -24,11 +24,11 @@ class AddContinentUseCase(BaseUseCase):
                         detail="Le code continent existe déjà",
                     )
                 else:
-                    existing_continent.is_deleted = False
-                    self.repository.update(existing_continent)
+                    # Si le continent existe mais est supprimé, on le restaure
+                    self.repository.reactivate(existing_continent)
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Le code existe sur un continent supprimé, le continent a été réactivé veuillez utiliser la requête PATCH pour modifier",
+                        detail="Le continent existe déjà mais a été supprimé. Il a été restauré.",
                     )
             return self.repository.create(payload)
 
