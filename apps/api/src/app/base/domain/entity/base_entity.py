@@ -5,9 +5,7 @@ from typing import Optional
 class BaseEntity:
     _id_counter = 0
 
-    def __init__(
-        self
-    ):
+    def __init__(self):
         BaseEntity._id_counter += 1
 
         self._id = BaseEntity._id_counter
@@ -100,3 +98,9 @@ class BaseEntity:
         self.deleted_at = datetime.now()
         self.deleted_by = deleted_by
         self.update(deleted_by)
+
+    def reactivate(self, updated_by: str):
+        self.is_deleted = False
+        self.deleted_at = None
+        self.deleted_by = None
+        self.update(updated_by)

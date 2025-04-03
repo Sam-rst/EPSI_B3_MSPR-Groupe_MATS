@@ -17,19 +17,19 @@ class CountryRepository(BaseRepository, ABC):
 
     @abstractmethod
     def create(
-        self, entity: CountryEntity | CountryModel
+        self, country: CountryEntity | CountryModel
     ) -> CountryEntity | CountryModel:
         pass
 
     @abstractmethod
     def update(
-        self, entity: CountryEntity | CountryModel
+        self, country: CountryEntity | CountryModel
     ) -> CountryEntity | CountryModel:
         pass
 
     @abstractmethod
     def delete(
-        self, entity: CountryEntity | CountryModel
+        self, country: CountryEntity | CountryModel
     ) -> CountryEntity | CountryModel:
         pass
 
@@ -43,4 +43,10 @@ class CountryRepository(BaseRepository, ABC):
 
     @abstractmethod
     def find_all(self) -> List[CountryEntity] | List[CountryModel]:
+        pass
+
+    @abstractmethod
+    def reactivate(
+        self, country: CountryEntity | CountryModel
+    ) -> CountryEntity | CountryModel:
         pass
