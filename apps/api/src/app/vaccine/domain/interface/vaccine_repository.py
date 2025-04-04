@@ -3,7 +3,13 @@ from typing import List
 
 from src.app.base.domain.interface.base_repository import BaseRepository
 from src.app.vaccine.domain.entity.vaccine_entity import VaccineEntity
-from src.app.vaccine.presentation.model.payload.create_vaccine_payload import CreateVaccinePayload
+from src.app.vaccine.infrastructure.model.vaccine_model import VaccineModel
+from src.app.vaccine.presentation.model.payload.create_vaccine_payload import (
+    CreateVaccinePayload,
+)
+from src.app.vaccine.presentation.model.payload.update_vaccine_payload import (
+    UpdateVaccinePayload,
+)
 
 
 class VaccineRepository(BaseRepository, ABC):
@@ -12,89 +18,31 @@ class VaccineRepository(BaseRepository, ABC):
         pass
 
     @abstractmethod
-    def create(self, payload: CreateVaccinePayload) -> VaccineEntity:
-        """
-        Crée un vaccin dans la base de données.
-
-        Args:
-            payload (CreateVaccinePayload): Les données pour créer un vaccin.
-
-        Returns:
-            VaccineEntity: L'entité créée.
-        """
+    def create(self, payload: CreateVaccinePayload) -> VaccineEntity | VaccineModel:
         pass
 
     @abstractmethod
-    def update(self, payload) -> VaccineEntity:
-        """
-        Met à jour un vaccin dans la base de données.
-
-        Args:
-            payload: Les données pour mettre à jour un vaccin.
-
-        Returns:
-            VaccineEntity: L'entité mise à jour.
-        """
+    def update(self, payload: UpdateVaccinePayload) -> VaccineEntity | VaccineModel:
         pass
 
     @abstractmethod
-    def delete(self, id: int) -> VaccineEntity:
-        """
-        Supprime un vaccin de la base de données.
-
-        Args:
-            id (int): L'ID du vaccin à supprimer.
-
-        Returns:
-            VaccineEntity: L'entité supprimée.
-        """
+    def delete(self, id: int) -> VaccineEntity | VaccineModel:
         pass
 
     @abstractmethod
-    def find_by_id(self, id: int) -> VaccineEntity:
-        """
-        Recherche un vaccin par son ID.
-
-        Args:
-            id (int): L'ID du vaccin.
-
-        Returns:
-            VaccineEntity: L'entité trouvée.
-        """
+    def find_by_id(self, id: int) -> VaccineEntity | VaccineModel:
         pass
 
     @abstractmethod
-    def find_by_name(self, name: str) -> VaccineEntity:
-        """
-        Recherche un vaccin par son nom.
-
-        Args:
-            name (str): Le nom du vaccin.
-
-        Returns:
-            VaccineEntity: L'entité trouvée.
-        """
+    def find_by_name(self, name: str) -> VaccineEntity | VaccineModel:
         pass
 
     @abstractmethod
     def find_all(self) -> List[VaccineEntity]:
-        """
-        Récupère tous les vaccins de la base de données.
-
-        Returns:
-            List[VaccineEntity]: Liste des entités trouvées.
-        """
         pass
 
     @abstractmethod
-    def exists(self, id: int) -> bool:
-        """
-        Vérifie si un vaccin existe dans la base de données.
-
-        Args:
-            id (int): L'ID du vaccin.
-
-        Returns:
-            bool: True si le vaccin existe, False sinon.
-        """
+    def reactivate(
+        self, vaccine: VaccineEntity | VaccineModel
+    ) -> VaccineEntity | VaccineModel:
         pass
