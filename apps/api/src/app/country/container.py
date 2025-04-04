@@ -41,7 +41,9 @@ class CountryContainer(containers.DeclarativeContainer):
 
     # Définir les repositories pour les continents
     continent_repository_in_memory = providers.Singleton(ContinentRepositoryInMemory)
-    continent_repository_in_postgres = providers.Singleton(ContinentRepositoryInPostgres)
+    continent_repository_in_postgres = providers.Singleton(
+        ContinentRepositoryInPostgres
+    )
 
     # Sélectionner le repository en fonction de la configuration
     repository = providers.Selector(
@@ -56,7 +58,11 @@ class CountryContainer(containers.DeclarativeContainer):
     )
 
     # Définir les usecases
-    add_country_usecase = providers.Factory(AddCountryUseCase, repository=repository)
+    add_country_usecase = providers.Factory(
+        AddCountryUseCase,
+        repository=repository,
+        continent_repository=continent_repository,
+    )
     find_all_countries_usecase = providers.Factory(
         FindAllCountriesUseCase, repository=repository
     )
