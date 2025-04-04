@@ -1,0 +1,92 @@
+@startuml
+' Définition du style
+skinparam class {
+  BackgroundColor LightBlue
+  ArrowColor Blue
+  BorderColor DarkBlue
+}
+
+' Définition des entités
+entity "STATISTIC" as statistic {
+  *id
+  label
+  value
+  published_at
+  published_by
+}
+
+entity "COUNTRY" as country {
+  *id
+  name
+  iso2
+  iso3
+  population
+}
+
+entity "CONTINENT" as continent {
+  *id
+  name
+  code
+  population
+}
+
+entity "DAILY_WISE" as daily_wise {
+  *id
+  date
+  province
+  latitude
+  longitude
+}
+
+entity "EPIDEMIC" as epidemic {
+  *id
+  name
+  start_date
+  end_date
+  type
+  pathogen_name
+  description
+  transmission_mode
+  symptoms
+  reproduction_rate
+}
+
+entity "VACCINE" as vaccine {
+  *id
+  name
+  laboratory
+  technology
+  dose
+  efficacy
+  storage_temperature
+}
+
+entity "USER" as user {
+  *id
+  firstname
+  lastname
+  username
+  email
+  password
+  gender
+  birthdate
+}
+
+entity "ROLE" as role {
+  *id
+  name
+  description
+}
+
+' Définition des relations
+' Cardinalités en notation Merise (1,n), (0,n), (1,1), (0,1)
+country "1,1" -- "0,n" statistic : concerne >
+country "1,1" -- "0,n" daily_wise : localise >
+continent "1,1" -- "0,n" country : contient >
+epidemic "1,1" -- "0,n" statistic : mesure >
+daily_wise "1,1" -- "0,n" statistic : détaille >
+epidemic "1,1" -- "0,n" vaccine : est traité par >
+daily_wise "0,n" -- "0,n" vaccine : administre
+user "0,n" -- "0,n" role : possède
+
+@enduml
