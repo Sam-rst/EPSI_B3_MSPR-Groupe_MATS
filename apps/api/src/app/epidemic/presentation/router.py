@@ -5,33 +5,33 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 # =====Containers=====
-from src.app.vaccine.container import VaccineContainer
+from src.app.epidemic.container import EpidemicContainer
 
 # =====Usecases=====
-from src.app.vaccine.application.usecase.add_vaccine_usecase import AddVaccineUseCase
-from src.app.vaccine.application.usecase.find_all_vaccines_usecase import (
-    FindAllVaccinesUseCase,
+from src.app.epidemic.application.usecase.add_epidemic_usecase import AddEpidemicUseCase
+from src.app.epidemic.application.usecase.find_all_epidemics_usecase import (
+    FindAllEpidemicsUseCase
 )
-from src.app.vaccine.application.usecase.find_vaccine_by_id_usecase import (
-    FindVaccineByIdUseCase,
+from src.app.epidemic.application.usecase.find_epidemic_by_id_usecase import (
+    FindEpidemicByIdUseCase
 )
-from src.app.vaccine.application.usecase.update_vaccine_usecase import (
-    UpdateVaccineUseCase,
+from src.app.epidemic.application.usecase.update_epidemic_usecase import (
+    UpdateEpidemicUseCase
 )
-from src.app.vaccine.application.usecase.delete_vaccine_usecase import (
-    DeleteVaccineUseCase,
+from src.app.epidemic.application.usecase.delete_epidemic_usecase import (
+    DeleteEpidemicUseCase
 )
 
 # =====Payloads=====
-from src.app.vaccine.presentation.model.payload.create_vaccine_payload import (
-    CreateVaccinePayload,
+from src.app.epidemic.presentation.model.payload.create_epidemic_payload import (
+    CreateEpidemicPayload
 )
-from src.app.vaccine.presentation.model.payload.update_vaccine_payload import (
-    UpdateVaccinePayload,
+from src.app.epidemic.presentation.model.payload.update_epidemic_payload import (
+    UpdateEpidemicPayload
 )
 
-vaccine_router = APIRouter(
-    tags=["vaccines"],
+epidemic_router = APIRouter(
+    tags=["epidemics"],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},
@@ -45,16 +45,16 @@ vaccine_router = APIRouter(
 )
 
 
-@vaccine_router.get("")
+@epidemic_router.get("")
 @inject
-def endpoint_usecase_get_all_vaccines(
-    usecase: FindAllVaccinesUseCase = Depends(
-        Provide[VaccineContainer.find_all_vaccines_usecase]
+def endpoint_usecase_get_all_epidemics(
+    usecase: FindAllEpidemicsUseCase = Depends(
+        Provide[EpidemicContainer.find_all_epidemics_usecase]
     ),
 ):
     try:
-        vaccines = usecase.execute()
-        content = {"count": len(vaccines), "items": jsonable_encoder(vaccines)}
+        epidemics = usecase.execute()
+        content = {"count": len(epidemics), "items": jsonable_encoder(epidemics)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -65,18 +65,19 @@ def endpoint_usecase_get_all_vaccines(
             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
         )
 
-@vaccine_router.post("")
+
+@epidemic_router.post("")
 @inject
-def endpoint_usecase_add_vaccine(
-    payload: CreateVaccinePayload,
-    usecase: AddVaccineUseCase = Depends(
-        Provide[VaccineContainer.add_vaccine_usecase]
+def endpoint_usecase_add_epidemic(
+    payload: CreateEpidemicPayload,
+    usecase: AddEpidemicUseCase = Depends(
+        Provide[EpidemicContainer.add_epidemic_usecase]
     ),
 ):
     try:
-        vaccine = usecase.execute(payload)
+        epidemic = usecase.execute(payload)
         content = {
-            "message": f"Le vaccin '{vaccine.name}' a bien été créé portant l'id : {vaccine.id}."
+            "message": f"L'épidémie '{epidemic.name}' a bien été créée portant l'id : {epidemic.id}."
         }
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:
@@ -89,17 +90,17 @@ def endpoint_usecase_add_vaccine(
         )
 
 
-@vaccine_router.get("/{id}")
+@epidemic_router.get("/{id}")
 @inject
-def endpoint_usecase_get_vaccine_by_id(
+def endpoint_usecase_get_epidemic_by_id(
     id: int,
-    usecase: FindVaccineByIdUseCase = Depends(
-        Provide[VaccineContainer.find_vaccine_by_id_usecase]
+    usecase: FindEpidemicByIdUseCase = Depends(
+        Provide[EpidemicContainer.find_epidemic_by_id_usecase]
     ),
 ):
     try:
-        vaccine = usecase.execute(id)
-        content = {"item": jsonable_encoder(vaccine)}
+        epidemic = usecase.execute(id)
+        content = {"item": jsonable_encoder(epidemic)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -111,19 +112,19 @@ def endpoint_usecase_get_vaccine_by_id(
         )
 
 
-@vaccine_router.patch("/{id}")
+@epidemic_router.patch("/{id}")
 @inject
-def endpoint_usecase_patch_vaccine_by_id(
+def endpoint_usecase_patch_epidemic_by_id(
     id: int,
-    payload: UpdateVaccinePayload,
-    usecase: UpdateVaccineUseCase = Depends(
-        Provide[VaccineContainer.update_vaccine_usecase]
+    payload: UpdateEpidemicPayload,
+    usecase: UpdateEpidemicUseCase = Depends(
+        Provide[EpidemicContainer.update_epidemic_usecase]
     ),
 ):
     try:
-        vaccine = usecase.execute(id, payload)
+        epidemic = usecase.execute(id, payload)
         content = {
-            "message": f"Le vaccin '{vaccine.name}' a bien été modifié."
+            "message": f"L'épidémie '{epidemic.name}' a bien été modifiée."
         }
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
@@ -136,17 +137,17 @@ def endpoint_usecase_patch_vaccine_by_id(
         )
 
 
-@vaccine_router.delete("/{id}")
+@epidemic_router.delete("/{id}")
 @inject
-def endpoint_usecase_delete_vaccine_by_id(
+def endpoint_usecase_delete_epidemic_by_id(
     id: int,
-    usecase: DeleteVaccineUseCase = Depends(
-        Provide[VaccineContainer.delete_vaccine_usecase]
+    usecase: DeleteEpidemicUseCase = Depends(
+        Provide[EpidemicContainer.delete_epidemic_usecase]
     ),
 ):
     try:
-        vaccine = usecase.execute(id)
-        content = {"message": f"Le vaccin '{vaccine.name}' a bien été supprimé."}
+        epidemic = usecase.execute(id)
+        content = {"message": f"L'épidémie '{epidemic.name}' a bien été supprimée."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(

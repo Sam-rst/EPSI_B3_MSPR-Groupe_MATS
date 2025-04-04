@@ -118,6 +118,10 @@ class CountryRepositoryInPostgres(CountryRepository):
             raise e
 
     def reactivate(self, country: CountryModel) -> CountryModel:
-        country.reactivate("system")
-        self.session.commit()
-        return country
+        try:
+            country.reactivate("system")
+            self.session.commit()
+            return country
+        except Exception as e:
+            self.session.rollback()
+            raise e

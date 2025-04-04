@@ -1,8 +1,8 @@
 """00-Initialisation de la base de données
 
-Revision ID: e79a277e666d
+Revision ID: 61f1923da568
 Revises: 
-Create Date: 2025-04-03 01:57:02.989571
+Create Date: 2025-04-04 16:04:04.198541
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e79a277e666d'
+revision: str = '61f1923da568'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -38,8 +38,8 @@ def upgrade() -> None:
     op.create_index(op.f('ix_continent_id'), 'continent', ['id'], unique=False)
     op.create_table('epidemic',
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('start_date', sa.String(), nullable=False),
-    sa.Column('end_date', sa.String(), nullable=False),
+    sa.Column('start_date', sa.Date(), nullable=False),
+    sa.Column('end_date', sa.Date(), nullable=False),
     sa.Column('type', sa.String(), nullable=False),
     sa.Column('pathogen_name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),

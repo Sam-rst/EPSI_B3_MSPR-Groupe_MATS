@@ -3,11 +3,7 @@ from sqlalchemy.orm import Session
 
 from src.config.database import db
 from src.app.vaccine.domain.interface.vaccine_repository import VaccineRepository
-from src.app.vaccine.domain.entity.vaccine_entity import VaccineEntity
 from src.app.vaccine.infrastructure.model.vaccine_model import VaccineModel
-from src.app.vaccine.infrastructure.utils.vaccine_mapping_utils import (
-    VaccineMappingUtils,
-)
 from src.app.vaccine.presentation.model.payload.create_vaccine_payload import (
     CreateVaccinePayload,
 )
@@ -27,114 +23,103 @@ class VaccineRepositoryInPostgres(VaccineRepository):
     def session(self) -> Session:
         return self._session
 
-    def create(self, payload: CreateVaccinePayload) -> VaccineEntity:
-        """
-        Crée un vaccin dans la base de données.
-
-        Args:
-            payload (CreateVaccinePayload): Les données pour créer un vaccin.
-
-        Returns:
-            VaccineEntity: L'entité après insertion.
-        """
-        entity = VaccineEntity(
-            name=payload.name,
-            created_at=payload.created_at,
-            created_by=payload.created_by,
-        )
-        model = VaccineMappingUtils.entity_to_model(entity)
-        self.session.add(model)
-        self.session.commit()
-        return entity
-
-    def update(self, id: int, payload: UpdateVaccinePayload) -> Optional[VaccineEntity]:
-        """
-        Met à jour un vaccin dans la base de données.
-
-        Args:
-            id (int): L'ID du vaccin à mettre à jour.
-            payload (UpdateVaccinePayload): Les données pour mettre à jour le vaccin.
-
-        Returns:
-            Optional[VaccineEntity]: L'entité après mise à jour ou None si non trouvée.
-        """
-        model = self.session.query(VaccineModel).filter(VaccineModel.id == id).first()
-        if not model:
-            return None  # Le vaccin n'existe pas
-
-        # Mise à jour des champs
-        model.name = payload.name
-        model.updated_at = payload.updated_at
-        model.updated_by = payload.updated_by
-
-        self.session.commit()
-        return VaccineMappingUtils.model_to_entity(model)
-
-    def delete(self, id: int) -> Optional[VaccineEntity]:
-        """
-        Supprime un vaccin de la base de données.
-
-        Args:
-            id (int): L'ID du vaccin à supprimer.
-
-        Returns:
-            Optional[VaccineEntity]: L'entité supprimée ou None si non trouvée.
-        """
-        model = self.session.query(VaccineModel).filter(VaccineModel.id == id).first()
-        if model:
-            self.session.delete(model)
+    def create(self, payload: CreateVaccinePayload) -> VaccineModel:
+        try:
+            model = VaccineModel(
+                name=payload.name,
+                laboratory=payload.laboratory,
+                technology=payload.technology,
+                dose=payload.dose,
+                efficacy=payload.efficacy,
+                storage_temperature=payload.storage_temperature,
+                epidemic_id=payload.epidemic_id,
+            )
+            self.session.add(model)
             self.session.commit()
-            return VaccineMappingUtils.model_to_entity(model)
-        return None
 
-    def find_by_id(self, id: int) -> Optional[VaccineEntity]:
-        """
-        Recherche un vaccin par son ID.
+            return model
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
-        Args:
-            id (int): L'ID du vaccin.
+    def update(
+        self, vaccine: VaccineModel, payload: UpdateVaccinePayload
+    ) -> Optional[VaccineModel]:
+        try:
+            if payload.name is not None:
+                vaccine.name = payload.name
+            if payload.laboratory is not None:
+                vaccine.laboratory = payload.laboratory
+            if payload.technology is not None:
+                vaccine.technology = payload.technology
+            if payload.dose is not None:
+                vaccine.dose = payload.dose
+            if payload.efficacy is not None:
+                vaccine.efficacy = payload.efficacy
+            if payload.storage_temperature is not None:
+                vaccine.storage_temperature = payload.storage_temperature
+            if payload.epidemic_id is not None:
+                vaccine.epidemic_id = payload.epidemic_id
+            vaccine.update("system")
+            self.session.commit()
 
-        Returns:
-            Optional[VaccineEntity]: L'entité trouvée ou None.
-        """
-        model = self.session.query(VaccineModel).filter(VaccineModel.id == id).first()
-        if model:
-            return VaccineMappingUtils.model_to_entity(model)
-        return None
+            return vaccine
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
-    def find_by_name(self, name: str) -> Optional[VaccineEntity]:
-        """
-        Recherche un vaccin par son nom.
+    def delete(self, vaccine: VaccineModel) -> Optional[VaccineModel]:
+        try:
+            vaccine.delete("system")
+            self.session.commit()
 
-        Args:
-            name (str): Le nom du vaccin.
+            return vaccine
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
-        Returns:
-            Optional[VaccineEntity]: L'entité trouvée ou None si non trouvée.
-        """
-        model = self.session.query(VaccineModel).filter(VaccineModel.name == name).first()
-        if model:
-            return VaccineMappingUtils.model_to_entity(model)
-        return None
+    def find_by_id(self, id: int) -> Optional[VaccineModel]:
+        try:
+            vaccine = (
+                self.session.query(VaccineModel).filter(VaccineModel.id == id).first()
+            )
 
-    def find_all(self) -> List[VaccineEntity]:
-        """
-        Récupère tous les vaccins de la base de données.
+            return vaccine
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
-        Returns:
-            List[VaccineEntity]: Liste des vaccins.
-        """
-        models = self.session.query(VaccineModel).all()
-        return [VaccineMappingUtils.model_to_entity(model) for model in models]
+    def find_by_name(self, name: str) -> Optional[VaccineModel]:
+        try:
+            vaccine = (
+                self.session.query(VaccineModel)
+                .filter(VaccineModel.name == name)
+                .first()
+            )
 
-    def exists(self, id: int) -> bool:
-        """
-        Vérifie si un vaccin existe dans la base de données.
+            return vaccine
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
-        Args:
-            id (int): L'ID du vaccin.
+    def find_all(self) -> List[VaccineModel]:
+        try:
+            vaccines = (
+                self.session.query(VaccineModel)
+                .filter(VaccineModel.is_deleted == False)
+                .all()
+            )
 
-        Returns:
-            bool: True si le vaccin existe, False sinon.
-        """
-        return self.session.query(VaccineModel).filter(VaccineModel.id == id).count() > 0
+            return vaccines
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def reactivate(self, vaccine: VaccineModel) -> VaccineModel:
+        try:
+            vaccine.reactivate("system")
+            self.session.commit()
+            return vaccine
+        except Exception as e:
+            self.session.rollback()
+            raise e
