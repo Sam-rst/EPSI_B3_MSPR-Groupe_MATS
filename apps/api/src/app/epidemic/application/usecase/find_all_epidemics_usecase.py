@@ -1,20 +1,20 @@
 from fastapi import HTTPException, status
 from typing import List
 
-from src.app.vaccine.domain.entity.vaccine_entity import VaccineEntity
-from src.app.vaccine.infrastructure.model.vaccine_model import VaccineModel
-from src.app.vaccine.domain.interface.vaccine_repository import VaccineRepository
+from src.app.epidemic.domain.entity.epidemic_entity import EpidemicEntity
+from src.app.epidemic.infrastructure.model.epidemic_model import EpidemicModel
+from src.app.epidemic.domain.interface.epidemic_repository import EpidemicRepository
 from src.app.base.application.usecase.base_usecase import BaseUseCase
 
 
-class FindAllVaccinesUseCase(BaseUseCase):
-    def __init__(self, repository: VaccineRepository):
+class FindAllEpidemicsUseCase(BaseUseCase):
+    def __init__(self, repository: EpidemicRepository):
         super().__init__(repository)
 
-    def execute(self) -> List[VaccineEntity] | List[VaccineModel]:
+    def execute(self) -> List[EpidemicEntity] | List[EpidemicModel]:
         try:
-            vaccines = self.repository.find_all()
-            return vaccines
+            epidemics = self.repository.find_all()
+            return epidemics
 
         except HTTPException as http_exc:
             # On relance les erreurs HTTP explicites (404, 400, etc.)

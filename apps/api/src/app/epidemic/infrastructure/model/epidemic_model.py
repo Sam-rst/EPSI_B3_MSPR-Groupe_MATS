@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, ForeignKey, Float
+from sqlalchemy import Column, BigInteger, String, ForeignKey, Float, Date
 from sqlalchemy.orm import relationship
 from enum import Enum
 
@@ -17,8 +17,8 @@ class EpidemicModel(BaseModel):
     __tablename__ = "epidemic"
 
     name = Column(String, nullable=False)
-    start_date = Column(String, nullable=False)
-    end_date = Column(String, nullable=False)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
     type = Column(String, nullable=False)
     pathogen_name = Column(String, nullable=False)
     description = Column(String, nullable=True)

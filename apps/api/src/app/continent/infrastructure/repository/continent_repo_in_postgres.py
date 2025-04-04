@@ -167,6 +167,10 @@ class ContinentRepositoryInPostgres(ContinentRepository):
             raise e
 
     def reactivate(self, continent: ContinentModel) -> ContinentModel:
-        continent.reactivate("system")
-        self.session.commit()
-        return continent
+        try:
+            continent.reactivate("system")
+            self.session.commit()
+            return continent
+        except Exception as e:
+            self.session.rollback()
+            raise e

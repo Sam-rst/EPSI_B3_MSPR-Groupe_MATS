@@ -28,7 +28,7 @@ class AddContinentUseCase(BaseUseCase):
                     self.repository.reactivate(existing_continent)
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Le continent existe déjà mais a été supprimé. Il a été restauré.",
+                        detail="Le continent existe déjà, il a été supprimé mais il vient d'être restauré.",
                     )
             return self.repository.create(payload)
 
