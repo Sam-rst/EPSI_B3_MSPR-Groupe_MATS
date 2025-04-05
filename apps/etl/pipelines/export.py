@@ -8,13 +8,13 @@ class Export:
     def load_csv(self, file_path, dataset_name=None):
         """Charge un fichier CSV dans un DataFrame"""
         try:
-            # Si aucun nom de dataset n'est fourni, utiliser le nom du fichier
+            #Si aucun nom de dataset n'est fourni, utiliser le nom du fichier
             if dataset_name is None:
                 dataset_name = os.path.basename(file_path).split('.')[0]
             
             print(f"Chargement du fichier: {file_path}")
-            df = pd.read_csv(file_path)
-            self.datasets[dataset_name] = df
+            df = pd.read_csv(file_path) #charge le fichier dans un dataframe
+            self.datasets[dataset_name] = df #Stock le dataframe dans le dictionnaire attribué
             print(f"Fichier chargé avec succès: {dataset_name} ({len(df)} lignes, {len(df.columns)} colonnes)")
             return df
         except Exception as e:
@@ -37,8 +37,8 @@ class Export:
         file_paths = {}
         
         for file_info in file_info_list:
-            if file_info.selected:  # Ne charger que les fichiers sélectionnés
-                if file_info.format.lower() in ['.csv', 'csv']:
+            if file_info.selected:  #Ne charger que les fichiers selectionnes
+                if file_info.format.lower() in ['.csv', 'csv']:  # Ne traite que les fichiers CSV
                     name = os.path.basename(file_info.path).split('.')[0]
                     file_paths[name] = file_info.path
         
