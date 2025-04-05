@@ -26,6 +26,15 @@ class MainWindow:
         
         #Création de l'interface utilisateur
         self.create_widgets()
+        
+        try:
+            print("Tentative d'enregistrement du glisser-déposer...")
+            self.root.drop_target_register("DND_Files")
+            self.root.dnd_bind("<<Drop>>", self.on_drop)
+            print("Enregistrement du glisser-déposer réussi!")
+        except Exception as e:
+            print(f"Erreur lors de l'enregistrement du glisser-déposer: {e}")
+            print("Le glisser-déposer ne sera pas disponible")
     
     def create_widgets(self):
         self.main_frame = tk.Frame(self.root, bg=MAIN_BG_COLOR)
