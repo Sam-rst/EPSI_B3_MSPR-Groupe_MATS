@@ -22,7 +22,7 @@ class MainWindow:
         self.output_dir = DEFAULT_OUTPUT_DIR
         
         # Initialisation du pipeline ETL
-        # self.pipeline = ETLPipeline(output_dir=self.output_dir)
+        self.pipeline = ETLPipeline(output_dir=self.output_dir)
         
         #Création de l'interface utilisateur
         self.create_widgets()
