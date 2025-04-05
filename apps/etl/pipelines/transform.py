@@ -60,6 +60,32 @@ class DataTransformer:
             "serious_or_critical", "Deaths / 100 Cases", "Recovered / 100 Cases,Deaths / 100 Recovered", 
             "Confirmed last week", "1 week change", "1 week % increase", "Serious,Critical", "No. of countries"
         ]
+
+        self.country_harmonization = {
+            "Hong Kong": ["Hong-Kong", "China Hong-Kong"],
+            "Bosnia and Herzegovina": ["Bosnia And Herzegovina"],
+            "Central African Republic": ["CAR"],
+            "Democratic Republic of the Congo": [
+                "Congo (Kinshasa)", "Congo (Brazzaville)", "Congo",
+                "Democratic Republic Of The Congo", "DRC"
+            ],
+            "Ivory Coast": ["cote d'ivoire"],
+            "Curaçao": ["Curacao"],
+            "Dominican Republic": ["Dominica"],
+            "European Union": ["Europe"],
+            "Falkland Islands": ["Faeroe Islands", "Falkland Islands Malvinas"],
+            "Isle of Man": ["Isle Of Man"],
+            "Saint Kitts and Nevis": ["Saint Kitts And Nevis"],
+            "Saint Vincent and the Grenadines": ["Saint Vincent And the Grenadines", "St. Vincent Grenadines"],
+            "Sao Tome and Principe": ["Sao Tome And Principe"],
+            "Taiwan": ["Taiwan*"],
+            "Timor-Leste": ["Timor Leste"],
+            "Trinidad and Tobago": ["Trinidad And Tobago"],
+            "Turks and Caicos": ["Turks And Caicos"],
+            "United Arab Emirates": ["UAE"],
+            "United States": ["US", "USA"],
+            "Vietnam": ["Viet Nam"]
+        }
     
     def check_duplicate_columns(self, df):
         """Vérifie et renvoie les colonnes en double dans un DataFrame"""
@@ -113,6 +139,20 @@ class DataTransformer:
             df["ReportDate"] = pd.to_datetime(df["ReportDate"], format="%Y-%m-%d", errors='coerce')
         return df
     
+    def harmonize_countries(self, df):
+        """Standardise les noms des pays selon le dictionnaire d'harmonisation."""
+        if "Country" in df.columns:
+            reverse_map = {}
+            for standard_name, synonyms in self.country_harmonization.items():
+                for synonym in synonyms:
+                    reverse_map[synonym.lower()] = standard_name
+
+            # Appliquer l'harmonisation en ignorant la casse
+            df["Country"] = df["Country"].apply(
+                lambda x: reverse_map.get(x.strip().lower(), x) if isinstance(x, str) else x
+            )
+        return df
+
     def transform_dataframe(self, df, dataset_name=""):
         """Applique toutes les transformations à un DataFrame"""
         print(f"Transformation du dataset: {dataset_name}")
@@ -128,7 +168,10 @@ class DataTransformer:
         
         # Standardisation des dates
         df = self.standardize_dates(df)
-        
+
+        # Standardiser les valeurs du champ Country
+        df = self.harmonize_countries(df)
+
         # Suppression des colonnes inutiles
         for col in self.columns_to_drop:
             if col in df.columns:
@@ -140,6 +183,7 @@ class DataTransformer:
         print(f"Transformation terminée pour: {dataset_name}")
         return df
     
+
     def transform_and_save(self, datasets):
         """Transforme et sauvegarde plusieurs DataFrames"""
         transformed_datasets = {}
