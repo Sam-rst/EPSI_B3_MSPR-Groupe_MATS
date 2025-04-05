@@ -1,0 +1,582 @@
+@startuml packages
+set namespaceSeparator none
+package "src" as src {
+}
+package "src.app" as src.app {
+}
+package "src.app.base" as src.app.base {
+}
+package "src.app.base.application" as src.app.base.application {
+}
+package "src.app.base.application.usecase" as src.app.base.application.usecase {
+}
+package "src.app.base.application.usecase.base_usecase" as src.app.base.application.usecase.base_usecase {
+}
+package "src.app.base.domain" as src.app.base.domain {
+}
+package "src.app.base.domain.entity" as src.app.base.domain.entity {
+}
+package "src.app.base.domain.entity.base_entity" as src.app.base.domain.entity.base_entity {
+}
+package "src.app.base.domain.interface" as src.app.base.domain.interface {
+}
+package "src.app.base.domain.interface.base_repository" as src.app.base.domain.interface.base_repository {
+}
+package "src.app.base.infrastructure" as src.app.base.infrastructure {
+}
+package "src.app.base.infrastructure.model" as src.app.base.infrastructure.model {
+}
+package "src.app.base.infrastructure.model.base_model" as src.app.base.infrastructure.model.base_model {
+}
+package "src.app.base.infrastructure.repository" as src.app.base.infrastructure.repository {
+}
+package "src.app.base.infrastructure.repository.base_repo_in_memory" as src.app.base.infrastructure.repository.base_repo_in_memory {
+}
+package "src.app.base.infrastructure.repository.base_repo_in_postgres" as src.app.base.infrastructure.repository.base_repo_in_postgres {
+}
+package "src.app.continent" as src.app.continent {
+}
+package "src.app.continent.application" as src.app.continent.application {
+}
+package "src.app.continent.application.usecase" as src.app.continent.application.usecase {
+}
+package "src.app.continent.application.usecase.add_continent_usecase" as src.app.continent.application.usecase.add_continent_usecase {
+}
+package "src.app.continent.application.usecase.delete_continent_usecase" as src.app.continent.application.usecase.delete_continent_usecase {
+}
+package "src.app.continent.application.usecase.find_all_continents_usecase" as src.app.continent.application.usecase.find_all_continents_usecase {
+}
+package "src.app.continent.application.usecase.find_continent_by_id_usecase" as src.app.continent.application.usecase.find_continent_by_id_usecase {
+}
+package "src.app.continent.application.usecase.update_continent_usecase" as src.app.continent.application.usecase.update_continent_usecase {
+}
+package "src.app.continent.container" as src.app.continent.container {
+}
+package "src.app.continent.domain" as src.app.continent.domain {
+}
+package "src.app.continent.domain.entity" as src.app.continent.domain.entity {
+}
+package "src.app.continent.domain.entity.continent_entity" as src.app.continent.domain.entity.continent_entity {
+}
+package "src.app.continent.domain.interface" as src.app.continent.domain.interface {
+}
+package "src.app.continent.domain.interface.continent_repository" as src.app.continent.domain.interface.continent_repository {
+}
+package "src.app.continent.infrastructure" as src.app.continent.infrastructure {
+}
+package "src.app.continent.infrastructure.model" as src.app.continent.infrastructure.model {
+}
+package "src.app.continent.infrastructure.model.continent_model" as src.app.continent.infrastructure.model.continent_model {
+}
+package "src.app.continent.infrastructure.repository" as src.app.continent.infrastructure.repository {
+}
+package "src.app.continent.infrastructure.repository.continent_repo_in_memory" as src.app.continent.infrastructure.repository.continent_repo_in_memory {
+}
+package "src.app.continent.infrastructure.repository.continent_repo_in_postgres" as src.app.continent.infrastructure.repository.continent_repo_in_postgres {
+}
+package "src.app.continent.presentation" as src.app.continent.presentation {
+}
+package "src.app.continent.presentation.model" as src.app.continent.presentation.model {
+}
+package "src.app.continent.presentation.model.dto" as src.app.continent.presentation.model.dto {
+}
+package "src.app.continent.presentation.model.payload" as src.app.continent.presentation.model.payload {
+}
+package "src.app.continent.presentation.model.payload.create_continent_payload" as src.app.continent.presentation.model.payload.create_continent_payload {
+}
+package "src.app.continent.presentation.model.payload.update_continent_payload" as src.app.continent.presentation.model.payload.update_continent_payload {
+}
+package "src.app.continent.presentation.router" as src.app.continent.presentation.router {
+}
+package "src.app.country" as src.app.country {
+}
+package "src.app.country.application" as src.app.country.application {
+}
+package "src.app.country.application.usecase" as src.app.country.application.usecase {
+}
+package "src.app.country.application.usecase.add_country_usecase" as src.app.country.application.usecase.add_country_usecase {
+}
+package "src.app.country.application.usecase.delete_country_usecase" as src.app.country.application.usecase.delete_country_usecase {
+}
+package "src.app.country.application.usecase.find_all_countries_usecase" as src.app.country.application.usecase.find_all_countries_usecase {
+}
+package "src.app.country.application.usecase.find_country_by_id_usecase" as src.app.country.application.usecase.find_country_by_id_usecase {
+}
+package "src.app.country.application.usecase.update_country_usecase" as src.app.country.application.usecase.update_country_usecase {
+}
+package "src.app.country.container" as src.app.country.container {
+}
+package "src.app.country.domain" as src.app.country.domain {
+}
+package "src.app.country.domain.entity" as src.app.country.domain.entity {
+}
+package "src.app.country.domain.entity.country_entity" as src.app.country.domain.entity.country_entity {
+}
+package "src.app.country.domain.interface" as src.app.country.domain.interface {
+}
+package "src.app.country.domain.interface.country_repository" as src.app.country.domain.interface.country_repository {
+}
+package "src.app.country.infrastructure" as src.app.country.infrastructure {
+}
+package "src.app.country.infrastructure.model" as src.app.country.infrastructure.model {
+}
+package "src.app.country.infrastructure.model.country_model" as src.app.country.infrastructure.model.country_model {
+}
+package "src.app.country.infrastructure.repository" as src.app.country.infrastructure.repository {
+}
+package "src.app.country.infrastructure.repository.country_repo_in_memory" as src.app.country.infrastructure.repository.country_repo_in_memory {
+}
+package "src.app.country.infrastructure.repository.country_repo_in_postgres" as src.app.country.infrastructure.repository.country_repo_in_postgres {
+}
+package "src.app.country.presentation" as src.app.country.presentation {
+}
+package "src.app.country.presentation.model" as src.app.country.presentation.model {
+}
+package "src.app.country.presentation.model.dto" as src.app.country.presentation.model.dto {
+}
+package "src.app.country.presentation.model.payload" as src.app.country.presentation.model.payload {
+}
+package "src.app.country.presentation.model.payload.create_country_payload" as src.app.country.presentation.model.payload.create_country_payload {
+}
+package "src.app.country.presentation.model.payload.update_country_payload" as src.app.country.presentation.model.payload.update_country_payload {
+}
+package "src.app.country.presentation.router" as src.app.country.presentation.router {
+}
+package "src.app.daily_wise" as src.app.daily_wise {
+}
+package "src.app.daily_wise.container" as src.app.daily_wise.container {
+}
+package "src.app.daily_wise.infrastructure" as src.app.daily_wise.infrastructure {
+}
+package "src.app.daily_wise.infrastructure.model" as src.app.daily_wise.infrastructure.model {
+}
+package "src.app.daily_wise.infrastructure.model.daily_wise_model" as src.app.daily_wise.infrastructure.model.daily_wise_model {
+}
+package "src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association" as src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association {
+}
+package "src.app.epidemic" as src.app.epidemic {
+}
+package "src.app.epidemic.application" as src.app.epidemic.application {
+}
+package "src.app.epidemic.application.usecase" as src.app.epidemic.application.usecase {
+}
+package "src.app.epidemic.application.usecase.add_epidemic_usecase" as src.app.epidemic.application.usecase.add_epidemic_usecase {
+}
+package "src.app.epidemic.application.usecase.delete_epidemic_usecase" as src.app.epidemic.application.usecase.delete_epidemic_usecase {
+}
+package "src.app.epidemic.application.usecase.find_all_epidemics_usecase" as src.app.epidemic.application.usecase.find_all_epidemics_usecase {
+}
+package "src.app.epidemic.application.usecase.find_epidemic_by_id_usecase" as src.app.epidemic.application.usecase.find_epidemic_by_id_usecase {
+}
+package "src.app.epidemic.application.usecase.update_epidemic_usecase" as src.app.epidemic.application.usecase.update_epidemic_usecase {
+}
+package "src.app.epidemic.container" as src.app.epidemic.container {
+}
+package "src.app.epidemic.domain" as src.app.epidemic.domain {
+}
+package "src.app.epidemic.domain.entity" as src.app.epidemic.domain.entity {
+}
+package "src.app.epidemic.domain.entity.epidemic_entity" as src.app.epidemic.domain.entity.epidemic_entity {
+}
+package "src.app.epidemic.domain.interface" as src.app.epidemic.domain.interface {
+}
+package "src.app.epidemic.domain.interface.epidemic_repository" as src.app.epidemic.domain.interface.epidemic_repository {
+}
+package "src.app.epidemic.infrastructure" as src.app.epidemic.infrastructure {
+}
+package "src.app.epidemic.infrastructure.model" as src.app.epidemic.infrastructure.model {
+}
+package "src.app.epidemic.infrastructure.model.epidemic_model" as src.app.epidemic.infrastructure.model.epidemic_model {
+}
+package "src.app.epidemic.infrastructure.repository" as src.app.epidemic.infrastructure.repository {
+}
+package "src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory" as src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory {
+}
+package "src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres" as src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres {
+}
+package "src.app.epidemic.presentation" as src.app.epidemic.presentation {
+}
+package "src.app.epidemic.presentation.model" as src.app.epidemic.presentation.model {
+}
+package "src.app.epidemic.presentation.model.dto" as src.app.epidemic.presentation.model.dto {
+}
+package "src.app.epidemic.presentation.model.payload" as src.app.epidemic.presentation.model.payload {
+}
+package "src.app.epidemic.presentation.model.payload.create_epidemic_payload" as src.app.epidemic.presentation.model.payload.create_epidemic_payload {
+}
+package "src.app.epidemic.presentation.model.payload.update_epidemic_payload" as src.app.epidemic.presentation.model.payload.update_epidemic_payload {
+}
+package "src.app.epidemic.presentation.router" as src.app.epidemic.presentation.router {
+}
+package "src.app.statistic" as src.app.statistic {
+}
+package "src.app.statistic.container" as src.app.statistic.container {
+}
+package "src.app.statistic.infrastructure" as src.app.statistic.infrastructure {
+}
+package "src.app.statistic.infrastructure.model" as src.app.statistic.infrastructure.model {
+}
+package "src.app.statistic.infrastructure.model.statistic_model" as src.app.statistic.infrastructure.model.statistic_model {
+}
+package "src.app.user" as src.app.user {
+}
+package "src.app.user.container" as src.app.user.container {
+}
+package "src.app.user.infrastructure" as src.app.user.infrastructure {
+}
+package "src.app.user.infrastructure.model" as src.app.user.infrastructure.model {
+}
+package "src.app.user.infrastructure.model.role_model" as src.app.user.infrastructure.model.role_model {
+}
+package "src.app.user.infrastructure.model.user_model" as src.app.user.infrastructure.model.user_model {
+}
+package "src.app.user.infrastructure.model.user_role_association" as src.app.user.infrastructure.model.user_role_association {
+}
+package "src.app.vaccine" as src.app.vaccine {
+}
+package "src.app.vaccine.application" as src.app.vaccine.application {
+}
+package "src.app.vaccine.application.usecase" as src.app.vaccine.application.usecase {
+}
+package "src.app.vaccine.application.usecase.add_vaccine_usecase" as src.app.vaccine.application.usecase.add_vaccine_usecase {
+}
+package "src.app.vaccine.application.usecase.delete_vaccine_usecase" as src.app.vaccine.application.usecase.delete_vaccine_usecase {
+}
+package "src.app.vaccine.application.usecase.find_all_vaccines_usecase" as src.app.vaccine.application.usecase.find_all_vaccines_usecase {
+}
+package "src.app.vaccine.application.usecase.find_vaccine_by_id_usecase" as src.app.vaccine.application.usecase.find_vaccine_by_id_usecase {
+}
+package "src.app.vaccine.application.usecase.update_vaccine_usecase" as src.app.vaccine.application.usecase.update_vaccine_usecase {
+}
+package "src.app.vaccine.container" as src.app.vaccine.container {
+}
+package "src.app.vaccine.domain" as src.app.vaccine.domain {
+}
+package "src.app.vaccine.domain.entity" as src.app.vaccine.domain.entity {
+}
+package "src.app.vaccine.domain.entity.vaccine_entity" as src.app.vaccine.domain.entity.vaccine_entity {
+}
+package "src.app.vaccine.domain.interface" as src.app.vaccine.domain.interface {
+}
+package "src.app.vaccine.domain.interface.vaccine_repository" as src.app.vaccine.domain.interface.vaccine_repository {
+}
+package "src.app.vaccine.infrastructure" as src.app.vaccine.infrastructure {
+}
+package "src.app.vaccine.infrastructure.model" as src.app.vaccine.infrastructure.model {
+}
+package "src.app.vaccine.infrastructure.model.vaccine_model" as src.app.vaccine.infrastructure.model.vaccine_model {
+}
+package "src.app.vaccine.infrastructure.repository" as src.app.vaccine.infrastructure.repository {
+}
+package "src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory" as src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory {
+}
+package "src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres" as src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres {
+}
+package "src.app.vaccine.presentation" as src.app.vaccine.presentation {
+}
+package "src.app.vaccine.presentation.model" as src.app.vaccine.presentation.model {
+}
+package "src.app.vaccine.presentation.model.dto" as src.app.vaccine.presentation.model.dto {
+}
+package "src.app.vaccine.presentation.model.payload" as src.app.vaccine.presentation.model.payload {
+}
+package "src.app.vaccine.presentation.model.payload.create_vaccine_payload" as src.app.vaccine.presentation.model.payload.create_vaccine_payload {
+}
+package "src.app.vaccine.presentation.model.payload.update_vaccine_payload" as src.app.vaccine.presentation.model.payload.update_vaccine_payload {
+}
+package "src.app.vaccine.presentation.router" as src.app.vaccine.presentation.router {
+}
+package "src.config" as src.config {
+}
+package "src.config.config" as src.config.config {
+}
+package "src.config.container" as src.config.container {
+}
+package "src.config.database" as src.config.database {
+}
+package "src.config.models" as src.config.models {
+}
+package "src.core" as src.core {
+}
+package "src.core.auth" as src.core.auth {
+}
+package "src.core.auth.authorizer" as src.core.auth.authorizer {
+}
+package "src.core.errors" as src.core.errors {
+}
+package "src.core.errors.exceptions" as src.core.errors.exceptions {
+}
+package "src.core.logging" as src.core.logging {
+}
+package "src.core.logging.logger" as src.core.logging.logger {
+}
+package "src.core.mails" as src.core.mails {
+}
+package "src.core.utils" as src.core.utils {
+}
+package "src.core.utils.utils" as src.core.utils.utils {
+}
+package "src.main" as src.main {
+}
+src.app.base.application.usecase.base_usecase --> src.app.base.domain.entity.base_entity
+src.app.base.application.usecase.base_usecase --> src.app.base.domain.interface.base_repository
+src.app.base.domain.interface.base_repository --> src.app.base.domain.entity.base_entity
+src.app.base.domain.interface.base_repository --> src.app.base.infrastructure.model.base_model
+src.app.base.infrastructure.repository.base_repo_in_memory --> src.app.base.domain.entity.base_entity
+src.app.base.infrastructure.repository.base_repo_in_memory --> src.app.base.domain.interface.base_repository
+src.app.base.infrastructure.repository.base_repo_in_postgres --> src.app.base.domain.interface.base_repository
+src.app.base.infrastructure.repository.base_repo_in_postgres --> src.app.base.infrastructure.model.base_model
+src.app.continent.application.usecase.add_continent_usecase --> src.app.base.application.usecase.base_usecase
+src.app.continent.application.usecase.add_continent_usecase --> src.app.continent.domain.entity.continent_entity
+src.app.continent.application.usecase.add_continent_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.continent.application.usecase.add_continent_usecase --> src.app.continent.infrastructure.model.continent_model
+src.app.continent.application.usecase.add_continent_usecase --> src.app.continent.presentation.model.payload.create_continent_payload
+src.app.continent.application.usecase.delete_continent_usecase --> src.app.base.application.usecase.base_usecase
+src.app.continent.application.usecase.delete_continent_usecase --> src.app.continent.domain.entity.continent_entity
+src.app.continent.application.usecase.delete_continent_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.continent.application.usecase.delete_continent_usecase --> src.app.continent.infrastructure.model.continent_model
+src.app.continent.application.usecase.find_all_continents_usecase --> src.app.base.application.usecase.base_usecase
+src.app.continent.application.usecase.find_all_continents_usecase --> src.app.continent.domain.entity.continent_entity
+src.app.continent.application.usecase.find_all_continents_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.continent.application.usecase.find_all_continents_usecase --> src.app.continent.infrastructure.model.continent_model
+src.app.continent.application.usecase.find_continent_by_id_usecase --> src.app.base.application.usecase.base_usecase
+src.app.continent.application.usecase.find_continent_by_id_usecase --> src.app.continent.domain.entity.continent_entity
+src.app.continent.application.usecase.find_continent_by_id_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.continent.application.usecase.find_continent_by_id_usecase --> src.app.continent.infrastructure.model.continent_model
+src.app.continent.application.usecase.update_continent_usecase --> src.app.base.application.usecase.base_usecase
+src.app.continent.application.usecase.update_continent_usecase --> src.app.continent.domain.entity.continent_entity
+src.app.continent.application.usecase.update_continent_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.continent.application.usecase.update_continent_usecase --> src.app.continent.infrastructure.model.continent_model
+src.app.continent.application.usecase.update_continent_usecase --> src.app.continent.presentation.model.payload.update_continent_payload
+src.app.continent.container --> src.app.continent.application.usecase.add_continent_usecase
+src.app.continent.container --> src.app.continent.application.usecase.delete_continent_usecase
+src.app.continent.container --> src.app.continent.application.usecase.find_all_continents_usecase
+src.app.continent.container --> src.app.continent.application.usecase.find_continent_by_id_usecase
+src.app.continent.container --> src.app.continent.application.usecase.update_continent_usecase
+src.app.continent.container --> src.app.continent.infrastructure.repository.continent_repo_in_memory
+src.app.continent.container --> src.app.continent.infrastructure.repository.continent_repo_in_postgres
+src.app.continent.container --> src.config.config
+src.app.continent.domain.entity.continent_entity --> src.app.base.domain.entity.base_entity
+src.app.continent.domain.interface.continent_repository --> src.app.base.domain.interface.base_repository
+src.app.continent.domain.interface.continent_repository --> src.app.continent.domain.entity.continent_entity
+src.app.continent.domain.interface.continent_repository --> src.app.continent.infrastructure.model.continent_model
+src.app.continent.domain.interface.continent_repository --> src.app.continent.presentation.model.payload.create_continent_payload
+src.app.continent.domain.interface.continent_repository --> src.app.continent.presentation.model.payload.update_continent_payload
+src.app.continent.infrastructure.model.continent_model --> src.app.base.infrastructure.model.base_model
+src.app.continent.infrastructure.repository.continent_repo_in_memory --> src.app.continent.domain.entity.continent_entity
+src.app.continent.infrastructure.repository.continent_repo_in_memory --> src.app.continent.domain.interface.continent_repository
+src.app.continent.infrastructure.repository.continent_repo_in_memory --> src.app.continent.presentation.model.payload.create_continent_payload
+src.app.continent.infrastructure.repository.continent_repo_in_memory --> src.app.continent.presentation.model.payload.update_continent_payload
+src.app.continent.infrastructure.repository.continent_repo_in_postgres --> src.app.continent.domain.interface.continent_repository
+src.app.continent.infrastructure.repository.continent_repo_in_postgres --> src.app.continent.infrastructure.model.continent_model
+src.app.continent.infrastructure.repository.continent_repo_in_postgres --> src.app.continent.presentation.model.payload.create_continent_payload
+src.app.continent.infrastructure.repository.continent_repo_in_postgres --> src.app.continent.presentation.model.payload.update_continent_payload
+src.app.continent.infrastructure.repository.continent_repo_in_postgres --> src.config.database
+src.app.continent.presentation.router --> src.app.continent.application.usecase.add_continent_usecase
+src.app.continent.presentation.router --> src.app.continent.application.usecase.delete_continent_usecase
+src.app.continent.presentation.router --> src.app.continent.application.usecase.find_all_continents_usecase
+src.app.continent.presentation.router --> src.app.continent.application.usecase.find_continent_by_id_usecase
+src.app.continent.presentation.router --> src.app.continent.application.usecase.update_continent_usecase
+src.app.continent.presentation.router --> src.app.continent.container
+src.app.continent.presentation.router --> src.app.continent.presentation.model.payload.create_continent_payload
+src.app.continent.presentation.router --> src.app.continent.presentation.model.payload.update_continent_payload
+src.app.country.application.usecase.add_country_usecase --> src.app.base.application.usecase.base_usecase
+src.app.country.application.usecase.add_country_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.country.application.usecase.add_country_usecase --> src.app.country.domain.entity.country_entity
+src.app.country.application.usecase.add_country_usecase --> src.app.country.domain.interface.country_repository
+src.app.country.application.usecase.add_country_usecase --> src.app.country.infrastructure.model.country_model
+src.app.country.application.usecase.add_country_usecase --> src.app.country.presentation.model.payload.create_country_payload
+src.app.country.application.usecase.delete_country_usecase --> src.app.base.application.usecase.base_usecase
+src.app.country.application.usecase.delete_country_usecase --> src.app.country.domain.entity.country_entity
+src.app.country.application.usecase.delete_country_usecase --> src.app.country.domain.interface.country_repository
+src.app.country.application.usecase.delete_country_usecase --> src.app.country.infrastructure.model.country_model
+src.app.country.application.usecase.find_all_countries_usecase --> src.app.base.application.usecase.base_usecase
+src.app.country.application.usecase.find_all_countries_usecase --> src.app.country.domain.entity.country_entity
+src.app.country.application.usecase.find_all_countries_usecase --> src.app.country.domain.interface.country_repository
+src.app.country.application.usecase.find_all_countries_usecase --> src.app.country.infrastructure.model.country_model
+src.app.country.application.usecase.find_country_by_id_usecase --> src.app.base.application.usecase.base_usecase
+src.app.country.application.usecase.find_country_by_id_usecase --> src.app.country.domain.entity.country_entity
+src.app.country.application.usecase.find_country_by_id_usecase --> src.app.country.domain.interface.country_repository
+src.app.country.application.usecase.find_country_by_id_usecase --> src.app.country.infrastructure.model.country_model
+src.app.country.application.usecase.update_country_usecase --> src.app.base.application.usecase.base_usecase
+src.app.country.application.usecase.update_country_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.country.application.usecase.update_country_usecase --> src.app.country.domain.entity.country_entity
+src.app.country.application.usecase.update_country_usecase --> src.app.country.domain.interface.country_repository
+src.app.country.application.usecase.update_country_usecase --> src.app.country.infrastructure.model.country_model
+src.app.country.application.usecase.update_country_usecase --> src.app.country.presentation.model.payload.update_country_payload
+src.app.country.container --> src.app.continent.infrastructure.repository.continent_repo_in_memory
+src.app.country.container --> src.app.continent.infrastructure.repository.continent_repo_in_postgres
+src.app.country.container --> src.app.country.application.usecase.add_country_usecase
+src.app.country.container --> src.app.country.application.usecase.delete_country_usecase
+src.app.country.container --> src.app.country.application.usecase.find_all_countries_usecase
+src.app.country.container --> src.app.country.application.usecase.find_country_by_id_usecase
+src.app.country.container --> src.app.country.application.usecase.update_country_usecase
+src.app.country.container --> src.app.country.infrastructure.repository.country_repo_in_memory
+src.app.country.container --> src.app.country.infrastructure.repository.country_repo_in_postgres
+src.app.country.container --> src.config.config
+src.app.country.domain.entity.country_entity --> src.app.base.domain.entity.base_entity
+src.app.country.domain.interface.country_repository --> src.app.base.domain.interface.base_repository
+src.app.country.domain.interface.country_repository --> src.app.country.domain.entity.country_entity
+src.app.country.domain.interface.country_repository --> src.app.country.infrastructure.model.country_model
+src.app.country.infrastructure.model.country_model --> src.app.base.infrastructure.model.base_model
+src.app.country.infrastructure.repository.country_repo_in_memory --> src.app.country.domain.entity.country_entity
+src.app.country.infrastructure.repository.country_repo_in_memory --> src.app.country.domain.interface.country_repository
+src.app.country.infrastructure.repository.country_repo_in_memory --> src.app.country.presentation.model.payload.create_country_payload
+src.app.country.infrastructure.repository.country_repo_in_memory --> src.app.country.presentation.model.payload.update_country_payload
+src.app.country.infrastructure.repository.country_repo_in_postgres --> src.app.country.domain.interface.country_repository
+src.app.country.infrastructure.repository.country_repo_in_postgres --> src.app.country.infrastructure.model.country_model
+src.app.country.infrastructure.repository.country_repo_in_postgres --> src.app.country.presentation.model.payload.create_country_payload
+src.app.country.infrastructure.repository.country_repo_in_postgres --> src.app.country.presentation.model.payload.update_country_payload
+src.app.country.infrastructure.repository.country_repo_in_postgres --> src.config.database
+src.app.country.presentation.router --> src.app.country.application.usecase.add_country_usecase
+src.app.country.presentation.router --> src.app.country.application.usecase.delete_country_usecase
+src.app.country.presentation.router --> src.app.country.application.usecase.find_all_countries_usecase
+src.app.country.presentation.router --> src.app.country.application.usecase.find_country_by_id_usecase
+src.app.country.presentation.router --> src.app.country.application.usecase.update_country_usecase
+src.app.country.presentation.router --> src.app.country.container
+src.app.country.presentation.router --> src.app.country.presentation.model.payload.create_country_payload
+src.app.country.presentation.router --> src.app.country.presentation.model.payload.update_country_payload
+src.app.daily_wise.infrastructure.model.daily_wise_model --> src.app.base.infrastructure.model.base_model
+src.app.daily_wise.infrastructure.model.daily_wise_model --> src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association
+src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association --> src.app.base.infrastructure.model.base_model
+src.app.epidemic.application.usecase.add_epidemic_usecase --> src.app.base.application.usecase.base_usecase
+src.app.epidemic.application.usecase.add_epidemic_usecase --> src.app.epidemic.domain.entity.epidemic_entity
+src.app.epidemic.application.usecase.add_epidemic_usecase --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.epidemic.application.usecase.add_epidemic_usecase --> src.app.epidemic.infrastructure.model.epidemic_model
+src.app.epidemic.application.usecase.add_epidemic_usecase --> src.app.epidemic.presentation.model.payload.create_epidemic_payload
+src.app.epidemic.application.usecase.delete_epidemic_usecase --> src.app.base.application.usecase.base_usecase
+src.app.epidemic.application.usecase.delete_epidemic_usecase --> src.app.epidemic.domain.entity.epidemic_entity
+src.app.epidemic.application.usecase.delete_epidemic_usecase --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.epidemic.application.usecase.delete_epidemic_usecase --> src.app.epidemic.infrastructure.model.epidemic_model
+src.app.epidemic.application.usecase.find_all_epidemics_usecase --> src.app.base.application.usecase.base_usecase
+src.app.epidemic.application.usecase.find_all_epidemics_usecase --> src.app.epidemic.domain.entity.epidemic_entity
+src.app.epidemic.application.usecase.find_all_epidemics_usecase --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.epidemic.application.usecase.find_all_epidemics_usecase --> src.app.epidemic.infrastructure.model.epidemic_model
+src.app.epidemic.application.usecase.find_epidemic_by_id_usecase --> src.app.base.application.usecase.base_usecase
+src.app.epidemic.application.usecase.find_epidemic_by_id_usecase --> src.app.epidemic.domain.entity.epidemic_entity
+src.app.epidemic.application.usecase.find_epidemic_by_id_usecase --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.epidemic.application.usecase.find_epidemic_by_id_usecase --> src.app.epidemic.infrastructure.model.epidemic_model
+src.app.epidemic.application.usecase.update_epidemic_usecase --> src.app.base.application.usecase.base_usecase
+src.app.epidemic.application.usecase.update_epidemic_usecase --> src.app.continent.domain.interface.continent_repository
+src.app.epidemic.application.usecase.update_epidemic_usecase --> src.app.epidemic.domain.entity.epidemic_entity
+src.app.epidemic.application.usecase.update_epidemic_usecase --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.epidemic.application.usecase.update_epidemic_usecase --> src.app.epidemic.infrastructure.model.epidemic_model
+src.app.epidemic.application.usecase.update_epidemic_usecase --> src.app.epidemic.presentation.model.payload.update_epidemic_payload
+src.app.epidemic.container --> src.app.epidemic.application.usecase.add_epidemic_usecase
+src.app.epidemic.container --> src.app.epidemic.application.usecase.delete_epidemic_usecase
+src.app.epidemic.container --> src.app.epidemic.application.usecase.find_all_epidemics_usecase
+src.app.epidemic.container --> src.app.epidemic.application.usecase.find_epidemic_by_id_usecase
+src.app.epidemic.container --> src.app.epidemic.application.usecase.update_epidemic_usecase
+src.app.epidemic.container --> src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory
+src.app.epidemic.container --> src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres
+src.app.epidemic.container --> src.config.config
+src.app.epidemic.domain.entity.epidemic_entity --> src.app.base.domain.entity.base_entity
+src.app.epidemic.domain.interface.epidemic_repository --> src.app.base.domain.interface.base_repository
+src.app.epidemic.domain.interface.epidemic_repository --> src.app.epidemic.domain.entity.epidemic_entity
+src.app.epidemic.domain.interface.epidemic_repository --> src.app.epidemic.infrastructure.model.epidemic_model
+src.app.epidemic.infrastructure.model.epidemic_model --> src.app.base.infrastructure.model.base_model
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory --> src.app.epidemic.domain.entity.epidemic_entity
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory --> src.app.epidemic.presentation.model.payload.create_epidemic_payload
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory --> src.app.epidemic.presentation.model.payload.update_epidemic_payload
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres --> src.app.epidemic.infrastructure.model.epidemic_model
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres --> src.app.epidemic.presentation.model.payload.create_epidemic_payload
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres --> src.app.epidemic.presentation.model.payload.update_epidemic_payload
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres --> src.config.database
+src.app.epidemic.presentation.router --> src.app.epidemic.application.usecase.add_epidemic_usecase
+src.app.epidemic.presentation.router --> src.app.epidemic.application.usecase.delete_epidemic_usecase
+src.app.epidemic.presentation.router --> src.app.epidemic.application.usecase.find_all_epidemics_usecase
+src.app.epidemic.presentation.router --> src.app.epidemic.application.usecase.find_epidemic_by_id_usecase
+src.app.epidemic.presentation.router --> src.app.epidemic.application.usecase.update_epidemic_usecase
+src.app.epidemic.presentation.router --> src.app.epidemic.container
+src.app.epidemic.presentation.router --> src.app.epidemic.presentation.model.payload.create_epidemic_payload
+src.app.epidemic.presentation.router --> src.app.epidemic.presentation.model.payload.update_epidemic_payload
+src.app.statistic.infrastructure.model.statistic_model --> src.app.base.infrastructure.model.base_model
+src.app.user.infrastructure.model.role_model --> src.app.base.infrastructure.model.base_model
+src.app.user.infrastructure.model.role_model --> src.app.user.infrastructure.model.user_role_association
+src.app.user.infrastructure.model.user_model --> src.app.base.infrastructure.model.base_model
+src.app.user.infrastructure.model.user_model --> src.app.user.infrastructure.model.user_role_association
+src.app.user.infrastructure.model.user_role_association --> src.app.base.infrastructure.model.base_model
+src.app.vaccine.application.usecase.add_vaccine_usecase --> src.app.base.application.usecase.base_usecase
+src.app.vaccine.application.usecase.add_vaccine_usecase --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.vaccine.application.usecase.add_vaccine_usecase --> src.app.vaccine.domain.entity.vaccine_entity
+src.app.vaccine.application.usecase.add_vaccine_usecase --> src.app.vaccine.domain.interface.vaccine_repository
+src.app.vaccine.application.usecase.add_vaccine_usecase --> src.app.vaccine.infrastructure.model.vaccine_model
+src.app.vaccine.application.usecase.add_vaccine_usecase --> src.app.vaccine.presentation.model.payload.create_vaccine_payload
+src.app.vaccine.application.usecase.delete_vaccine_usecase --> src.app.base.application.usecase.base_usecase
+src.app.vaccine.application.usecase.delete_vaccine_usecase --> src.app.vaccine.domain.entity.vaccine_entity
+src.app.vaccine.application.usecase.delete_vaccine_usecase --> src.app.vaccine.domain.interface.vaccine_repository
+src.app.vaccine.application.usecase.delete_vaccine_usecase --> src.app.vaccine.infrastructure.model.vaccine_model
+src.app.vaccine.application.usecase.find_all_vaccines_usecase --> src.app.base.application.usecase.base_usecase
+src.app.vaccine.application.usecase.find_all_vaccines_usecase --> src.app.vaccine.domain.entity.vaccine_entity
+src.app.vaccine.application.usecase.find_all_vaccines_usecase --> src.app.vaccine.domain.interface.vaccine_repository
+src.app.vaccine.application.usecase.find_all_vaccines_usecase --> src.app.vaccine.infrastructure.model.vaccine_model
+src.app.vaccine.application.usecase.find_vaccine_by_id_usecase --> src.app.base.application.usecase.base_usecase
+src.app.vaccine.application.usecase.find_vaccine_by_id_usecase --> src.app.vaccine.domain.entity.vaccine_entity
+src.app.vaccine.application.usecase.find_vaccine_by_id_usecase --> src.app.vaccine.domain.interface.vaccine_repository
+src.app.vaccine.application.usecase.find_vaccine_by_id_usecase --> src.app.vaccine.infrastructure.model.vaccine_model
+src.app.vaccine.application.usecase.update_vaccine_usecase --> src.app.base.application.usecase.base_usecase
+src.app.vaccine.application.usecase.update_vaccine_usecase --> src.app.epidemic.domain.interface.epidemic_repository
+src.app.vaccine.application.usecase.update_vaccine_usecase --> src.app.vaccine.domain.entity.vaccine_entity
+src.app.vaccine.application.usecase.update_vaccine_usecase --> src.app.vaccine.domain.interface.vaccine_repository
+src.app.vaccine.application.usecase.update_vaccine_usecase --> src.app.vaccine.infrastructure.model.vaccine_model
+src.app.vaccine.application.usecase.update_vaccine_usecase --> src.app.vaccine.presentation.model.payload.update_vaccine_payload
+src.app.vaccine.container --> src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory
+src.app.vaccine.container --> src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres
+src.app.vaccine.container --> src.app.vaccine.application.usecase.add_vaccine_usecase
+src.app.vaccine.container --> src.app.vaccine.application.usecase.delete_vaccine_usecase
+src.app.vaccine.container --> src.app.vaccine.application.usecase.find_all_vaccines_usecase
+src.app.vaccine.container --> src.app.vaccine.application.usecase.find_vaccine_by_id_usecase
+src.app.vaccine.container --> src.app.vaccine.application.usecase.update_vaccine_usecase
+src.app.vaccine.container --> src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory
+src.app.vaccine.container --> src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres
+src.app.vaccine.container --> src.config.config
+src.app.vaccine.domain.entity.vaccine_entity --> src.app.base.domain.entity.base_entity
+src.app.vaccine.domain.interface.vaccine_repository --> src.app.base.domain.interface.base_repository
+src.app.vaccine.domain.interface.vaccine_repository --> src.app.vaccine.domain.entity.vaccine_entity
+src.app.vaccine.domain.interface.vaccine_repository --> src.app.vaccine.infrastructure.model.vaccine_model
+src.app.vaccine.domain.interface.vaccine_repository --> src.app.vaccine.presentation.model.payload.create_vaccine_payload
+src.app.vaccine.domain.interface.vaccine_repository --> src.app.vaccine.presentation.model.payload.update_vaccine_payload
+src.app.vaccine.infrastructure.model.vaccine_model --> src.app.base.infrastructure.model.base_model
+src.app.vaccine.infrastructure.model.vaccine_model --> src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory --> src.app.vaccine.domain.entity.vaccine_entity
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory --> src.app.vaccine.domain.interface.vaccine_repository
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory --> src.app.vaccine.presentation.model.payload.create_vaccine_payload
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory --> src.app.vaccine.presentation.model.payload.update_vaccine_payload
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres --> src.app.vaccine.domain.interface.vaccine_repository
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres --> src.app.vaccine.infrastructure.model.vaccine_model
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres --> src.app.vaccine.presentation.model.payload.create_vaccine_payload
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres --> src.app.vaccine.presentation.model.payload.update_vaccine_payload
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres --> src.config.database
+src.app.vaccine.presentation.router --> src.app.vaccine.application.usecase.add_vaccine_usecase
+src.app.vaccine.presentation.router --> src.app.vaccine.application.usecase.delete_vaccine_usecase
+src.app.vaccine.presentation.router --> src.app.vaccine.application.usecase.find_all_vaccines_usecase
+src.app.vaccine.presentation.router --> src.app.vaccine.application.usecase.find_vaccine_by_id_usecase
+src.app.vaccine.presentation.router --> src.app.vaccine.application.usecase.update_vaccine_usecase
+src.app.vaccine.presentation.router --> src.app.vaccine.container
+src.app.vaccine.presentation.router --> src.app.vaccine.presentation.model.payload.create_vaccine_payload
+src.app.vaccine.presentation.router --> src.app.vaccine.presentation.model.payload.update_vaccine_payload
+src.config.container --> src.app.continent.container
+src.config.container --> src.app.continent.presentation.router
+src.config.container --> src.app.country.container
+src.config.container --> src.app.country.presentation.router
+src.config.container --> src.app.epidemic.container
+src.config.container --> src.app.epidemic.presentation.router
+src.config.container --> src.app.vaccine.container
+src.config.container --> src.app.vaccine.presentation.router
+src.config.models --> src.app.continent.infrastructure.model.continent_model
+src.config.models --> src.app.country.infrastructure.model.country_model
+src.config.models --> src.app.daily_wise.infrastructure.model.daily_wise_model
+src.config.models --> src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association
+src.config.models --> src.app.epidemic.infrastructure.model.epidemic_model
+src.config.models --> src.app.statistic.infrastructure.model.statistic_model
+src.config.models --> src.app.user.infrastructure.model.role_model
+src.config.models --> src.app.user.infrastructure.model.user_model
+src.config.models --> src.app.user.infrastructure.model.user_role_association
+src.config.models --> src.app.vaccine.infrastructure.model.vaccine_model
+src.main --> src.app.base.infrastructure.model.base_model
+src.main --> src.config.container
+src.main --> src.config.database
+src.main --> src.config.models
+@enduml

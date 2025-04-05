@@ -1,0 +1,81 @@
+@startuml
+' Thème clair et lisible
+skinparam backgroundColor #f9f9f9
+skinparam defaultTextAlignment center
+skinparam shadowing true
+
+skinparam rectangle {
+    BackgroundColor #ffffff
+    BorderColor #444444
+    FontColor #000000
+}
+skinparam node {
+    BorderColor #444444
+    FontColor #000000
+}
+skinparam database {
+    BackgroundColor #dff0d8
+    BorderColor #3c763d
+    FontColor #3c763d
+}
+skinparam actor {
+    BackgroundColor #ffffff
+    BorderColor #000000
+    FontColor #000000
+}
+
+rectangle "ENVIRONNEMENT" {
+
+    actor Developer
+    actor Client
+
+    node InterfaceETL <<InterfaceETL>> {
+    }
+
+    rectangle "Docker Compose (Tous les services)" {
+
+        rectangle "API Gateway - Backend (à venir)" {
+
+            node "ETL" <<ETL>> {
+            }
+            skinparam component<<ETL>> {
+                BackgroundColor #ffefd5
+                BorderColor #ffa500
+                FontColor #d35400
+            }
+
+            node "API Rest" <<API>> {
+            }
+            skinparam component<<API>> {
+                BackgroundColor #e6f2ff
+                BorderColor #3399ff
+                FontColor #0066cc
+            }
+
+            database "PostgreSQL" <<DB>> {
+            }
+
+            "ETL" --> "PostgreSQL" : Write
+            Developer --> "API Rest" : HTTP (Auth à venir)
+            Developer --> "PostgreSQL" : CONNEXION
+            "API Rest" --> "PostgreSQL" : CRUD
+            "PostgreSQL" --> "API Rest" : Response
+            "ETL" --> "PostgreSQL" : Read
+            "API Rest" --> Developer : Response
+        }
+
+        node "Metabase (dataviz)" <<Dataviz>> {
+        }
+        skinparam component<<Dataviz>> {
+            BackgroundColor #f3e5f5
+            BorderColor #9c27b0
+            FontColor #6a1b9a
+        }
+
+        "Metabase (dataviz)" --> "PostgreSQL" : Read
+        Client --> "Metabase (dataviz)"
+        Developer --> InterfaceETL
+        InterfaceETL --> "ETL" : Exécute pipeline
+    }
+}
+@enduml

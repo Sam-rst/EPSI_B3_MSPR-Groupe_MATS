@@ -1,67 +1,142 @@
-# API Rest
+# 🚀 MSPR-API - Documentation pour les Nouveaux Contributeurs
 
-## Introduction
+[⬅️ Retour](/README.md)
 
-Cette documentation décrit l'API Rest du projet EPSI_MSPR_B3-Groupe_MATS. Elle couvre les conventions de nommage, le fonctionnement, l'architecture, et d'autres aspects essentiels.
+Documentation rédigée par Samuel RESSIOT
 
-## Conventions de Nommage
+---
 
-- **Méthodes et Fonctions** : Utilisez des noms en minuscules avec des underscores, par exemple, `get_user`.
-- **Classes** : Utilisez le PascalCase, par exemple, `UserEntity`.
-- **Variables** : Utilisez des noms en minuscules avec des underscores, par exemple, `user_id`.
+## 📝 Introduction
 
-## Fonctionnement
+Bienvenue dans le projet **MSPR-API** ! Ce document est conçu pour vous aider à comprendre rapidement l'architecture de l'application et à contribuer efficacement. Prenez le temps de lire cette documentation pour bien démarrer.
 
-L'API est construite avec FastAPI et suit les principes RESTful. Elle permet de gérer les entités de continent avec des opérations CRUD (Create, Read, Update, Delete).
+---
 
-## Architecture
+## 🏗️ Vue d'Ensemble de l'Architecture
 
-- **Domaine** : Contient les entités et la logique métier.
-- **Infrastructure** : Gère la persistance des données et les interactions avec la base de données.
-- **Présentation** : Gère les routes et les réponses HTTP.
+L'application est organisée en plusieurs couches pour garantir une séparation claire des responsabilités et faciliter la maintenance. Son architecture se base sur le principe de la **Clean Architecture**. Voici un aperçu des principales couches :
 
-## Lancement
+- **Couche Présentation** : Gère les requêtes HTTP et les réponses.
+- **Couche Application** : Contient la logique métier et les cas d'utilisation.
+- **Couche Domaine** : Définit les entités et les interfaces.
+- **Couche Infrastructure** : Gère les interactions avec les systèmes externes (base de données, API, etc.).
+- **Couche de Configuration** : Configure les dépendances et les paramètres globaux.
+- **Couche de Tests** : Contient les tests unitaires et d'intégration.
 
-Utilisez Docker pour lancer l'API (ATTENTION : bien être à la racine du projet):
+📖 Consultez la fiche technique complète ici : [Clean Architecture](docs/architecture/architecture.md)
 
-```bash
-# Si ce n'est pas déjà exécuté :
-docker-compose up --build -d
+---
 
-# Pour regarder les logs :
-docker-compose logs -f MSPR-API
+## 📂 Structure des Dossiers
 
-# Pour rentrer dans le container via un terminal (utile pour exécuter des commandes telles que alembic pour les migrations) :
-docker exec -it MSPR-API /bin/bash
+Voici comment le projet est organisé :
+
+```plaintext
+apps/
+├── api/
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── continent/       # Module pour la gestion des continents
+│   │   │   ├── country/         # Module pour la gestion des pays
+│   │   │   ├── vaccine/         # Module pour la gestion des vaccins
+│   │   ├── config/              # Configuration globale (injection de dépendances)
+│   ├── docs/                    # Documentation du projet
 ```
 
-## Migrations
+- **`app/`** : Contient les modules métier.
+- **`config/`** : Configure les dépendances et les paramètres globaux.
+- **`docs/`** : Documentation pour les contributeurs.
 
-### Configuration de la base de données
+---
 
-Pour les nouveaux arrivants, voici comment configurer et gérer la base de données du projet :
+## 📜 Cycle de Vie d'une Requête API
 
-1. **Configuration initiale** :
+Découvrez le cycle de vie complet d'une requête API, de l'envoi de la requête par l'utilisateur jusqu'à la réponse renvoyée par le système :
 
-   ```bash
-   # Accéder au container de l'API
-   docker exec -it MSPR-API /bin/bash
-   ```
+📖 [Cycle de Vie d'une Requête API](docs/uml/life_cycle/api_request/life_cycle_api_request.md)
 
-2. **Commandes principales pour les migrations** :
+---
 
-   ```bash
-   # Appliquer toutes les migrations
-   alembic upgrade head
+## 📘 Diagramme de Classe - Module Country
 
-   # Créer une nouvelle migration
-   alembic revision --autogenerate -m "Description de la migration"
-   
-   # Revenir en arrière d'une migration
-   alembic downgrade -1
-   
-   # Voir le statut des migrations
-   alembic current
-   ```
+Pour une vue détaillée du fonctionnement du module **Country**, consultez le diagramme de classe dédié. Ce document explique les principales classes, leurs responsabilités, et leurs relations.
 
-Pour plus d'informations, consultez la documentation détaillée sur les migrations : [en savoir +](docs/migrations.md)
+📖 [Diagramme de Classe - Module Country](docs/uml/classes/country/country_class_diagram.md)
+
+---
+
+## 📊 Diagramme de Séquence - AddCountryUseCase
+
+Le diagramme de séquence **AddCountryUseCase** illustre le processus métier pour ajouter un nouveau pays dans le système. Il montre les interactions entre les différentes couches de l'application, notamment la validation des données, la vérification de l'existence du pays et du continent, ainsi que la création ou la réactivation du pays.
+
+📖 [Diagramme de Séquence - AddCountryUseCase](docs/uml/sequences/add_country_usecase/add_country_usecase.md)
+
+---
+
+## 🤝 Comment Contribuer
+
+### 1️⃣ **Cloner le Projet**
+
+Commencez par cloner le dépôt Git :
+
+```bash
+git clone https://github.com/Sam-rst/EPSI_B3_MSPR-Groupe_MATS.git
+cd EPSI_B3_MSPR-Groupe_MATS
+```
+
+### 2️⃣ **Configurer l'Environnement**
+
+Créez un fichier `.env` à la racine du projet avec les variables d'environnement nécessaires. Vous pouvez utiliser le fichier d'exemple fourni :
+
+```bash
+cp config/env/dev.conf .env
+```
+
+### 3️⃣ **Lancer le Projet**
+
+Utilisez Docker pour démarrer l'application :
+
+```bash
+docker-compose up --build -d
+```
+
+### 4️⃣ **Tester vos Modifications**
+
+Avant de soumettre vos modifications, assurez-vous que tous les tests passent :
+
+```bash
+python -m unittest discover -f tests -v
+```
+
+---
+
+## 📚 Ressources Utiles
+
+- [📘 Documentation FastAPI](https://fastapi.tiangolo.com/)
+- [📘 Documentation SQLAlchemy](https://www.sqlalchemy.org/)
+- [📘 Documentation Alembic](https://alembic.sqlalchemy.org/)
+
+---
+
+## ❓ Questions Fréquentes
+
+### ❔ **Comment ajouter une nouvelle fonctionnalité ?**
+
+1. Créez un nouveau module dans `app/`.
+2. Ajoutez les fichiers nécessaires : contrôleurs, use cases, repositories.
+3. Configurez les dépendances dans `container.py`.
+
+### ❔ **Comment exécuter les migrations de base de données ?**
+
+Utilisez Alembic pour générer et appliquer les migrations :
+
+```bash
+alembic revision --autogenerate -m "Description de la migration"
+alembic upgrade head
+```
+
+---
+
+## 🎉 Conclusion
+
+Nous sommes ravis de vous accueillir dans ce projet ! Si vous avez des questions ou des suggestions, n'hésitez pas à les partager avec l'équipe. Bonne contribution et bon développement ! 🚀
