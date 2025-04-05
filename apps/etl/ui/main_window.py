@@ -7,7 +7,7 @@ sys.path.append('..')
 from pipelines.extract import FileListPanel
 from pipelines.pipeline import ETLPipeline
 from configapp import DEFAULT_OUTPUT_DIR
-# Importer les styles existants
+from ui.styles import configure_button_style
 from ui.styles import (
     MAIN_BG_COLOR, ACCENT_COLOR, LIGHT_BG_COLOR, 
     BUTTON_FONT, TITLE_FONT, ITEM_FONT, configure_button_style
@@ -19,34 +19,29 @@ class MainWindow:
         self.root = root
         self.root.configure(bg=MAIN_BG_COLOR)
         
-        # Initialisation des variables
         self.output_dir = DEFAULT_OUTPUT_DIR
         
         # Initialisation du pipeline ETL
         # self.pipeline = ETLPipeline(output_dir=self.output_dir)
         
-        # Création de l'interface utilisateur
+        #Création de l'interface utilisateur
         self.create_widgets()
     
     def create_widgets(self):
-        # Frame principale avec disposition en pack pour être responsive
         self.main_frame = tk.Frame(self.root, bg=MAIN_BG_COLOR)
         self.main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
         
-        # Titre de l'application
         title_label = tk.Label(
             self.main_frame,
-            text="Nettoyage de données COVID-19",
+            text="Analyze IT",
             font=TITLE_FONT,
             bg=MAIN_BG_COLOR
         )
         title_label.pack(pady=(0, 20))
         
-        # Frame pour les boutons en haut
         top_button_frame = tk.Frame(self.main_frame, bg=MAIN_BG_COLOR)
         top_button_frame.pack(fill=tk.X, pady=(0, 10))
         
-        # Bouton pour ajouter des fichiers
         add_button = tk.Button(
             top_button_frame,
             text="Ajouter des fichiers CSV",
@@ -58,7 +53,6 @@ class MainWindow:
         configure_button_style(add_button, is_primary=True)
         add_button.pack(side=tk.LEFT, padx=(0, 10))
         
-        # Texte d'aide pour le glisser-déposer
         help_text = tk.Label(
             top_button_frame,
             text="ou glissez-déposez vos fichiers CSV ici",
@@ -67,22 +61,20 @@ class MainWindow:
         )
         help_text.pack(side=tk.LEFT, padx=(10, 0))
         
-        # Frame pour contenir la liste de fichiers
+        #Frame pour contenir la liste de fichiers
         file_list_container = tk.Frame(self.main_frame, bg=LIGHT_BG_COLOR)
         file_list_container.pack(fill=tk.BOTH, expand=True, pady=10)
         
-        # Panneau de liste de fichiers avec scrollbar
+        #Panneau de liste de fichiers avec scrollbar
         self.file_list_panel = FileListPanel(
             file_list_container,
             on_remove=self.on_file_removed,
             on_selection_change=self.on_selection_changed
         )
         
-        # Frame pour le choix du répertoire de sortie
         output_dir_frame = tk.Frame(self.main_frame, bg=MAIN_BG_COLOR)
         output_dir_frame.pack(fill=tk.X, pady=(10, 0))
         
-        # Label du répertoire de sortie
         output_dir_label = tk.Label(
             output_dir_frame,
             text="Répertoire de sortie :",
@@ -91,7 +83,7 @@ class MainWindow:
         )
         output_dir_label.pack(side=tk.LEFT, padx=(0, 10))
         
-        # Affichage du répertoire actuel
+        #Affichage du répertoire actuel
         self.output_dir_display = tk.Label(
             output_dir_frame,
             text=self.output_dir,
@@ -105,7 +97,7 @@ class MainWindow:
         )
         self.output_dir_display.pack(side=tk.LEFT, padx=(0, 10), fill=tk.X, expand=True)
         
-        # Bouton pour changer le répertoire
+        #Changement de repo
         change_dir_button = tk.Button(
             output_dir_frame,
             text="Changer",
@@ -115,11 +107,11 @@ class MainWindow:
         configure_button_style(change_dir_button, is_primary=False)
         change_dir_button.pack(side=tk.RIGHT)
         
-        # Frame pour les boutons en bas
+        #Frame pour les boutons en bas
         bottom_button_frame = tk.Frame(self.main_frame, bg=MAIN_BG_COLOR)
         bottom_button_frame.pack(fill=tk.X, pady=(10, 0))
         
-        # Bouton pour exécuter le pipeline
+        #Bouton pour executer la pipeline
         process_button = tk.Button(
             bottom_button_frame,
             text="Traiter les fichiers",
@@ -158,11 +150,9 @@ class MainWindow:
             initialdir=self.output_dir
         )
         
-        if new_dir:  # Si l'utilisateur a sélectionné un répertoire
+        if new_dir:
             self.output_dir = new_dir
-            # Mettre à jour l'affichage
             self.output_dir_display.config(text=self.output_dir)
-            # Mettre à jour le pipeline
             self.pipeline = ETLPipeline(output_dir=self.output_dir)
             self.update_status(f"Répertoire de sortie changé: {self.output_dir}")
     
@@ -179,7 +169,7 @@ class MainWindow:
         )
         
         if file_paths:
-            # Filtrer pour ne garder que les fichiers CSV
+            #Filtrer pour ne garder que les fichiers CSV
             csv_files = [path for path in file_paths if path.lower().endswith('.csv')]
             
             if len(csv_files) != len(file_paths):
@@ -194,7 +184,7 @@ class MainWindow:
         """Gère le glisser-déposer de fichiers CSV uniquement"""
         file_paths = self.root.tk.splitlist(event.data)
         
-        # Filtrer pour ne garder que les fichiers CSV
+        #Filtrage pour ne garder que les fichiers CSV
         csv_files = [path for path in file_paths if path.lower().endswith('.csv')]
         
         if len(csv_files) != len(file_paths):
@@ -221,23 +211,20 @@ class MainWindow:
     
     def run_pipeline(self):
         """Exécute le pipeline ETL sur les fichiers sélectionnés"""
-        print("Démarrage du pipeline ETL")  # Message de débogage
+        print("Démarrage du pipeline ETL")
         selected_files = self.file_list_panel.get_selected_files()
         
-        print(f"Fichiers sélectionnés : {len(selected_files)}")  # Message de débogage
+        print(f"Fichiers sélectionnés : {len(selected_files)}")
         if not selected_files:
             messagebox.showwarning("Attention", "Aucun fichier sélectionné")
             return
         
-        # Afficher une barre de progression ou un message de chargement
         self.update_status("Traitement en cours...")
         self.root.update()
         
         try:
-            # Mettre à jour le pipeline avec le répertoire de sortie actuel
             self.pipeline = ETLPipeline(output_dir=self.output_dir)
             
-            # Exécuter le pipeline
             success = self.pipeline.run(selected_files)
             
             if success:
@@ -256,12 +243,11 @@ class MainWindow:
             
     def connect_to_database(self):
         """Ouvre une boîte de dialogue pour se connecter à PostgreSQL et charger les données"""
-        # Vérifier si des fichiers ont été traités
+        #Verifier si des fichiers ont été traités
         if not self.pipeline.transformed_datasets:
             messagebox.showwarning("Attention", "Veuillez d'abord traiter des fichiers CSV")
             return
         
-        # Créer une fenêtre de dialogue
         dialog = tk.Toplevel(self.root)
         dialog.title("Connexion PostgreSQL")
         dialog.geometry("400x300")
@@ -269,18 +255,16 @@ class MainWindow:
         dialog.transient(self.root)
         dialog.grab_set()
         
-        # Variables pour les champs
         host_var = tk.StringVar(value="db")
         db_var = tk.StringVar(value="mspr")
         user_var = tk.StringVar(value="postgres")
         password_var = tk.StringVar(value="postgres")
         port_var = tk.StringVar(value="5432")
         
-        # Frame principal
+        #Frame principal
         main_frame = tk.Frame(dialog, padx=20, pady=20)
         main_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Création des widgets
         tk.Label(main_frame, text="Host:").grid(row=0, column=0, sticky="e", padx=10, pady=5)
         tk.Entry(main_frame, textvariable=host_var, width=30).grid(row=0, column=1, padx=10, pady=5)
         
@@ -321,12 +305,12 @@ class MainWindow:
             except Exception as e:
                 messagebox.showerror("Erreur", f"Erreur lors de la connexion: {str(e)}")
         
-        # Fonction pour charger les données
+        #Fonction pour charger les donnees
         def load_data():
             try:
                 from etl.database import PostgresConnector
                 
-                # Récupérer le chemin du premier fichier transformé
+                #Recuperer le chemin du premier fichier transformz
                 if not self.pipeline.transformed_datasets:
                     messagebox.showwarning("Attention", "Aucun fichier transformé disponible")
                     return
@@ -334,11 +318,7 @@ class MainWindow:
                 first_dataset_key = list(self.pipeline.transformed_datasets.keys())[0]
                 first_dataset = self.pipeline.transformed_datasets[first_dataset_key]
                 
-                # Sauvegarder temporairement le DataFrame en CSV
-                temp_csv_path = os.path.join(self.output_dir, "temp_for_postgres.csv")
-                first_dataset.to_csv(temp_csv_path, index=False)
-                
-                # Connexion à PostgreSQL
+                #Connexion a PostgreSQL
                 db = PostgresConnector(
                     host=host_var.get(),
                     database=db_var.get(),
@@ -351,7 +331,6 @@ class MainWindow:
                     messagebox.showerror("Erreur", "Impossible de se connecter à la base de données")
                     return
                 
-                # Exécuter le processus ETL
                 self.update_status("Chargement des données dans PostgreSQL...")
                 self.root.update()
                 
@@ -371,11 +350,8 @@ class MainWindow:
                 messagebox.showerror("Erreur", f"Erreur inattendue: {str(e)}")
                 self.update_status("Erreur lors du chargement dans PostgreSQL")
         
-        # Création des boutons
         test_button = tk.Button(button_frame, text="Tester connexion", command=test_connection)
         test_button.pack(side=tk.LEFT, padx=10)
-        
-        from ui.styles import configure_button_style
         
         load_button = tk.Button(button_frame, text="Charger dans PostgreSQL", command=load_data)
         configure_button_style(load_button, is_primary=True)
