@@ -8,4 +8,6 @@ python-dotenv
 pytest
 httpx
 python-multipart
+tkinter>=8.6
+python-tkinterdnd2>=0.3.0
 dependency_injector
