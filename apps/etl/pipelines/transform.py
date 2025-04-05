@@ -148,8 +148,8 @@ class DataTransformer:
             transformed_df = self.transform_dataframe(df, name)
             transformed_datasets[name] = transformed_df
             
-            # Sauvegarde du fichier nettoyé
-            output_path = f"{self.output_dir}{name}_cleaned.csv"
+            output_path = os.path.join(self.output_dir, f"{name}_cleaned.csv")
+            
             transformed_df.to_csv(output_path, index=False)
             print(f"Fichier sauvegardé: {output_path}")
         
