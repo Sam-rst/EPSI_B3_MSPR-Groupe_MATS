@@ -1,0 +1,206 @@
+@startuml CountryClassDiagram
+left to right direction
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam shadowing true
+skinparam classAttributeIconSize 0
+allowmixing
+
+' Couleurs par stéréotype de package
+skinparam package {
+    BackgroundColor<<presentation>> #f2f2f2
+    BackgroundColor<<application>> #d0e7ff
+    BackgroundColor<<domain>> #e0ffe0
+    BackgroundColor<<infrastructure>> #fff8dc
+    BackgroundColor<<base>> #ffd6e7
+}
+
+' Couleurs de classes selon leur rôle
+skinparam class {
+    BackgroundColor<<usecase>> #e6f0ff
+    BackgroundColor<<repository>> #fff0d0
+    BackgroundColor<<entity>> #e0ffe0
+    BackgroundColor<<model>> #fffdd0
+    BackgroundColor<<payload>> #fdf2ff
+}
+
+package "Country" {
+    class "CountryContainer" <<usecase>> {
+        add_country_usecase
+        find_all_countries_usecase
+        find_country_by_id_usecase
+        update_country_usecase
+        delete_country_usecase
+    }
+
+    package "Application" <<application>> {
+        package "Usecase" {
+            class "AddCountryUseCase" <<usecase>> {
+                +execute(payload) -> CountryEntity
+            }
+            class "DeleteCountryUseCase" <<usecase>> {
+                +execute(id) -> CountryEntity
+            }
+            class "FindAllCountriesUseCase" <<usecase>> {
+                +execute() -> CountryEntity[]
+            }
+            class "FindCountryByIdUseCase" <<usecase>> {
+                +execute(id) -> CountryEntity
+            }
+            class "UpdateCountryUseCase" <<usecase>> {
+                +execute(id, payload) -> CountryEntity
+            }
+        }
+    }
+
+    package "Domain" <<domain>> {
+        package "Entity" {
+            class "CountryEntity" <<entity>> {
+                +id: string
+                +name: string
+                +code: string
+            }
+        }
+
+        package "Interface" {
+            class "CountryRepository" <<repository>> {
+                +create(payload) -> CountryEntity
+                +delete(id) -> CountryEntity
+                +findAll() -> CountryEntity[]
+                +findById(id) -> CountryEntity
+                +update(id, payload) -> CountryEntity
+            }
+        }
+    }
+
+    package "Infrastructure" <<infrastructure>> {
+        package "Model" {
+            class "CountryModel" <<model>> {
+                +id: string
+                +name: string
+                +code: string
+            }
+        }
+
+        package "Repository" {
+            class "CountryRepositoryInMemory" <<repository>> {
+                +create(payload) -> CountryEntity
+                +delete(id) -> CountryEntity
+                +findAll() -> CountryEntity[]
+                +findById(id) -> CountryEntity
+                +update(id, payload) -> CountryEntity
+            }
+
+            class "CountryRepositoryInPostgres" <<repository>> {
+                +create(payload) -> CountryEntity
+                +delete(id) -> CountryEntity
+                +findAll() -> CountryEntity[]
+                +findById(id) -> CountryEntity
+                +update(id, payload) -> CountryEntity
+            }
+        }
+    }
+
+    package "Presentation" <<presentation>> {
+        package "Model" {
+            package "Payload" {
+                class "CreateCountryPayload" <<payload>> {
+                    +name: string
+                    +code: string
+                }
+                class "UpdateCountryPayload" <<payload>> {
+                    +name: string
+                    +code: string
+                }
+            }
+        }
+        file "router"
+    }
+}
+
+package "Base" <<base>> {
+    package "Domain" {
+        package "Entity" {
+            class "BaseEntity" <<entity>> {
+                +id: string
+                +created_at: datetime
+                +created_by: string
+                +updated_at: datetime
+                +updated_by: string
+                +deleted_at: datetime
+                +deleted_by: string
+                +is_deleted: boolean
+                +delete(deleted_by: str)
+                +reactivate(updated_by: str)
+                +update(updated_by: str)
+            }
+        }
+        package "Interface" {
+            class "BaseRepository" <<repository>> {
+                {abstract} create(base: BaseEntity | BaseModel) -> BaseEntity | BaseModel
+            }
+        }
+    }
+
+    package "Infrastructure" {
+        package "Model" {
+            class "BaseModel" <<model>> {
+                +id: string
+                +created_at: datetime
+                +created_by: string
+                +updated_at: datetime
+                +updated_by: string
+                +deleted_at: datetime
+                +deleted_by: string
+                +is_deleted: boolean
+                +delete(deleted_by: str)
+                +reactivate(updated_by: str)
+                +update(update_by: str)
+            }
+        }
+    }
+
+    package "Application" {
+        package "Usecase" {
+            class "BaseUseCase" <<usecase>> {
+                +execute() -> any
+            }
+        }
+    }
+}
+
+' HÉRITAGE
+"BaseRepository" <|-- "CountryRepository" #DarkSlateGray
+"BaseUseCase" <|-- "AddCountryUseCase" #CornflowerBlue
+"BaseUseCase" <|-- "DeleteCountryUseCase" #CornflowerBlue
+"BaseUseCase" <|-- "FindAllCountriesUseCase" #CornflowerBlue
+"BaseUseCase" <|-- "FindCountryByIdUseCase" #CornflowerBlue
+"BaseUseCase" <|-- "UpdateCountryUseCase" #CornflowerBlue
+"BaseModel" <|-- "CountryModel" #DarkOliveGreen
+"BaseEntity" <|-- "CountryEntity" #DarkOliveGreen
+
+' UTILISATION
+"CountryContainer" --> "AddCountryUseCase" #RoyalBlue
+"CountryContainer" --> "DeleteCountryUseCase" #RoyalBlue
+"CountryContainer" --> "FindAllCountriesUseCase" #RoyalBlue
+"CountryContainer" --> "FindCountryByIdUseCase" #RoyalBlue
+"CountryContainer" --> "UpdateCountryUseCase" #RoyalBlue
+
+"UpdateCountryUseCase" --> "CountryRepository" #Teal
+"FindCountryByIdUseCase" --> "CountryRepository" #Teal
+"DeleteCountryUseCase" --> "CountryRepository" #Teal
+"FindAllCountriesUseCase" --> "CountryRepository" #Teal
+"AddCountryUseCase" --> "CountryRepository" #Teal
+
+"CountryRepository" <|-- "CountryRepositoryInMemory" #GoldenRod
+"CountryRepository" <|-- "CountryRepositoryInPostgres" #GoldenRod
+
+"CountryRepositoryInMemory" --> "CountryEntity" #Gray
+"CountryRepositoryInPostgres" --> "CountryModel" #Gray
+"CountryRepositoryInMemory" --> "CreateCountryPayload" #Gray
+"CountryRepositoryInPostgres" --> "CreateCountryPayload" #Gray
+"CountryRepositoryInMemory" --> "UpdateCountryPayload" #Gray
+"CountryRepositoryInPostgres" --> "UpdateCountryPayload" #Gray
+
+"router" --> "CountryContainer" #DimGray
+@enduml

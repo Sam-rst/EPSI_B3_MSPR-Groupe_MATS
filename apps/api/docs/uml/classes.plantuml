@@ -1,0 +1,568 @@
+@startuml classes
+set namespaceSeparator none
+class "AddContinentUseCase" as src.app.continent.application.usecase.add_continent_usecase.AddContinentUseCase {
+  execute(payload: CreateContinentPayload) -> ContinentEntity | ContinentModel
+}
+class "AddCountryUseCase" as src.app.country.application.usecase.add_country_usecase.AddCountryUseCase {
+  continent_repository
+  execute(payload: CreateCountryPayload) -> CountryEntity | CountryModel
+}
+class "AddEpidemicUseCase" as src.app.epidemic.application.usecase.add_epidemic_usecase.AddEpidemicUseCase {
+  execute(payload: CreateEpidemicPayload) -> EpidemicEntity | EpidemicModel
+}
+class "AddVaccineUseCase" as src.app.vaccine.application.usecase.add_vaccine_usecase.AddVaccineUseCase {
+  epidemic_repository
+  execute(payload: CreateVaccinePayload) -> VaccineEntity | VaccineModel
+}
+class "Application" as src.main.Application {
+  get_app() -> FastAPI
+}
+class "BaseEntity" as src.app.base.domain.entity.base_entity.BaseEntity {
+  created_at
+  created_by
+  deleted_at
+  deleted_by
+  id
+  is_deleted
+  updated_at
+  updated_by
+  delete(deleted_by: str)
+  print() -> str
+  reactivate(updated_by: str)
+  update(updated_by: str)
+}
+class "BaseModel" as src.app.base.infrastructure.model.base_model.BaseModel {
+  created_at
+  created_by
+  deleted_at
+  deleted_by
+  id
+  is_deleted
+  updated_at
+  updated_by
+  delete(deleted_by: str)
+  reactivate(updated_by: str)
+  update(update_by: str)
+}
+class "BaseRepository" as src.app.base.domain.interface.base_repository.BaseRepository {
+  {abstract}create(base: BaseEntity | BaseModel) -> BaseEntity | BaseModel
+  {abstract}delete(base: BaseEntity | BaseModel) -> BaseEntity | BaseModel
+  {abstract}find_all() -> List[BaseEntity] | List[BaseModel]
+  {abstract}find_by_id(id: int) -> BaseEntity | BaseModel
+  {abstract}reactivate(base: BaseEntity | BaseModel) -> BaseEntity | BaseModel
+  {abstract}update(base: BaseEntity | BaseModel) -> BaseEntity | BaseModel
+}
+class "BaseRepositoryInMemory" as src.app.base.infrastructure.repository.base_repo_in_memory.BaseRepositoryInMemory {
+  create(entity: BaseEntity) -> BaseEntity
+  delete(entity: BaseEntity) -> BaseEntity
+  exists(id: int) -> bool
+  find_all() -> List[BaseEntity]
+  find_by_id(id: int) -> BaseEntity
+  update(entity: BaseEntity) -> BaseEntity
+}
+class "BaseRepositoryInPostgres" as src.app.base.infrastructure.repository.base_repo_in_postgres.BaseRepositoryInPostgres {
+  session
+}
+class "BaseUseCase" as src.app.base.application.usecase.base_usecase.BaseUseCase {
+  repository
+}
+class "Config" as src.config.config.Config {
+  API_CONTACT : NoneType
+  API_DESCRIPTION : NoneType
+  API_LICENSE : NoneType
+  API_LICENSE_URL : NoneType
+  API_SECURITY : NoneType
+  API_SECURITY_LOCATION : NoneType
+  API_SECURITY_NAME : NoneType
+  API_SERVER : NoneType
+  API_SERVER_DESCRIPTION : NoneType
+  API_TERMS : NoneType
+  API_TITLE : NoneType
+  API_VERSION : NoneType
+  APP_CONTACT : NoneType
+  APP_DESCRIPTION : NoneType
+  APP_NAME : NoneType
+  APP_TERMS : NoneType
+  APP_VERSION : NoneType
+  CORS_ALLOW_HEADERS : NoneType
+  CORS_EXPOSE_HEADERS : NoneType
+  CORS_METHODS : NoneType
+  CORS_ORIGIN_WHITELIST : NoneType
+  CORS_SUPPORTS_CREDENTIALS : NoneType
+  DEBUG : NoneType
+  ENV : NoneType
+  JWT_ACCESS_TOKEN_EXPIRES : NoneType
+  JWT_BLACKLIST_ENABLED : NoneType
+  JWT_REFRESH_TOKEN_EXPIRES : NoneType
+  JWT_SECRET_KEY : NoneType
+  LOG_FILE : NoneType
+  LOG_LEVEL : NoneType
+  REPOSITORY_TYPE : NoneType
+  SECRET_KEY : NoneType
+  SQLALCHEMY_DATABASE_URI : NoneType
+  SQLALCHEMY_ECHO : bool
+  SQLALCHEMY_TRACK_MODIFICATIONS : bool
+  TESTING : bool
+}
+class "Container" as src.config.container.Container {
+  containers : list
+  router : APIRouter
+  health()
+  hello_world()
+}
+class "ContinentContainer" as src.app.continent.container.ContinentContainer {
+  add_continent_usecase
+  config
+  delete_continent_usecase
+  find_all_continents_usecase
+  find_continent_by_id_usecase
+  modules : list
+  repository
+  repository_in_memory
+  repository_in_postgres
+  update_continent_usecase
+}
+class "ContinentEntity" as src.app.continent.domain.entity.continent_entity.ContinentEntity {
+  code
+  name
+  population
+  print() -> str
+}
+class "ContinentModel" as src.app.continent.infrastructure.model.continent_model.ContinentModel {
+  code
+  countries
+  name
+  population
+}
+class "ContinentRepository" as src.app.continent.domain.interface.continent_repository.ContinentRepository {
+  {abstract}create(payload: CreateContinentPayload) -> ContinentEntity | ContinentModel
+  {abstract}delete(continent: ContinentEntity | ContinentModel) -> ContinentEntity | ContinentModel
+  {abstract}find_all() -> List[ContinentEntity] | List[ContinentModel]
+  {abstract}find_by_code(code: str) -> ContinentEntity | ContinentModel
+  {abstract}find_by_id(id: int) -> ContinentEntity | ContinentModel
+  {abstract}reactivate(continent: ContinentEntity | ContinentModel) -> ContinentEntity | ContinentModel
+  {abstract}update(continent: ContinentEntity | ContinentModel, payload: UpdateContinentPayload) -> ContinentEntity | ContinentModel
+}
+class "ContinentRepositoryInMemory" as src.app.continent.infrastructure.repository.continent_repo_in_memory.ContinentRepositoryInMemory {
+  create(payload: CreateContinentPayload) -> ContinentEntity
+  delete(entity: ContinentEntity) -> ContinentEntity
+  find_all() -> List[ContinentEntity]
+  find_by_code(code: str) -> ContinentEntity
+  find_by_id(id: int) -> ContinentEntity
+  update(continent: ContinentEntity, payload: UpdateContinentPayload) -> ContinentEntity
+}
+class "ContinentRepositoryInPostgres" as src.app.continent.infrastructure.repository.continent_repo_in_postgres.ContinentRepositoryInPostgres {
+  session
+  create(payload: CreateContinentPayload) -> ContinentModel
+  delete(continent: ContinentModel) -> ContinentModel
+  find_all() -> List[ContinentModel]
+  find_by_code(code: str) -> Optional[ContinentModel]
+  find_by_id(id: int) -> Optional[ContinentModel]
+  reactivate(continent: ContinentModel) -> ContinentModel
+  update(continent: ContinentModel, payload: UpdateContinentPayload) -> ContinentModel
+}
+class "CountryContainer" as src.app.country.container.CountryContainer {
+  add_country_usecase
+  config
+  continent_repository
+  continent_repository_in_memory
+  continent_repository_in_postgres
+  delete_country_usecase
+  find_all_countries_usecase
+  find_country_by_id_usecase
+  modules : list
+  repository
+  repository_in_memory
+  repository_in_postgres
+  update_country_usecase
+}
+class "CountryEntity" as src.app.country.domain.entity.country_entity.CountryEntity {
+  iso2
+  iso3
+  name
+  population
+  delete(deleted_by: str)
+  print() -> str
+  update(updated_by: str)
+}
+class "CountryModel" as src.app.country.infrastructure.model.country_model.CountryModel {
+  continent
+  continent_id
+  daylies
+  iso2
+  iso3
+  name
+  population
+  statistics
+}
+class "CountryRepository" as src.app.country.domain.interface.country_repository.CountryRepository {
+  data
+  {abstract}create(country: CountryEntity | CountryModel) -> CountryEntity | CountryModel
+  {abstract}delete(country: CountryEntity | CountryModel) -> CountryEntity | CountryModel
+  {abstract}find_all() -> List[CountryEntity] | List[CountryModel]
+  {abstract}find_by_id(id: int) -> CountryEntity | CountryModel
+  {abstract}find_by_iso3(iso3: str) -> CountryEntity | CountryModel
+  {abstract}reactivate(country: CountryEntity | CountryModel) -> CountryEntity | CountryModel
+  {abstract}update(country: CountryEntity | CountryModel) -> CountryEntity | CountryModel
+}
+class "CountryRepositoryInMemory" as src.app.country.infrastructure.repository.country_repo_in_memory.CountryRepositoryInMemory {
+  create(payload: CreateCountryPayload) -> CountryEntity
+  delete(entity: CountryEntity) -> CountryEntity
+  find_all() -> List[CountryEntity]
+  find_by_id(id: int) -> CountryEntity
+  find_by_iso3(iso3: str) -> CountryEntity
+  update(entity: CountryEntity, payload: UpdateCountryPayload) -> CountryEntity
+}
+class "CountryRepositoryInPostgres" as src.app.country.infrastructure.repository.country_repo_in_postgres.CountryRepositoryInPostgres {
+  session
+  create(payload: CreateCountryPayload) -> CountryModel
+  delete(country: CountryModel) -> Optional[CountryModel]
+  find_all() -> List[CountryModel]
+  find_by_id(id: int) -> Optional[CountryModel]
+  find_by_iso3(iso3: str) -> Optional[CountryModel]
+  reactivate(country: CountryModel) -> CountryModel
+  update(country: CountryModel, payload: UpdateCountryPayload) -> Optional[CountryModel]
+}
+class "CreateContinentPayload" as src.app.continent.presentation.model.payload.create_continent_payload.CreateContinentPayload {
+  code : str
+  name : str
+  population : int
+}
+class "CreateCountryPayload" as src.app.country.presentation.model.payload.create_country_payload.CreateCountryPayload {
+  continent_id : int
+  iso2 : str
+  iso3 : str
+  name : str
+  population : int
+}
+class "CreateEpidemicPayload" as src.app.epidemic.presentation.model.payload.create_epidemic_payload.CreateEpidemicPayload {
+  description : Optional[str]
+  end_date : date
+  name : str
+  pathogen_name : str
+  reproduction_rate : Optional[float]
+  start_date : date
+  symptoms : Optional[str]
+  transmission_mode : Optional[str]
+  type : str
+}
+class "CreateVaccinePayload" as src.app.vaccine.presentation.model.payload.create_vaccine_payload.CreateVaccinePayload {
+  dose : str | None
+  efficacy : float | None
+  epidemic_id : int
+  laboratory : str
+  name : str
+  storage_temperature : str | None
+  technology : str | None
+}
+class "DailyWiseModel" as src.app.daily_wise.infrastructure.model.daily_wise_model.DailyWiseModel {
+  country
+  country_id
+  date
+  latitude
+  longitude
+  province
+  statistics
+  vaccines
+}
+class "DailyWiseVaccineAssociation" as src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association.DailyWiseVaccineAssociation {
+  daily_wise_id
+  vaccine_id
+}
+class "Database" as src.config.database.Database {
+  engine
+  create_engine(database_url)
+  get_db()
+  get_session()
+}
+class "DeleteContinentUseCase" as src.app.continent.application.usecase.delete_continent_usecase.DeleteContinentUseCase {
+  execute(id: int) -> ContinentEntity | ContinentModel
+}
+class "DeleteCountryUseCase" as src.app.country.application.usecase.delete_country_usecase.DeleteCountryUseCase {
+  execute(id: int) -> CountryEntity | CountryModel
+}
+class "DeleteEpidemicUseCase" as src.app.epidemic.application.usecase.delete_epidemic_usecase.DeleteEpidemicUseCase {
+  execute(id: int) -> EpidemicEntity | EpidemicModel
+}
+class "DeleteVaccineUseCase" as src.app.vaccine.application.usecase.delete_vaccine_usecase.DeleteVaccineUseCase {
+  execute(id: int) -> VaccineEntity | VaccineModel
+}
+class "EpidemicContainer" as src.app.epidemic.container.EpidemicContainer {
+  add_epidemic_usecase
+  config
+  delete_epidemic_usecase
+  find_all_epidemics_usecase
+  find_epidemic_by_id_usecase
+  modules : list
+  repository
+  repository_in_memory
+  repository_in_postgres
+  update_epidemic_usecase
+}
+class "EpidemicEntity" as src.app.epidemic.domain.entity.epidemic_entity.EpidemicEntity {
+  iso2
+  iso3
+  name
+  population
+  delete(deleted_by: str)
+  print() -> str
+  update(updated_by: str)
+}
+class "EpidemicModel" as src.app.epidemic.infrastructure.model.epidemic_model.EpidemicModel {
+  description
+  end_date
+  name
+  pathogen_name
+  reproduction_rate
+  start_date
+  statistics
+  symptoms
+  transmission_mode
+  type
+  vaccines
+}
+class "EpidemicRepository" as src.app.epidemic.domain.interface.epidemic_repository.EpidemicRepository {
+  data
+  {abstract}create(epidemic: EpidemicEntity | EpidemicModel) -> EpidemicEntity | EpidemicModel
+  {abstract}delete(epidemic: EpidemicEntity | EpidemicModel) -> EpidemicEntity | EpidemicModel
+  {abstract}find_all() -> List[EpidemicEntity] | List[EpidemicModel]
+  {abstract}find_by_id(id: int) -> EpidemicEntity | EpidemicModel
+  {abstract}find_by_name(name: str) -> EpidemicEntity | EpidemicModel
+  {abstract}reactivate(epidemic: EpidemicEntity | EpidemicModel) -> EpidemicEntity | EpidemicModel
+  {abstract}update(epidemic: EpidemicEntity | EpidemicModel) -> EpidemicEntity | EpidemicModel
+}
+class "EpidemicRepositoryInMemory" as src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory.EpidemicRepositoryInMemory {
+  create(payload: CreateEpidemicPayload) -> EpidemicEntity
+  delete(entity: EpidemicEntity) -> EpidemicEntity
+  find_all() -> List[EpidemicEntity]
+  find_by_id(id: int) -> EpidemicEntity
+  find_by_iso3(iso3: str) -> EpidemicEntity
+  update(entity: EpidemicEntity, payload: UpdateEpidemicPayload) -> EpidemicEntity
+}
+class "EpidemicRepositoryInPostgres" as src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres.EpidemicRepositoryInPostgres {
+  session
+  create(payload: CreateEpidemicPayload) -> EpidemicModel
+  delete(epidemic: EpidemicModel) -> Optional[EpidemicModel]
+  find_all() -> List[EpidemicModel]
+  find_by_id(id: int) -> Optional[EpidemicModel]
+  find_by_name(name: str) -> Optional[EpidemicModel]
+  reactivate(epidemic: EpidemicModel) -> EpidemicModel
+  update(epidemic: EpidemicModel, payload: UpdateEpidemicPayload) -> Optional[EpidemicModel]
+}
+class "EpidemicType" as src.app.epidemic.infrastructure.model.epidemic_model.EpidemicType {
+  name
+}
+class "FindAllContinentsUseCase" as src.app.continent.application.usecase.find_all_continents_usecase.FindAllContinentsUseCase {
+  execute() -> List[ContinentEntity] | List[ContinentModel]
+}
+class "FindAllCountriesUseCase" as src.app.country.application.usecase.find_all_countries_usecase.FindAllCountriesUseCase {
+  execute() -> List[CountryEntity] | List[CountryModel]
+}
+class "FindAllEpidemicsUseCase" as src.app.epidemic.application.usecase.find_all_epidemics_usecase.FindAllEpidemicsUseCase {
+  execute() -> List[EpidemicEntity] | List[EpidemicModel]
+}
+class "FindAllVaccinesUseCase" as src.app.vaccine.application.usecase.find_all_vaccines_usecase.FindAllVaccinesUseCase {
+  execute() -> List[VaccineEntity] | List[VaccineModel]
+}
+class "FindContinentByIdUseCase" as src.app.continent.application.usecase.find_continent_by_id_usecase.FindContinentByIdUseCase {
+  execute(id: int) -> ContinentEntity | ContinentModel
+}
+class "FindCountryByIdUseCase" as src.app.country.application.usecase.find_country_by_id_usecase.FindCountryByIdUseCase {
+  execute(id: int) -> CountryEntity | CountryModel
+}
+class "FindEpidemicByIdUseCase" as src.app.epidemic.application.usecase.find_epidemic_by_id_usecase.FindEpidemicByIdUseCase {
+  execute(id: int) -> EpidemicEntity | EpidemicModel
+}
+class "FindVaccineByIdUseCase" as src.app.vaccine.application.usecase.find_vaccine_by_id_usecase.FindVaccineByIdUseCase {
+  execute(id: int) -> VaccineEntity | VaccineModel
+}
+class "RoleModel" as src.app.user.infrastructure.model.role_model.RoleModel {
+  description
+  name
+  users
+}
+class "StatisticModel" as src.app.statistic.infrastructure.model.statistic_model.StatisticModel {
+  country
+  country_id
+  daily_wise
+  daily_wise_id
+  epidemic
+  epidemic_id
+  label
+  published_at
+  published_by
+  value
+}
+class "UpdateContinentPayload" as src.app.continent.presentation.model.payload.update_continent_payload.UpdateContinentPayload {
+  code : Optional[str]
+  name : Optional[str]
+  population : Optional[int]
+}
+class "UpdateContinentUseCase" as src.app.continent.application.usecase.update_continent_usecase.UpdateContinentUseCase {
+  execute(id: int, payload: UpdateContinentPayload) -> ContinentEntity | ContinentModel
+}
+class "UpdateCountryPayload" as src.app.country.presentation.model.payload.update_country_payload.UpdateCountryPayload {
+  continent_id : Optional[int]
+  iso2 : Optional[str]
+  iso3 : Optional[str]
+  name : Optional[str]
+  population : Optional[int]
+}
+class "UpdateCountryUseCase" as src.app.country.application.usecase.update_country_usecase.UpdateCountryUseCase {
+  continent_repository
+  execute(id: int, payload: UpdateCountryPayload) -> CountryEntity | CountryModel
+}
+class "UpdateEpidemicPayload" as src.app.epidemic.presentation.model.payload.update_epidemic_payload.UpdateEpidemicPayload {
+  description : Optional[str]
+  end_date : Optional[date]
+  name : Optional[str]
+  pathogen_name : Optional[str]
+  reproduction_rate : Optional[float]
+  start_date : Optional[date]
+  symptoms : Optional[str]
+  transmission_mode : Optional[str]
+  type : Optional[str]
+}
+class "UpdateEpidemicUseCase" as src.app.epidemic.application.usecase.update_epidemic_usecase.UpdateEpidemicUseCase {
+  execute(id: int, payload: UpdateEpidemicPayload) -> EpidemicEntity | EpidemicModel
+}
+class "UpdateVaccinePayload" as src.app.vaccine.presentation.model.payload.update_vaccine_payload.UpdateVaccinePayload {
+  dose : Optional[str]
+  efficacy : Optional[float]
+  epidemic_id : Optional[int]
+  laboratory : Optional[str]
+  name : Optional[str]
+  storage_temperature : Optional[str]
+  technology : Optional[str]
+}
+class "UpdateVaccineUseCase" as src.app.vaccine.application.usecase.update_vaccine_usecase.UpdateVaccineUseCase {
+  epidemic_repository
+  execute(id: int, payload: UpdateVaccinePayload) -> VaccineEntity | VaccineModel
+}
+class "UserModel" as src.app.user.infrastructure.model.user_model.UserModel {
+  birthdate
+  email
+  firstname
+  gender
+  lastname
+  password
+  roles
+  username
+}
+class "UserRoleAssociation" as src.app.user.infrastructure.model.user_role_association.UserRoleAssociation {
+  role_id
+  user_id
+}
+class "VaccineContainer" as src.app.vaccine.container.VaccineContainer {
+  add_vaccine_usecase
+  config
+  delete_vaccine_usecase
+  epidemic_repository
+  epidemic_repository_in_memory
+  epidemic_repository_in_postgres
+  find_all_vaccines_usecase
+  find_vaccine_by_id_usecase
+  modules : list
+  repository
+  repository_in_memory
+  repository_in_postgres
+  update_vaccine_usecase
+}
+class "VaccineEntity" as src.app.vaccine.domain.entity.vaccine_entity.VaccineEntity {
+  name
+  delete(deleted_by: str)
+  update(updated_by: str)
+}
+class "VaccineModel" as src.app.vaccine.infrastructure.model.vaccine_model.VaccineModel {
+  daylies
+  dose
+  efficacy
+  epidemic
+  epidemic_id
+  laboratory
+  name
+  storage_temperature
+  technology
+}
+class "VaccineRepository" as src.app.vaccine.domain.interface.vaccine_repository.VaccineRepository {
+  {abstract}create(payload: CreateVaccinePayload) -> VaccineEntity | VaccineModel
+  {abstract}delete(id: int) -> VaccineEntity | VaccineModel
+  {abstract}find_all() -> List[VaccineEntity]
+  {abstract}find_by_id(id: int) -> VaccineEntity | VaccineModel
+  {abstract}find_by_name(name: str) -> VaccineEntity | VaccineModel
+  {abstract}reactivate(vaccine: VaccineEntity | VaccineModel) -> VaccineEntity | VaccineModel
+  {abstract}update(payload: UpdateVaccinePayload) -> VaccineEntity | VaccineModel
+}
+class "VaccineRepositoryInMemory" as src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory.VaccineRepositoryInMemory {
+  create(payload: CreateVaccinePayload) -> VaccineEntity
+  delete(entity: VaccineEntity) -> VaccineEntity
+  exists(id: int) -> bool
+  find_all() -> List[VaccineEntity]
+  find_by_id(id: int) -> Optional[VaccineEntity]
+  find_by_name(name: str) -> Optional[VaccineEntity]
+  update(entity: VaccineEntity, payload: UpdateVaccinePayload) -> VaccineEntity
+}
+class "VaccineRepositoryInPostgres" as src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres.VaccineRepositoryInPostgres {
+  session
+  create(payload: CreateVaccinePayload) -> VaccineModel
+  delete(vaccine: VaccineModel) -> Optional[VaccineModel]
+  find_all() -> List[VaccineModel]
+  find_by_id(id: int) -> Optional[VaccineModel]
+  find_by_name(name: str) -> Optional[VaccineModel]
+  reactivate(vaccine: VaccineModel) -> VaccineModel
+  update(vaccine: VaccineModel, payload: UpdateVaccinePayload) -> Optional[VaccineModel]
+}
+src.app.base.infrastructure.repository.base_repo_in_memory.BaseRepositoryInMemory --|> src.app.base.domain.interface.base_repository.BaseRepository
+src.app.base.infrastructure.repository.base_repo_in_postgres.BaseRepositoryInPostgres --|> src.app.base.domain.interface.base_repository.BaseRepository
+src.app.continent.application.usecase.add_continent_usecase.AddContinentUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.continent.application.usecase.delete_continent_usecase.DeleteContinentUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.continent.application.usecase.find_all_continents_usecase.FindAllContinentsUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.continent.application.usecase.find_continent_by_id_usecase.FindContinentByIdUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.continent.application.usecase.update_continent_usecase.UpdateContinentUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.continent.domain.entity.continent_entity.ContinentEntity --|> src.app.base.domain.entity.base_entity.BaseEntity
+src.app.continent.domain.interface.continent_repository.ContinentRepository --|> src.app.base.domain.interface.base_repository.BaseRepository
+src.app.continent.infrastructure.model.continent_model.ContinentModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.continent.infrastructure.repository.continent_repo_in_memory.ContinentRepositoryInMemory --|> src.app.continent.domain.interface.continent_repository.ContinentRepository
+src.app.continent.infrastructure.repository.continent_repo_in_postgres.ContinentRepositoryInPostgres --|> src.app.continent.domain.interface.continent_repository.ContinentRepository
+src.app.country.application.usecase.add_country_usecase.AddCountryUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.country.application.usecase.delete_country_usecase.DeleteCountryUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.country.application.usecase.find_all_countries_usecase.FindAllCountriesUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.country.application.usecase.find_country_by_id_usecase.FindCountryByIdUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.country.application.usecase.update_country_usecase.UpdateCountryUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.country.domain.entity.country_entity.CountryEntity --|> src.app.base.domain.entity.base_entity.BaseEntity
+src.app.country.domain.interface.country_repository.CountryRepository --|> src.app.base.domain.interface.base_repository.BaseRepository
+src.app.country.infrastructure.model.country_model.CountryModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.country.infrastructure.repository.country_repo_in_memory.CountryRepositoryInMemory --|> src.app.country.domain.interface.country_repository.CountryRepository
+src.app.country.infrastructure.repository.country_repo_in_postgres.CountryRepositoryInPostgres --|> src.app.country.domain.interface.country_repository.CountryRepository
+src.app.daily_wise.infrastructure.model.daily_wise_model.DailyWiseModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association.DailyWiseVaccineAssociation --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.epidemic.application.usecase.add_epidemic_usecase.AddEpidemicUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.epidemic.application.usecase.delete_epidemic_usecase.DeleteEpidemicUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.epidemic.application.usecase.find_all_epidemics_usecase.FindAllEpidemicsUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.epidemic.application.usecase.find_epidemic_by_id_usecase.FindEpidemicByIdUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.epidemic.application.usecase.update_epidemic_usecase.UpdateEpidemicUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.epidemic.domain.entity.epidemic_entity.EpidemicEntity --|> src.app.base.domain.entity.base_entity.BaseEntity
+src.app.epidemic.domain.interface.epidemic_repository.EpidemicRepository --|> src.app.base.domain.interface.base_repository.BaseRepository
+src.app.epidemic.infrastructure.model.epidemic_model.EpidemicModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory.EpidemicRepositoryInMemory --|> src.app.epidemic.domain.interface.epidemic_repository.EpidemicRepository
+src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres.EpidemicRepositoryInPostgres --|> src.app.epidemic.domain.interface.epidemic_repository.EpidemicRepository
+src.app.statistic.infrastructure.model.statistic_model.StatisticModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.user.infrastructure.model.role_model.RoleModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.user.infrastructure.model.user_model.UserModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.user.infrastructure.model.user_role_association.UserRoleAssociation --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.vaccine.application.usecase.add_vaccine_usecase.AddVaccineUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.vaccine.application.usecase.delete_vaccine_usecase.DeleteVaccineUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.vaccine.application.usecase.find_all_vaccines_usecase.FindAllVaccinesUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.vaccine.application.usecase.find_vaccine_by_id_usecase.FindVaccineByIdUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.vaccine.application.usecase.update_vaccine_usecase.UpdateVaccineUseCase --|> src.app.base.application.usecase.base_usecase.BaseUseCase
+src.app.vaccine.domain.entity.vaccine_entity.VaccineEntity --|> src.app.base.domain.entity.base_entity.BaseEntity
+src.app.vaccine.domain.interface.vaccine_repository.VaccineRepository --|> src.app.base.domain.interface.base_repository.BaseRepository
+src.app.vaccine.infrastructure.model.vaccine_model.VaccineModel --|> src.app.base.infrastructure.model.base_model.BaseModel
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory.VaccineRepositoryInMemory --|> src.app.vaccine.domain.interface.vaccine_repository.VaccineRepository
+src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres.VaccineRepositoryInPostgres --|> src.app.vaccine.domain.interface.vaccine_repository.VaccineRepository
+src.app.base.domain.interface.base_repository.BaseRepository --o src.app.base.application.usecase.base_usecase.BaseUseCase : _repository
+src.app.continent.domain.interface.continent_repository.ContinentRepository --o src.app.country.application.usecase.add_country_usecase.AddCountryUseCase : _continent_repository
+src.app.continent.domain.interface.continent_repository.ContinentRepository --o src.app.country.application.usecase.update_country_usecase.UpdateCountryUseCase : _continent_repository
+src.app.epidemic.domain.interface.epidemic_repository.EpidemicRepository --o src.app.vaccine.application.usecase.add_vaccine_usecase.AddVaccineUseCase : _epidemic_repository
+src.app.epidemic.domain.interface.epidemic_repository.EpidemicRepository --o src.app.vaccine.application.usecase.update_vaccine_usecase.UpdateVaccineUseCase : _epidemic_repository
+@enduml

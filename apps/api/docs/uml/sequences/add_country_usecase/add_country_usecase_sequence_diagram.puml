@@ -1,0 +1,24 @@
+@startuml
+actor "API Client" as Client
+participant "AddCountryUseCase" as UseCase
+participant "CountryRepository" as CountryRepo
+participant "ContinentRepository" as ContinentRepo
+
+Client -> UseCase : execute(payload)
+UseCase -> CountryRepo : find_by_iso3(payload.iso3)
+alt Country exists and not deleted
+    UseCase -> Client : HTTP 400\n"Le code iso3 existe déjà"
+else Country exists and is deleted
+    UseCase -> CountryRepo : reactivate(country)
+    UseCase -> Client : HTTP 400\n"Pays restauré"
+else
+    UseCase -> ContinentRepo : find_by_id(payload.continent_id)
+    alt Continent not found
+        UseCase -> Client : HTTP 400\n"Continent n'existe pas"
+    else
+        UseCase -> CountryRepo : create(payload)
+        CountryRepo --> UseCase : CountryEntity/CountryModel
+        UseCase --> Client : return created country
+    end
+end
+@enduml

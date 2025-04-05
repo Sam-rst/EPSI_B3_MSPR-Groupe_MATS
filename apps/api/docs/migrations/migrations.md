@@ -1,5 +1,13 @@
 # 📦 Gestion des Migrations avec Alembic
 
+[⬅️ Retour](../../README.md)
+
+Documentation rédigée par Samuel RESSIOT
+
+---
+
+## 📝 Introduction
+
 Bienvenue dans le guide des migrations de base de données du projet. Ce document explique **comment utiliser Alembic**, l'outil officiel de migration de schéma pour SQLAlchemy.
 
 ---
@@ -28,7 +36,7 @@ pip install alembic python-dotenv
 
 ## 📁 Structure de projet attendue
 
-```
+```txt
 apps/
 ├── api/
 │   ├── alembic/
@@ -125,6 +133,6 @@ alembic current
 - Ne jamais modifier une migration déjà appliquée — créer une nouvelle migration.
 - Ne jamais versionner `.env` dans Git :
 
-  ```
+  ```bash
   echo ".env" >> .gitignore
   ```

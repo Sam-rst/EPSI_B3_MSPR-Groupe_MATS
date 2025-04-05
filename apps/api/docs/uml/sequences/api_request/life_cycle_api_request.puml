@@ -1,0 +1,25 @@
+@startuml LifeCycleAPIRequest
+title Cycle de vie d'une requête API
+
+actor Utilisateur as User
+participant "Route (FastAPI)" as Route
+participant "Use Case (Application Layer)" as UseCase
+participant "Entité (Domaine)" as Entity
+participant "Repository Interface (Domaine)" as RepoInterface
+participant "Repository Implémentation (Infrastructure)" as RepoImpl
+database "Base de Données" as DB
+
+User -> Route : Envoie une requête HTTP (GET/POST/PUT/DELETE)
+Route -> Route : Valide les données entrantes (Pydantic)
+Route -> UseCase : Appelle le cas d'utilisation correspondant
+UseCase -> Entity : Manipule les entités métier
+UseCase -> RepoInterface : Appelle les méthodes définies dans l'interface
+RepoInterface -> RepoImpl : Appelle l'implémentation concrète
+RepoImpl -> DB : Effectue une opération sur la base de données
+DB --> RepoImpl : Retourne les données ou un statut
+RepoImpl --> RepoInterface : Retourne les résultats
+RepoInterface --> UseCase : Retourne les résultats
+UseCase --> Route : Retourne les données ou un message
+Route --> User : Retourne une réponse HTTP (JSON)
+
+@enduml

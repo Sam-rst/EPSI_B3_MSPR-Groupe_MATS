@@ -10,51 +10,24 @@ Contributeurs :
 4. Maxime DUSSORT
 
 ---
+
 ## **Navigation dans la Documentation**
-- ➡️ Documentation IA (W.I.P)
-- ➡️ Documentation UML (W.I.P)
+
+- [➡️ Documentation API Rest](apps/api/README.md)
+- [➡️ Documentation ETL](apps/etl/README.md)
 - [➡️ Documentation Merise](docs/diagrams/merise/merise.md)
 - [➡️ Documentation Architecture](docs/architecture/architecture.md)
-
-
-
+- ➡️ Documentation IA (MSPR à venir)
 
 ## **📜 Architecture logicielle du projet**  
 
-### **Explication**
+### **1️⃣ Architecture générale**
 
-- **Docker (compose)** : Encapsule l'infrastructure logicielle.
-- **API Gateway (Backend)** : Contient l'ETL et l'API REST, qui communiquent avec la base PostgreSQL.
-- **Metabase** : Outil de visualisation de données connecté à PostgreSQL.
-- **Client** : Interagit avec Metabase.
-- **Développeur** : Accède aux services via authentification (Auth).
-
-### **Schéma :**
-
-```mermaid
-graph TD;
-    subgraph "ENVIRONNEMENT"
-        subgraph "Docker (compose) - All services"
-            direction TB
-            subgraph "API Gateway - Backend"
-                ETL["ETL"] --> |Write| DB["PostgreSQL"]
-                API -->|CRUD| DB["PostgreSQL"]
-                DB -->|Receive| API["API Rest"]
-            end
-
-            Metabase["Metabase (dataviz)"] -->|Read| DB
-        end
-
-        Dev["Developer"] -- HTTP (Auth) --> API
-        Dev -- HTTP (Auth) --> ETL
-        Dev -- Connexion - HOST --> DB
-        Client["Client"] --> Metabase
-    end
-```
+![Diagramme d'Architecture](docs/architecture/img/architecture.svg)
 
 ## **📜 Liste des technologies du projet**  
 
-### **1️⃣ Backend (API REST FastAPI pour le CRUD)**  
+### **1️⃣ API REST FastAPI**  
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
@@ -62,24 +35,23 @@ graph TD;
 | **Python** | 3.11+ | Langage flexible et puissant | Dev de l'API et de l'IA |
 | **SQLAlchemy** | Latest | ORM puissant et compatible avec PostgreSQL | Gestion de la base de données |
 | **Pydantic** | Latest | Validation et sérialisation des données | Modèles de données |
-| **Celery** | Latest | Gestion des tâches asynchrones | Traitements en arrière-plan |
-| **Redis** | Latest | Caching et gestion des files de tâches | Optimisation des performances |
-| **PostgreSQL** | 15+ | Performant et robuste pour les données relationnelles | Base de données principale |
-| **Docker** | Latest | Conteneurisation pour déploiement | Exécution en environnement isolé |
 | **Gunicorn / Uvicorn** | Latest | Serveur WSGI/ASGI performant | Déploiement de l'API |
-| **OAuth2 / JWT / Keyclock** | Latest | Sécurité et authentification | Gestion des utilisateurs et des permissions |
+| **Dependency Injector** | Latest | Injection de dépendances | Gestion des dépendances |
+| **Alembic** | Latest | Migrations de schéma | Gestion des migrations de la base de données |
+| **PostgreSQL** | Latest | Base de données relationnelle | Stockage des données |
+| **Docker** | Latest | Conteneurisation | Isolation et portabilité |
+| **Docker Compose** | Latest | Gestion multi-conteneurs | Environnements Dev & Prod |
 
 ---
 
-### **2️⃣ Frontend (Application NextJS)**  
+### **2️⃣ Data visualisation (Metabase)**  
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
-| **Next** | Latest | Framework robuste et maintenable | Développement du frontend / API |
-| **TypeScript** | Latest | Typage fort, maintenabilité | Langage principal |
-| **TailwindCSS** | Latest | Styling moderne et flexible | UI et mise en page |
-| **NGXS ou Redux** | Latest | Gestion centralisée du state | State management |
 | **Metabase** | Latest | Open source | Data visualisation |
+| **PostgreSQL** | Latest | Base de données relationnelle | Stockage des données |
+| **Docker** | Latest | Conteneurisation | Isolation et portabilité |
+| **Docker Compose** | Latest | Gestion multi-conteneurs | Environnements Dev & Prod |
 
 ---
 
@@ -87,11 +59,8 @@ graph TD;
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
-| **FastAPI** | Latest | Orchestration des workflows ETL | Planification des tâches |
 | **Pandas** | Latest | Manipulation des données | Nettoyage et transformation des données |
-| **DuckDB** | Latest | Traitement performant des datasets volumineux | Analyse et transformation |
 | **TKinter**| Latest | Bibliothèque standard pour les interfaces graphiques en Python | Interface graphique et la sélection de fichiers |
-| **SQLAlchemy** | Latest | ORM pour interagir avec les bases | Stockage des données |
 
 ---
 
@@ -101,14 +70,12 @@ graph TD;
 |-------------|---------|-----------------|-------|
 | **Docker** | Latest | Conteneurisation | Isolation et portabilité |
 | **Docker Compose** | Latest | Gestion multi-conteneurs | Environnements Dev & Prod |
-| **Kubernetes (K8s)** | Optional | Scalabilité et orchestration | Gestion des déploiements |
-| **Terraform** | Latest | Infrastructure as Code | Automatisation du déploiement |
-| **Ansible** | Latest | Configuration automatisée | Provisioning des serveurs |
-| **NGINX / Traefik** | Latest | Proxy et Load Balancer | Redirection et gestion des requêtes |
+| **CircleCI** | Latest | CI gratuit | Intégration continue |
+| **Vercel** | Latest | Déploiement gratuit | Déploiement de l'API |
 
 ---
 
-### **5️⃣ Observabilité et Monitoring**  
+### **5️⃣ Observabilité et Monitoring (à venir)**  
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
@@ -118,7 +85,7 @@ graph TD;
 
 ---
 
-### **6️⃣ Sécurité**  
+### **6️⃣ Sécurité (à venir)**  
 
 | Technologie | Version | Raison du choix | Usage |
 |-------------|---------|-----------------|-------|
@@ -274,10 +241,5 @@ Pour effectuer tous les tests dans le container :
 ```bash
 python -m unittest discover -f tests -v
 ```
-
-### 3. **Accès aux services**
-
-- **API REST** : [http://localhost:8000/docs](http://localhost:8000/docs)
-- **API ETL** : [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ---
