@@ -1,0 +1,185 @@
+files:
+  - name: country_vaccinations_by_manufacturer_cleaned.csv
+    mapping:
+      country: Country
+      vaccine: Vaccine
+      report_date: ReportDate
+      statistics:
+        - label: totalVaccination
+          column: TotalVaccination
+
+  - name: full_grouped_cleaned.csv
+    mapping:
+      country: Country
+      continent: Continent
+      report_date: ReportDate
+      statistics:
+        - label: TotalDeaths
+          column: TotalDeaths
+        - label: TotalRecovered
+          column: TotalRecovered
+        - label: ActiveCases
+          column: ActiveCases
+        - label: NewCases
+          column: NewCases
+        - label: NewDeaths
+          column: NewDeaths
+        - label: NewRecovered
+          column: NewRecovered
+
+  - name: covid_19_clean_complete_cleaned.csv
+    mapping:
+      country: Country
+      continent: Continent
+      report_date: ReportDate
+      statistics:
+        - label: TotalConfirmed
+          column: TotalConfirmed
+        - label: TotalDeaths
+          column: TotalDeaths
+        - label: TotalRecovered
+          column: TotalRecovered
+        - label: ActiveCases
+          column: ActiveCases
+
+  - name: country_wise_latest_cleaned.csv
+    mapping:
+      country: Country
+      continent: Continent
+      population: Population
+      report_date: today
+      statistics:
+        - label: TotalConfirmed
+          column: TotalConfirmed
+        - label: TotalDeaths
+          column: TotalDeaths
+        - label: TotalRecovered
+          column: TotalRecovered
+        - label: ActiveCases
+          column: ActiveCases
+        - label: NewCases
+          column: NewCases
+        - label: NewDeaths
+          column: NewDeaths
+        - label: NewRecovered
+          column: NewRecovered
+        - label: Recovered / 100 Cases
+          column: Recovered / 100 Cases
+        - label: Deaths / 100 Recovered
+          column: Deaths / 100 Recovered
+
+  - name: day_wise_cleaned.csv
+    mapping:
+      country: World
+      report_date: ReportDate
+      statistics:
+        - label: TotalConfirmed
+          column: TotalConfirmed
+        - label: TotalDeaths
+          column: TotalDeaths
+        - label: TotalRecovered
+          column: TotalRecovered
+        - label: ActiveCases
+          column: ActiveCases
+        - label: NewCases
+          column: NewCases
+        - label: NewDeaths
+          column: NewDeaths
+        - label: NewRecovered
+          column: NewRecovered
+        - label: Recovered / 100 Cases
+          column: Recovered / 100 Cases
+        - label: Deaths / 100 Recovered
+          column: Deaths / 100 Recovered
+
+  - name: day_wise_country_province_cleaned.csv
+    mapping:
+      country: Country
+      province: Province_State
+      report_date: ReportDate
+      latitude: Lat
+      longitude: Long_
+      statistics:
+        - label: TotalConfirmed
+          column: TotalConfirmed
+        - label: TotalDeaths
+          column: TotalDeaths
+
+  - name: usa_county_wise_cleaned.csv
+    mapping:
+      country: Country
+      province: Province_State
+      report_date: ReportDate
+      latitude: Lat
+      longitude: Long_
+      statistics:
+        - label: TotalConfirmed
+          column: TotalConfirmed
+        - label: TotalDeaths
+          column: TotalDeaths
+
+  - name: worldometer_coronavirus_daily_data_cleaned.csv
+    mapping:
+      country: Country
+      report_date: ReportDate
+      statistics:
+        - label: NewCases
+          column: NewCases
+        - label: ActiveCases
+          column: ActiveCases
+        - label: TotalDeaths
+          column: TotalDeaths
+        - label: NewDeaths
+          column: NewDeaths
+
+  - name: worldometer_data_cleaned.csv
+    mapping:
+      country: Country
+      continent: Continent
+      population: Population
+      report_date: today
+      statistics:
+        - label: TotalCases
+          column: TotalCases
+        - label: NewCases
+          column: NewCases
+        - label: TotalDeaths
+          column: TotalDeaths
+        - label: NewDeaths
+          column: NewDeaths
+        - label: TotalRecovered
+          column: TotalRecovered
+        - label: NewRecovered
+          column: NewRecovered
+        - label: ActiveCases
+          column: ActiveCases
+        - label: Tot Cases/1M pop
+          column: Tot Cases/1M pop
+        - label: Deaths/1M pop
+          column: Deaths/1M pop
+        - label: TotalTests
+          column: TotalTests
+        - label: Tests/1M pop
+          column: Tests/1M pop
+
+  - name: worldometer_coronavirus_summary_data_cleaned.csv
+    mapping:
+      country: Country
+      continent: continent
+      population: Population
+      report_date: today
+      statistics:
+        - label: NewDeaths
+          column: NewDeaths
+        - label: TotalRecovered
+          column: TotalRecovered
+        - label: ActiveCases
+          column: ActiveCases
+        - label: Tot Cases/1M pop
+          column: Tot Cases/1M pop
+        - label: Deaths/1M pop
+          column: Deaths/1M pop
+        - label: TotalTest
+          column: TotalTest
+        - label: Tot Test/1M pop
+          column: Tot Test/1M pop
