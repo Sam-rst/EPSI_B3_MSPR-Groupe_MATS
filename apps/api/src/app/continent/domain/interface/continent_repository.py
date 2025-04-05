@@ -44,3 +44,7 @@ class ContinentRepository(BaseRepository, ABC):
     @abstractmethod
     def find_all(self) -> List[ContinentEntity] | List[ContinentModel]:
         pass
+
+    @abstractmethod
+    def reactivate(self, continent: ContinentEntity | ContinentModel) -> ContinentEntity | ContinentModel:
+        pass

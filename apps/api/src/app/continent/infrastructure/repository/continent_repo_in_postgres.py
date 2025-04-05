@@ -125,7 +125,7 @@ class ContinentRepositoryInPostgres(ContinentRepository):
             self.session.rollback()
             raise e
 
-    def find_by_code(self, code: str) -> ContinentModel:
+    def find_by_code(self, code: str) -> Optional[ContinentModel]:
         """_summary_
 
         Args:
@@ -159,9 +159,18 @@ class ContinentRepositoryInPostgres(ContinentRepository):
             List[ContinentModel]: _description_
         """
         try:
-            continents = self.session.query(ContinentModel).all()
+            continents = self.session.query(ContinentModel).filter(ContinentModel.is_deleted == False).all()
 
             return continents
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def reactivate(self, continent: ContinentModel) -> ContinentModel:
+        try:
+            continent.reactivate("system")
+            self.session.commit()
+            return continent
         except Exception as e:
             self.session.rollback()
             raise e

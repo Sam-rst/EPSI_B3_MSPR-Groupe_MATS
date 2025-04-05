@@ -22,14 +22,18 @@ class BaseModel(Base):
     deleted_by = Column(String, nullable=True)
     is_deleted = Column(Boolean, server_default=text("FALSE"))
 
-    @classmethod
     def update(self, update_by: str):
         self.updated_at = datetime.now()
         self.updated_by = update_by
 
-    @classmethod
     def delete(self, deleted_by: str):
         self.deleted_at = datetime.now()
         self.deleted_by = deleted_by
         self.is_deleted = True
         self.update(deleted_by)
+
+    def reactivate(self, updated_by: str):
+        self.deleted_at = None
+        self.deleted_by = None
+        self.is_deleted = False
+        self.update(updated_by)

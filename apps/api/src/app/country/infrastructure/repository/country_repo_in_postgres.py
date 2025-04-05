@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 
 from src.config.database import db
 from src.app.country.domain.interface.country_repository import CountryRepository
-from src.app.country.domain.entity.country_entity import CountryEntity
 from src.app.country.infrastructure.model.country_model import CountryModel
 from src.app.country.presentation.model.payload.create_country_payload import (
     CreateCountryPayload,
@@ -41,42 +40,88 @@ class CountryRepositoryInPostgres(CountryRepository):
             self.session.rollback()
             raise e
 
-    def update(self, id: int, payload: UpdateCountryPayload) -> Optional[CountryModel]:
-        model = self.session.query(CountryModel).filter(CountryModel.id == id).first()
-        if not model:
-            return None  # Le pays n'existe pas
-
-        # Mise à jour des champs
-        model.name = payload.name
-        model.iso2 = payload.iso2
-        model.iso3 = payload.iso3
-        model.population = payload.population
-
-        self.session.commit()
-        # return CountryMappingUtils.model_to_entity(model)
-
-    def delete(self, id: int) -> Optional[CountryEntity]:
-        model = self.session.query(CountryModel).filter(CountryModel.id == id).first()
-        if model:
-            self.session.delete(model)
+    def update(
+        self, country: CountryModel, payload: UpdateCountryPayload
+    ) -> Optional[CountryModel]:
+        try:
+            if payload.name is not None:
+                country.name = payload.name
+            if payload.iso2 is not None:
+                country.iso2 = payload.iso2
+            if payload.iso3 is not None:
+                country.iso3 = payload.iso3
+            if payload.population is not None:
+                country.population = payload.population
+            if payload.continent_id is not None:
+                country.continent_id = payload.continent_id
+            country.update("system")
             self.session.commit()
-            # return CountryMappingUtils.model_to_entity(model)
-        return None
 
-    def find_by_id(self, id: int) -> Optional[CountryEntity]:
-        model = self.session.query(CountryModel).filter(CountryModel.id == id).first()
-        if model:
-            return model
-        return None
+            return country
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
-    def find_by_iso3(self, iso3: str) -> Optional[CountryEntity]:
-        model = (
-            self.session.query(CountryModel).filter(CountryModel.iso3 == iso3).first()
-        )
-        if model:
-            return model
-        return None
+    def delete(self, country: CountryModel) -> Optional[CountryModel]:
+        try:
+            country.delete("system")
+            self.session.commit()
 
-    def find_all(self) -> List[CountryEntity]:
-        models = self.session.query(CountryModel).all()
-        # return [CountryMappingUtils.model_to_entity(model) for model in models]
+            return country
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def find_by_id(self, id: int) -> Optional[CountryModel]:
+        try:
+            country = (
+                self.session.query(CountryModel).filter(CountryModel.id == id).first()
+            )
+
+            return country
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def find_by_iso3(self, iso3: str) -> Optional[CountryModel]:
+        try:
+            country = (
+                self.session.query(CountryModel)
+                .filter(CountryModel.iso3 == iso3)
+                .first()
+            )
+
+            return country
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def find_all(self) -> List[CountryModel]:
+        """_summary_
+
+        Raises:
+            e: _description_
+
+        Returns:
+            List[CountryModel]: _description_
+        """
+        try:
+            countries = (
+                self.session.query(CountryModel)
+                .filter(CountryModel.is_deleted == False)
+                .all()
+            )
+
+            return countries
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def reactivate(self, country: CountryModel) -> CountryModel:
+        try:
+            country.reactivate("system")
+            self.session.commit()
+            return country
+        except Exception as e:
+            self.session.rollback()
+            raise e

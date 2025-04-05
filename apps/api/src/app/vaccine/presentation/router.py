@@ -52,13 +52,18 @@ def endpoint_usecase_get_all_vaccines(
         Provide[VaccineContainer.find_all_vaccines_usecase]
     ),
 ):
-    print(f"Injected usecase type: {type(usecase)}")  # Debug log
     try:
         vaccines = usecase.execute()
         content = {"count": len(vaccines), "items": jsonable_encoder(vaccines)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 @vaccine_router.post("")
 @inject
@@ -70,12 +75,18 @@ def endpoint_usecase_add_vaccine(
 ):
     try:
         vaccine = usecase.execute(payload)
-        content = {"message": jsonable_encoder(vaccine)}
+        content = {
+            "message": f"Le vaccin '{vaccine.name}' a bien été créé portant l'id : {vaccine.id}."
+        }
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
-    except HTTPException as e:
-        raise e
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @vaccine_router.get("/{id}")
@@ -88,12 +99,16 @@ def endpoint_usecase_get_vaccine_by_id(
 ):
     try:
         vaccine = usecase.execute(id)
-        content = jsonable_encoder(vaccine)
+        content = {"item": jsonable_encoder(vaccine)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @vaccine_router.patch("/{id}")
@@ -107,12 +122,18 @@ def endpoint_usecase_patch_vaccine_by_id(
 ):
     try:
         vaccine = usecase.execute(id, payload)
-        content = {"message": jsonable_encoder(vaccine)}
+        content = {
+            "message": f"Le vaccin '{vaccine.name}' a bien été modifié."
+        }
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except HTTPException as e:
-        raise e
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @vaccine_router.delete("/{id}")
@@ -125,9 +146,13 @@ def endpoint_usecase_delete_vaccine_by_id(
 ):
     try:
         vaccine = usecase.execute(id)
-        content = {"message": jsonable_encoder(vaccine)}
+        content = {"message": f"Le vaccin '{vaccine.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except HTTPException as e:
-        raise e
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )

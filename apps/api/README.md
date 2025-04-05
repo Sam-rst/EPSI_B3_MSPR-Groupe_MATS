@@ -46,19 +46,16 @@ Pour les nouveaux arrivants, voici comment configurer et gérer la base de donn�
    ```bash
    # Accéder au container de l'API
    docker exec -it MSPR-API /bin/bash
-   
-   # Initialiser Alembic (si ce n'est pas déjà fait)
-   alembic init migrations
    ```
 
 2. **Commandes principales pour les migrations** :
 
    ```bash
+   # Appliquer toutes les migrations
+   alembic upgrade head
+
    # Créer une nouvelle migration
    alembic revision --autogenerate -m "Description de la migration"
-   
-   # Appliquer toutes les migrations en attente
-   alembic upgrade head
    
    # Revenir en arrière d'une migration
    alembic downgrade -1

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from src.app.base.domain.entity.base_entity import BaseEntity
+from src.app.base.infrastructure.model.base_model import BaseModel
 
 
 class BaseRepository(ABC):
@@ -10,21 +11,25 @@ class BaseRepository(ABC):
         self._data = []
 
     @abstractmethod
-    def create(self, entity: BaseEntity) -> BaseEntity:
+    def create(self, base: BaseEntity | BaseModel) -> BaseEntity | BaseModel:
         pass
 
     @abstractmethod
-    def update(self, entity: BaseEntity) -> BaseEntity:
+    def update(self, base: BaseEntity | BaseModel) -> BaseEntity | BaseModel:
         pass
 
     @abstractmethod
-    def delete(self, entity: BaseEntity) -> BaseEntity:
+    def delete(self, base: BaseEntity | BaseModel) -> BaseEntity | BaseModel:
         pass
 
     @abstractmethod
-    def find_by_id(self, id: int) -> BaseEntity:
+    def find_by_id(self, id: int) -> BaseEntity | BaseModel:
         pass
 
     @abstractmethod
-    def find_all(self) -> List[BaseEntity]:
+    def find_all(self) -> List[BaseEntity] | List[BaseModel]:
+        pass
+
+    @abstractmethod
+    def reactivate(self, base: BaseEntity | BaseModel) -> BaseEntity | BaseModel:
         pass
