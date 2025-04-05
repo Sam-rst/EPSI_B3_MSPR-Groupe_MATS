@@ -12,7 +12,6 @@ class FileListPanel:
         self.parent = parent
         self.on_remove = on_remove
         
-        # Création du cadre principal
         self.frame = tk.Frame(
             parent,
             bg=LIGHT_BG_COLOR,
@@ -21,20 +20,18 @@ class FileListPanel:
         )
         self.frame.pack(fill=tk.BOTH, expand=True, pady=5)
         
-        # Container pour les entrées de fichiers avec scrollbar
+        #Container pour les entrees de fichiers
         self.canvas = tk.Canvas(self.frame, bg=LIGHT_BG_COLOR, highlightthickness=0)
         self.scrollbar = tk.Scrollbar(self.frame, orient="vertical", command=self.canvas.yview)
         self.files_container = tk.Frame(self.canvas, bg=LIGHT_BG_COLOR)
         
-        # Configurer le canvas pour le défilement
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         
-        # Créer une fenêtre dans le canvas pour contenir le frame
         self.canvas_window = self.canvas.create_window((0, 0), window=self.files_container, anchor="nw")
         
-        # Configurer les événements pour le redimensionnement responsive
+        #Gestion du responsive responsive
         self.files_container.bind("<Configure>", self._on_frame_configure)
         self.canvas.bind("<Configure>", self._on_canvas_configure)
     
@@ -46,7 +43,7 @@ class FileListPanel:
         self.canvas.itemconfig(self.canvas_window, width=canvas_width)
     
     def update_file_list(self, file_list):
-        # Effacer l'affichage actuel
+        #Effacer l'affichage actuel
         for widget in self.files_container.winfo_children():
             widget.destroy()
         
@@ -56,10 +53,9 @@ class FileListPanel:
             file_frame.pack(fill=tk.X, padx=5, pady=2)
     
     def _create_file_entry(self, file_info, index):
-        # Cadre pour un fichier avec fond gris clair
         file_frame = tk.Frame(self.files_container, bg=ITEM_BG_COLOR)
         
-        # Utiliser Grid pour un layout responsive
+        #Utiliser Grid pour un layout responsive
         file_frame.columnconfigure(0, weight=3)  # Nom du fichier
         file_frame.columnconfigure(1, weight=1)  # Type de fichier
         file_frame.columnconfigure(2, weight=1)  # Date
@@ -79,7 +75,6 @@ class FileListPanel:
         )
         name_label.grid(row=0, column=0, sticky="ew", pady=ITEM_PADDING_Y)
         
-        # Type de fichier (CSV ou XLSX avec couleur)
         ext_label = tk.Label(
             file_frame,
             text=file_info.format_display,
@@ -90,7 +85,7 @@ class FileListPanel:
         )
         ext_label.grid(row=0, column=1, sticky="ew", pady=ITEM_PADDING_Y)
         
-        # Date du fichier
+        #Date du fichier
         date_label = tk.Label(
             file_frame,
             text=file_info.date_display,
@@ -101,7 +96,7 @@ class FileListPanel:
         )
         date_label.grid(row=0, column=2, sticky="ew", pady=ITEM_PADDING_Y)
         
-        # Taille du fichier
+        #Taille du fichier
         size_label = tk.Label(
             file_frame,
             text=f"{file_info.size_kb} Ko",
@@ -112,7 +107,7 @@ class FileListPanel:
         )
         size_label.grid(row=0, column=3, sticky="ew", pady=ITEM_PADDING_Y)
         
-        # Case à cocher
+        #Case a cocher
         check_var = tk.BooleanVar(value=file_info.selected)
         check = tk.Checkbutton(
             file_frame,
@@ -123,7 +118,7 @@ class FileListPanel:
         )
         check.grid(row=0, column=4, padx=5, pady=ITEM_PADDING_Y)
         
-        # Bouton de suppression (X), fixé à droite
+        #Bouton de suppression (X), fixe a droite
         delete_button = tk.Button(
             file_frame,
             text="✕",
@@ -140,8 +135,6 @@ class FileListPanel:
         return file_frame
     
     def _toggle_selection(self, index, is_selected):
-        # Cette fonction serait connectée à l'application principale
-        # pour modifier l'état de sélection du fichier
         pass
     
     def _remove_file(self, index):
