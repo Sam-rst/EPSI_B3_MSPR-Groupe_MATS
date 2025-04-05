@@ -1,0 +1,143 @@
+@startuml MCD Merise
+left to right direction
+skinparam packageStyle rectangle
+
+' Entités
+entity Continent {
+  {static} id
+  name
+  code
+  population
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+entity Country {
+  {static} id
+  name
+  iso2
+  iso3
+  population
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+entity User {
+  {static} id
+  firstname
+  lastname
+  username
+  email
+  password
+  gender
+  birthdate
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+entity Role {
+  {static} id
+  name
+  description
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+entity Epidemic {
+  {static} id
+  name
+  start_date
+  end_date
+  type
+  pathogen_name
+  description
+  transmission_mode
+  symptoms
+  reproduction_rate
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+entity Vaccine {
+  {static} id
+  name
+  laboratory
+  technology
+  dose
+  efficacy
+  storage_temperature
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+entity DailyWise {
+  {static} id
+  date
+  province
+  latitude
+  longitude
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+entity Statistic {
+  {static} id
+  label
+  value
+  published_at
+  published_by
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+' Associations avec cardinalités
+Country "1..1" -- "0..n" Continent : contains >
+DailyWise "1..1" -- "0..n" Country : located_in >
+Statistic "1..1" -- "0..n" DailyWise : related_to >
+Statistic "0..1" -- "0..n" Country : has >
+Vaccine "1..1" -- "0..n" Epidemic : used_for >
+Statistic "1..1" -- "0..n" Epidemic : correlate_to >
+Vaccine "0..n" -- "0..n" DailyWise : used_in >
+User "0..n" -- "0..n" Role : group >
+
+@enduml

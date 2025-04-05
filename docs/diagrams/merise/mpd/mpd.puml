@@ -1,0 +1,178 @@
+@startuml MPD_Merise
+!define table(x) class x << (T,#FFAAAA) >>
+left to right direction
+skinparam packageStyle rectangle
+
+' Définition des entités avec typage PostgreSQL
+
+table(continent) {
+  {static} id : BIGSERIAL
+  name : VARCHAR
+  code : VARCHAR
+  population : BIGINT
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(country) {
+  {static} id : BIGSERIAL
+  name : VARCHAR
+  iso2 : VARCHAR
+  iso3 : VARCHAR
+  population : BIGINT
+  continent_id : BIGINT REFERENCES continent(id)
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(user) {
+  {static} id : BIGSERIAL
+  firstname : VARCHAR(50)
+  lastname : VARCHAR(50)
+  username : VARCHAR(50)
+  email : VARCHAR(100) UNIQUE
+  password : VARCHAR(100)
+  gender : VARCHAR(10)
+  birthdate : VARCHAR(10)
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(role) {
+  {static} id : BIGSERIAL
+  name : VARCHAR(50)
+  description : VARCHAR(100)
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(epidemic) {
+  {static} id : BIGSERIAL
+  name : VARCHAR
+  start_date : DATE
+  end_date : DATE
+  type : VARCHAR
+  pathogen_name : VARCHAR
+  description : TEXT
+  transmission_mode : VARCHAR
+  symptoms : TEXT
+  reproduction_rate : FLOAT
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(vaccine) {
+  {static} id : BIGSERIAL
+  name : VARCHAR
+  laboratory : VARCHAR
+  technology : VARCHAR
+  dose : VARCHAR
+  efficacy : FLOAT
+  storage_temperature : VARCHAR
+  epidemic_id : BIGINT REFERENCES epidemic(id)
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(daily_wise) {
+  {static} id : BIGSERIAL
+  date : TIMESTAMP
+  province : VARCHAR
+  latitude : FLOAT
+  longitude : FLOAT
+  country_id : BIGINT REFERENCES country(id)
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(statistic) {
+  {static} id : BIGSERIAL
+  label : VARCHAR
+  value : FLOAT
+  daily_wise_id : BIGINT REFERENCES daily_wise(id)
+  epidemic_id : BIGINT REFERENCES epidemic(id)
+  country_id : BIGINT REFERENCES country(id)
+  published_at : VARCHAR
+  published_by : VARCHAR
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(user_role) {
+  {static} id : BIGSERIAL
+  user_id : BIGINT REFERENCES "user"(id)
+  role_id : BIGINT REFERENCES role(id)
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+table(daily_wise_vaccine) {
+  {static} id : BIGSERIAL
+  daily_wise_id : BIGINT REFERENCES daily_wise(id)
+  vaccine_id : BIGINT REFERENCES vaccine(id)
+  created_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by : VARCHAR DEFAULT 'system'
+  updated_at : TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_by : VARCHAR DEFAULT 'system'
+  deleted_at : TIMESTAMP
+  deleted_by : VARCHAR
+  is_deleted : BOOLEAN DEFAULT FALSE
+}
+
+' Définition des relations
+country --> continent
+daily_wise --> country
+statistic --> daily_wise
+statistic --> country
+vaccine --> epidemic
+statistic --> epidemic
+daily_wise_vaccine --> daily_wise
+daily_wise_vaccine --> vaccine
+user_role --> user
+user_role --> role
+@enduml

@@ -12,7 +12,7 @@ Le **Modèle Conceptuel de Données (MCD)** représente les entités, leurs attr
 
 ### Diagramme MCD
 
-![Modèle Conceptuel de Données](img/MCD.svg)
+![Modèle Conceptuel de Données](mcd/img/MCD.svg)
 
 ---
 
@@ -22,18 +22,34 @@ Le **Modèle Logique de Données (MLD)** est une traduction du MCD en un modèle
 
 ### Diagramme MLD
 
-![Modèle Logique de Données](img/MLD.svg)
+![Modèle Logique de Données](mld/img/MLD.svg)
+
+---
+
+## Modèle Physique de Données (MPD)
+
+Le **Modèle Physique de Données (MPD)** détaille la structure physique de la base de données, y compris les types de données, les index et les contraintes. Il est spécifique à un SGBD (Système de Gestion de Base de Données) particulier.
+
+### Diagramme MPD
+
+![Modèle Physique de Données](mpd/img/MPD.svg)
 
 ---
 
 ## Fichiers associés
 
 - **MCD** :
-  - Fichier source : [`puml/mcd.puml`](puml/mcd.puml)
-  - Diagramme généré : [`img/MCD.svg`](img/MCD.svg)
+  - Fichier source : [`mcd/mcd.puml`](mcd/mcd.puml)
+  - Diagramme généré (en SVG): [`mcd/img/MCD.svg`](mcd/img/MCD.svg)
+  - Diagramme généré (en PNG): [`mcd/img/MCD.png`](mcd/img/MCD.png)
 - **MLD** :
-  - Fichier source : [`puml/mld.puml`](puml/mld.puml)
-  - Diagramme généré : [`img/MLD.svg`](img/MLD.svg)
+  - Fichier source : [`mld/mld.puml`](mld/mld.puml)
+  - Diagramme généré (en SVG): [`mld/img/MLD.svg`](mld/img/MLD.svg)
+  - Diagramme généré (en PNG): [`mld/img/MLD.png`](mld/img/MLD.png)
+- **MPD** :
+  - Fichier source : [`mpd/mpd.puml`](mpd/mpd.puml)
+  - Diagramme généré (en SVG): [`mpd/img/MPD.svg`](mpd/img/MPD.svg)
+  - Diagramme généré (en PNG): [`mpd/img/MPD.png`](mpd/img/MPD.png)
 
 ---
 
@@ -41,19 +57,12 @@ Le **Modèle Logique de Données (MLD)** est une traduction du MCD en un modèle
 
 1. **Modifier les fichiers source** :
    - Les fichiers source des diagrammes sont écrits en syntaxe PlantUML :
-     - [`puml/mcd.puml`](puml/mcd.puml) pour le MCD.
-     - [`puml/mld.puml`](puml/mld.puml) pour le MLD.
+     - [`mcd/mcd.puml`](mcd/mcd.puml) pour le MCD.
+     - [`mld/mld.puml`](mld/mld.puml) pour le MLD.
+     - [`mpd/mpd.puml`](mpd/mpd.puml) pour le MPD.
 
 2. **Générer les diagrammes** :
    - Utilisez un outil comme [PlantUML](https://plantuml.com/) ou une extension dans votre IDE (par exemple, VS Code avec l'extension PlantUML).
-   - Commande pour générer les fichiers SVG :
-     ```bash
-     plantuml -tsvg puml/mcd.puml
-     plantuml -tsvg puml/mld.puml
-     ```
-
-3. **Mettre à jour les fichiers générés** :
-   - Remplacez les fichiers `img/MCD.svg` et `img/MLD.svg` par les nouvelles versions générées.
 
 ---
 

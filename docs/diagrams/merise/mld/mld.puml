@@ -1,0 +1,177 @@
+@startuml MLD Merise
+!define table(x) class x << (T,#FFAAAA) >>
+left to right direction
+skinparam packageStyle rectangle
+
+' Définition des entités
+table(continent) {
+  {static} id
+  name
+  code
+  population
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(country) {
+  {static} id
+  name
+  iso2
+  iso3
+  population
+  {static} //#continent_id//
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(user) {
+  {static} id
+  firstname
+  lastname
+  username
+  email
+  password
+  gender
+  birthdate
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(role) {
+  {static} id
+  name
+  description
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(epidemic) {
+  {static} id
+  name
+  start_date
+  end_date
+  type
+  pathogen_name
+  description
+  transmission_mode
+  symptoms
+  reproduction_rate
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(vaccine) {
+  {static} id
+  name
+  laboratory
+  technology
+  dose
+  efficacy
+  storage_temperature
+  {static} //#epidemic_id//
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(daily_wise) {
+  {static} id
+  date
+  province
+  latitude
+  longitude
+  {static} //#country_id//
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(statistic) {
+  {static} id
+  label
+  value
+  {static} //#daily_wise_id//
+  {static} //#epidemic_id//
+  {static} //#country_id//
+  published_at
+  published_by
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(user_role) {
+  {static} id
+  {static} //#user_id//
+  {static} //#role_id//
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+table(daily_wise_vaccine) {
+  {static} id
+  {static} //#daily_wise_id//
+  {static} //#vaccine_id//
+  created_at
+  created_by
+  updated_at
+  updated_by
+  deleted_at
+  deleted_by
+  is_deleted
+}
+
+' Définition des relations
+country --> continent
+daily_wise --> country
+statistic --> daily_wise
+statistic --> country
+vaccine --> epidemic
+statistic --> epidemic
+daily_wise_vaccine --> daily_wise
+daily_wise_vaccine --> vaccine
+user_role --> user
+user_role --> role
+@enduml
