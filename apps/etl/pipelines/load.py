@@ -182,6 +182,21 @@ class PostgresConnector:
                     label, value, country_id, epidemic_id, dayly_wise_id, id, is_deleted
                 ) VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
             """, (label, float(value), country_id, epidemic_id, daily_wise_id))
+        
+        def get_or_create_vaccine(cur, vaccine_name):
+            if not vaccine_name:
+                return None
+            cur.execute("SELECT id FROM vaccine WHERE name = %s AND is_deleted IS NOT TRUE", (vaccine_name,))
+            result = cur.fetchone()
+            if result:
+                return result[0]
+            else:
+                cur.execute("""
+                    INSERT INTO vaccine (name, id, is_deleted)
+                    VALUES (%s, DEFAULT, FALSE)
+                    RETURNING id
+                """, (vaccine_name,))
+                return cur.fetchone()[0]
 
         def process_file(conn, cur, file_path, config):
             df = pd.read_csv(file_path)
@@ -209,6 +224,13 @@ class PostgresConnector:
                                 cur.execute("UPDATE country SET population = %s WHERE id = %s", (int(population), country_id))
                             except:
                                 pass
+                    
+                    # Ajout vaccine
+                    if 'vaccine' in mapping:
+                        vaccine_col = mapping['vaccine']
+                        vaccine_name = row[vaccine_col] if vaccine_col and vaccine_col in row else None
+                        if vaccine_name:
+                            get_or_create_vaccine(cur, vaccine_name)        
 
                     report_date = datetime.today() if report_date_col == 'today' else datetime.strptime(row.get(report_date_col), "%Y-%m-%d")
 
@@ -254,11 +276,11 @@ class PostgresConnector:
                 print('➡️ Entry en cours :', entry)
                 file_name = entry['name']
                 file_path = os.path.join(base_folder, file_name)
-                process_file(self.connection, self.cursor, file_path, entry)
 
                 if os.path.exists(file_path):
                     process_file(self.connection, self.cursor, file_path, entry)
                 else:
+                    print(f"⚠️  Fichier non trouvé : {file_path}")
                     print(f"⚠️  Fichier non trouvé : {file_path}")
             except Exception as e:
                 import traceback
