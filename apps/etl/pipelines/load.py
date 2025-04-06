@@ -2,9 +2,13 @@ import psycopg2
 from psycopg2 import sql
 import pandas as pd
 import os
+import yaml
+from datetime import datetime
+from tqdm import tqdm
+import pandas as pd
 
 class PostgresConnector:
-    def __init__(self, host="localhost", database="mspr", user="postgres", password="postgres", port=5432):
+    def __init__(self, host="localhost", database="mspr", user="postgres", password="postgres", port=2345):
         """
         Initialise la connexion à PostgreSQL avec les valeurs par défaut
         fournies ou des valeurs d'environnement si disponibles
@@ -27,6 +31,8 @@ class PostgresConnector:
             print(f"Connexion établie à {self.connection_params['database']} sur {self.connection_params['host']}")
             return True
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Erreur de connexion à PostgreSQL: {e}")
             return False
     
@@ -50,6 +56,8 @@ class PostgresConnector:
             print("Requête exécutée avec succès")
             return True
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Erreur lors de l'exécution de la requête: {e}")
             self.connection.rollback()
             return False
@@ -66,6 +74,8 @@ class PostgresConnector:
             print("Script SQL exécuté avec succès")
             return True
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Erreur lors de l'exécution du script SQL: {e}")
             self.connection.rollback()
             return False
@@ -111,79 +121,148 @@ class PostgresConnector:
             self.connection.commit()
             return True
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Erreur lors du chargement du CSV: {e}")
             self.connection.rollback()
             return False
             
-    def execute_etl_process(self, csv_path):
-        """Exécute le processus ETL complet basé sur le script SQL fourni"""
-        # Étape 1: Charger le CSV dans la table de staging
-        if not self.load_csv_to_staging(csv_path):
-            return False
-            
-        # Étape 2: Exécuter le script ETL
-        etl_script = """
-        -- 3) Insérer dans country
-        INSERT INTO country (name, created_by)
-        SELECT DISTINCT s.country, 'ETL_script'
-        FROM staging_country_vaccinations s
-        WHERE s.country IS NOT NULL
-          AND s.country <> ''
-          AND NOT EXISTS (
-              SELECT 1 FROM country c WHERE c.name = s.country
-          );
+    
+    def execute_etl_process(
+        self,
+        mappings_path=None,         # on laisse None par défaut
+        base_folder="../cleaned"
+    ):
+        if mappings_path is None:
+            # On calcule un chemin absolu vers mappings.yaml
+            current_dir = os.path.dirname(__file__)  # dossier contenant load.py
+            mappings_path = os.path.join(current_dir, "mappings.yaml")
 
-        -- 4) Insérer dans vaccine
-        INSERT INTO vaccine (name, created_by)
-        SELECT DISTINCT s.vaccine, 'ETL_script'
-        FROM staging_country_vaccinations s
-        WHERE s.vaccine IS NOT NULL
-          AND s.vaccine <> ''
-          AND NOT EXISTS (
-              SELECT 1 FROM vaccine v WHERE v.name = s.vaccine
-          );
+        with open(mappings_path, "r", encoding="utf-8") as f:
+            mappings = yaml.safe_load(f)
+        def get_or_create_continent(cur, continent_name):
+            if not continent_name:
+                return None
+            cur.execute("SELECT id FROM continent WHERE name = %s AND is_deleted IS NOT TRUE", (continent_name,))
+            result = cur.fetchone()
+            if result:
+                return result[0]
+            else:
+                cur.execute("""
+                    INSERT INTO continent (name, code, population, id, is_deleted)
+                    VALUES (%s, %s, %s, DEFAULT, FALSE)
+                    RETURNING id
+                """, (continent_name, 'N/A', 0))
+                return cur.fetchone()[0]
 
-        -- 5) Insérer dans daily_wise
-        INSERT INTO daily_wise (date, province_name, latitude, longitude, created_by, country_id)
-        SELECT s.report_date, NULL, NULL, NULL, 'ETL_script', c.id
-        FROM staging_country_vaccinations s
-        JOIN country c ON c.name = s.country
-        WHERE s.report_date IS NOT NULL
-          AND NOT EXISTS (
-              SELECT 1 FROM daily_wise dw
-              WHERE dw.date = s.report_date
-                AND dw.country_id = c.id
-          );
+        def get_or_create_country(cur, country_name, continent_id=None):
+            cur.execute("SELECT id FROM country WHERE name = %s AND is_deleted IS NOT TRUE", (country_name,))
+            result = cur.fetchone()
+            if result:
+                return result[0]
+            else:
+                cur.execute("""
+                    INSERT INTO country (name, iso2, iso3, population, continent_id, id, is_deleted)
+                    VALUES (%s, NULL, NULL, NULL, %s, DEFAULT, FALSE)
+                    RETURNING id
+                """, (country_name, continent_id))
+                return cur.fetchone()[0]
 
-        -- 6) Insérer la statistique "TotalVaccination"
-        INSERT INTO statistic (label, value, created_by, country_id, dw_id)
-        SELECT 'TotalVaccination',
-               s.total_vaccination,
-               'ETL_script',
-               c.id,
-               dw.id
-        FROM staging_country_vaccinations s
-        JOIN country c ON c.name = s.country
-        JOIN daily_wise dw ON dw.date = s.report_date
-                           AND dw.country_id = c.id
-        WHERE s.total_vaccination IS NOT NULL
-          AND s.total_vaccination > 0
-          AND NOT EXISTS (
-              SELECT 1 FROM statistic st
-              WHERE st.label = 'TotalVaccination'
-                AND st.country_id = c.id
-                AND st.dw_id = dw.id
-          );
+        def insert_daily_wise(cur, report_date, country_id, province=None, lat=None, lon=None):
+            cur.execute("""
+                INSERT INTO daily_wise (date, province, latitude, longitude, country_id, id, is_deleted)
+                VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
+                RETURNING id
+            """, (report_date, province, lat, lon, country_id))
+            return cur.fetchone()[0]
 
-        -- 7) Lier daily_wise et vaccine (table pivot)
-        INSERT INTO daily_wise_link_vaccine (dw_id, vaccine_id)
-        SELECT dw.id, v.id
-        FROM staging_country_vaccinations s
-        JOIN country c ON c.name = s.country
-        JOIN daily_wise dw ON dw.date = s.report_date
-                           AND dw.country_id = c.id
-        JOIN vaccine v ON v.name = s.vaccine
-        GROUP BY dw.id, v.id;
-        """
-        
-        return self.execute_script(etl_script)
+        def insert_statistic(cur, label, value, country_id, epidemic_id, daily_wise_id):
+            if pd.isna(value):
+                return
+            cur.execute("""
+                INSERT INTO statistic (
+                    label, value, country_id, epidemic_id, dayly_wise_id, id, is_deleted
+                ) VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
+            """, (label, float(value), country_id, epidemic_id, daily_wise_id))
+
+        def process_file(conn, cur, file_path, config):
+            df = pd.read_csv(file_path)
+            df.columns = [col.strip() for col in df.columns]
+            mapping = config['mapping']
+            report_date_col = mapping.get('report_date', 'today')
+
+            for _, row in tqdm(df.iterrows(), total=len(df), desc=file_path):
+                try:
+                    continent_id = None
+                    if 'continent' in mapping:
+                        continent_col = mapping.get('continent')
+                        continent = row[continent_col] if continent_col and continent_col in row else None
+                        continent_id = get_or_create_continent(cur, continent)
+
+                    country_col = mapping.get('country')
+                    country = row[country_col] if country_col in row else 'World'
+                    country_id = get_or_create_country(cur, country, continent_id)
+
+                    if 'population' in mapping:
+                        population_col = mapping.get('population')
+                        population = row[population_col] if population_col and population_col in row else None
+                        if population:
+                            try:
+                                cur.execute("UPDATE country SET population = %s WHERE id = %s", (int(population), country_id))
+                            except:
+                                pass
+
+                    report_date = datetime.today() if report_date_col == 'today' else datetime.strptime(row.get(report_date_col), "%Y-%m-%d")
+
+                    province_col = mapping.get('province')
+                    province = row[province_col] if province_col and province_col in row else None
+                    lat_col = mapping.get('latitude')
+                    lat = row[lat_col] if lat_col and lat_col in row else None
+                    lon_col = mapping.get('longitude')
+                    lon = row[lon_col] if lon_col and lon_col in row else None
+
+                    daily_wise_id = insert_daily_wise(cur, report_date, country_id, province, lat, lon)
+
+                    for stat in mapping.get('statistics', []):
+                            label = stat['label']
+                            column = stat['column']
+                            value = row[column] if column in row else None
+                            insert_statistic(cur, label, value, country_id, 1, daily_wise_id)
+
+                    conn.commit()
+                except Exception as e:
+                    import traceback
+                    traceback.print_exc()
+                    print(f"[ERROR] Ligne ignorée : {e}")
+                    conn.rollback()
+
+        import os
+        with open(mappings_path, "r", encoding="utf-8") as f:
+            mappings = yaml.safe_load(f)
+
+        print("✅ Mappings chargés :", mappings)
+        print("🧪 Nombre de fichiers à traiter :", len(mappings.get('files', [])))
+        print("🧬 Type de chaque entrée :")
+        for i, f in enumerate(mappings.get('files', [])):
+            print(f"   - [{i}] {f} (type={type(f)})")
+
+
+        if not self.connection or self.connection.closed:
+            if not self.connect():
+                return False
+
+        for entry in mappings['files']:
+            try:
+                print('➡️ Entry en cours :', entry)
+                file_name = entry['name']
+                file_path = os.path.join(base_folder, file_name)
+                process_file(self.connection, self.cursor, file_path, entry)
+
+                if os.path.exists(file_path):
+                    process_file(self.connection, self.cursor, file_path, entry)
+                else:
+                    print(f"⚠️  Fichier non trouvé : {file_path}")
+            except Exception as e:
+                import traceback
+                print(f"💥 Erreur lors du traitement de l'entrée : {entry}")
+                traceback.print_exc()

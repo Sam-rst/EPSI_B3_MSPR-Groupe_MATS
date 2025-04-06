@@ -324,7 +324,7 @@ class MainWindow:
         # Fonction pour charger les données
         def load_data():
             try:
-                from etl.database import PostgresConnector
+                from pipelines.load import PostgresConnector
                 
                 # Récupérer le chemin du premier fichier transformé
                 if not self.pipeline.transformed_datasets:
@@ -355,7 +355,10 @@ class MainWindow:
                 self.update_status("Chargement des données dans PostgreSQL...")
                 self.root.update()
                 
-                if db.execute_etl_process(temp_csv_path):
+                if db.execute_etl_process(
+                    mappings_path="pipelines/mappings.yaml",
+                    base_folder=self.output_dir
+                ):
                     messagebox.showinfo("Succès", "Données chargées avec succès dans PostgreSQL")
                     # Supprimer le fichier CSV temporaire
                     os.remove(temp_csv_path)

@@ -7,11 +7,11 @@ import os
 
 # === CONFIGURATION DE LA BASE DE DONNÉES ===
 DB_CONFIG = {
-    "host": "localhost",
-    "dbname": "mspr",
-    "user": "postgres",
-    "password": "postgres",
-    "port": 2345
+    "host": "?",
+    "dbname": "?",
+    "user": "?",
+    "password": "?",
+    "port": ?
 }
 
 # === UTILITAIRES BASE ===
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     for entry in mappings['files']:
         file_name = entry['name']
-        file_path = os.path.join("./cleaned", file_name)
+        file_path = os.path.join("../cleaned", file_name)
 
         if os.path.exists(file_path):
             process_file(cur, file_path, entry)
