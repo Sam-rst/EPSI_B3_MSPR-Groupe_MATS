@@ -7,8 +7,6 @@
   <a href="#utilisation">Utilisation</a> •
   <a href="#architecture">Architecture</a> •
   <a href="#documentation-technique">Documentation Technique</a> •
-  <a href="#contribution">Contribution</a> •
-  <a href="#licence">Licence</a>
 </p>
 
 ## Aperçu
@@ -39,3 +37,7 @@ Analyze IT est une application ETL (Extract, Transform, Load) développée pour 
 
 # Installer les dépendances
 pip install -r requirements.txt
+```
+## Documentation Technique
+
+https://www.canva.com/design/DAGj5AJliDw/FhhWY4X7QrvmJrBGfVMY1w/edit?utm_content=DAGj5AJliDw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
