@@ -1,0 +1,86 @@
+@startuml AnalyzeIT ETL Solution
+
+skinparam backgroundColor white
+skinparam componentStyle rectangle
+skinparam handwritten false
+skinparam monochrome false
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #666666
+
+skinparam component {
+  BackgroundColor #F8F8F8
+  BorderColor #AAAAAA
+  FontColor #333333
+}
+
+title "AnalyzeIT - Diagramme d'architecture ETL"
+
+' Définir les composants principales de l'application
+package "AnalyzeIT Application (Python/Tkinter)" {
+  [Interface Utilisateur] as UI
+  [Gestionnaire de Fichiers] as FM
+  
+  package "Pipeline ETL" {
+    [Export Module] as EX #LightBlue
+    [Transform Module] as TR #LightGreen
+    [Load Module] as LD #LightSalmon
+    
+    note bottom of EX
+      export.py
+      - Lecture des fichiers CSV
+      - Création de DataFrames
+    end note
+    
+    note bottom of TR
+      transform.py
+      - Normalisation des colonnes
+      - Gestion des valeurs manquantes
+      - Standardisation des dates
+    end note
+    
+    note bottom of LD
+      load.py
+      - Connexion PostgreSQL
+      - Staging des données
+      - Chargement dans tables finales
+    end note
+  }
+}
+
+' Sources de données
+database "Fichiers CSV" as CSV {
+  [Données COVID] as COVID #LightGray
+  [Données Vaccination] as VAC #LightGray
+}
+
+' Destination
+database "PostgreSQL" as PG {
+  [Table Staging] as STAG #Orange
+  [Tables Finales] as FIN #Orange
+  
+  note right of FIN
+    - country
+    - vaccine
+    - daily_wise
+    - statistic
+    - etc.
+  end note
+}
+
+' Visualisation
+component "Metabase" as MB #DeepSkyBlue
+
+' Définir les flux de données
+CSV --> FM : Glisser-déposer ou\nSélection manuelle
+FM --> UI : Affichage fichiers\ndisponibles
+UI --> FM : Sélection fichiers\nà traiter
+FM --> EX : Données brutes
+EX --> TR : DataFrames
+TR --> [Fichiers Transformés] : Sauvegarde\nfichiers traités
+TR --> LD : DataFrames\nnormalisés
+LD --> STAG : Copie en\nmasse
+STAG --> FIN : Exécution\nscript ETL
+FIN --> MB : Analyse et\nvisualisation
+
+@enduml

@@ -61,6 +61,10 @@ Contributeurs :
 |-------------|---------|-----------------|-------|
 | **Pandas** | Latest | Manipulation des données | Nettoyage et transformation des données |
 | **TKinter**| Latest | Bibliothèque standard pour les interfaces graphiques en Python | Interface graphique et la sélection de fichiers |
+| **TKinterdn2**| Latest | Sous bibliothèque de TKinter | Gestion du Drag&Drop |
+| **psycopg2**| Latest |  | Utiliser pour le mapping en BDD |
+| **os**| Latest |  | Utiliser pour le mapping en BDD |
+| **YML**| Latest |  | Utiliser pour le mapping en BDD |
 
 ---
 
