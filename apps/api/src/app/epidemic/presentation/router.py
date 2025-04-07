@@ -10,24 +10,24 @@ from src.app.epidemic.container import EpidemicContainer
 # =====Usecases=====
 from src.app.epidemic.application.usecase.add_epidemic_usecase import AddEpidemicUseCase
 from src.app.epidemic.application.usecase.find_all_epidemics_usecase import (
-    FindAllEpidemicsUseCase
+    FindAllEpidemicsUseCase,
 )
 from src.app.epidemic.application.usecase.find_epidemic_by_id_usecase import (
-    FindEpidemicByIdUseCase
+    FindEpidemicByIdUseCase,
 )
 from src.app.epidemic.application.usecase.update_epidemic_usecase import (
-    UpdateEpidemicUseCase
+    UpdateEpidemicUseCase,
 )
 from src.app.epidemic.application.usecase.delete_epidemic_usecase import (
-    DeleteEpidemicUseCase
+    DeleteEpidemicUseCase,
 )
 
 # =====Payloads=====
 from src.app.epidemic.presentation.model.payload.create_epidemic_payload import (
-    CreateEpidemicPayload
+    CreateEpidemicPayload,
 )
 from src.app.epidemic.presentation.model.payload.update_epidemic_payload import (
-    UpdateEpidemicPayload
+    UpdateEpidemicPayload,
 )
 
 epidemic_router = APIRouter(
@@ -52,6 +52,12 @@ def endpoint_usecase_get_all_epidemics(
         Provide[EpidemicContainer.find_all_epidemics_usecase]
     ),
 ):
+    """
+    Récupère toutes les épidémies disponibles.
+
+    Returns:
+        JSONResponse: Une réponse contenant la liste des épidémies et leur nombre.
+    """
     try:
         epidemics = usecase.execute()
         content = {"count": len(epidemics), "items": jsonable_encoder(epidemics)}
@@ -74,6 +80,15 @@ def endpoint_usecase_add_epidemic(
         Provide[EpidemicContainer.add_epidemic_usecase]
     ),
 ):
+    """
+    Crée une nouvelle épidémie.
+
+    Args:
+        <body> payload (CreateEpidemicPayload): Les données nécessaires pour créer une épidémie.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation et l'ID de l'épidémie créée.
+    """
     try:
         epidemic = usecase.execute(payload)
         content = {
@@ -98,6 +113,15 @@ def endpoint_usecase_get_epidemic_by_id(
         Provide[EpidemicContainer.find_epidemic_by_id_usecase]
     ),
 ):
+    """
+    Récupère les détails d'une épidémie spécifique.
+
+    Args:
+        <header> id (int): L'ID de l'épidémie à récupérer.
+
+    Returns:
+        JSONResponse: Une réponse contenant les détails de l'épidémie.
+    """
     try:
         epidemic = usecase.execute(id)
         content = {"item": jsonable_encoder(epidemic)}
@@ -121,11 +145,19 @@ def endpoint_usecase_patch_epidemic_by_id(
         Provide[EpidemicContainer.update_epidemic_usecase]
     ),
 ):
+    """
+    Met à jour les informations d'une épidémie existante.
+
+    Args:
+        <header> id (int): L'ID de l'épidémie à mettre à jour.
+        <body> payload (UpdateEpidemicPayload): Les nouvelles données pour l'épidémie.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         epidemic = usecase.execute(id, payload)
-        content = {
-            "message": f"L'épidémie '{epidemic.name}' a bien été modifiée."
-        }
+        content = {"message": f"L'épidémie '{epidemic.name}' a bien été modifiée."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -145,6 +177,15 @@ def endpoint_usecase_delete_epidemic_by_id(
         Provide[EpidemicContainer.delete_epidemic_usecase]
     ),
 ):
+    """
+    Supprime une épidémie existante.
+
+    Args:
+        <header> id (int): L'ID de l'épidémie à supprimer.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         epidemic = usecase.execute(id)
         content = {"message": f"L'épidémie '{epidemic.name}' a bien été supprimée."}

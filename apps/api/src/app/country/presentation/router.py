@@ -10,24 +10,24 @@ from src.app.country.container import CountryContainer
 # =====Usecases=====
 from src.app.country.application.usecase.add_country_usecase import AddCountryUseCase
 from src.app.country.application.usecase.find_all_countries_usecase import (
-    FindAllCountriesUseCase
+    FindAllCountriesUseCase,
 )
 from src.app.country.application.usecase.find_country_by_id_usecase import (
-    FindCountryByIdUseCase
+    FindCountryByIdUseCase,
 )
 from src.app.country.application.usecase.update_country_usecase import (
-    UpdateCountryUseCase
+    UpdateCountryUseCase,
 )
 from src.app.country.application.usecase.delete_country_usecase import (
-    DeleteCountryUseCase
+    DeleteCountryUseCase,
 )
 
 # =====Payloads=====
 from src.app.country.presentation.model.payload.create_country_payload import (
-    CreateCountryPayload
+    CreateCountryPayload,
 )
 from src.app.country.presentation.model.payload.update_country_payload import (
-    UpdateCountryPayload
+    UpdateCountryPayload,
 )
 
 country_router = APIRouter(
@@ -52,6 +52,12 @@ def endpoint_usecase_get_all_countries(
         Provide[CountryContainer.find_all_countries_usecase]
     ),
 ):
+    """
+    Récupère tous les pays disponibles.
+
+    Returns:
+        JSONResponse: Une réponse contenant la liste des pays et leur nombre.
+    """
     try:
         countries = usecase.execute()
         content = {"count": len(countries), "items": jsonable_encoder(countries)}
@@ -70,10 +76,17 @@ def endpoint_usecase_get_all_countries(
 @inject
 def endpoint_usecase_add_country(
     payload: CreateCountryPayload,
-    usecase: AddCountryUseCase = Depends(
-        Provide[CountryContainer.add_country_usecase]
-    ),
+    usecase: AddCountryUseCase = Depends(Provide[CountryContainer.add_country_usecase]),
 ):
+    """
+    Crée un nouveau pays.
+
+    Args:
+        <body> payload (CreateCountryPayload): Les données nécessaires pour créer un pays.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation et l'ID du pays créé.
+    """
     try:
         country = usecase.execute(payload)
         content = {
@@ -98,6 +111,15 @@ def endpoint_usecase_get_country_by_id(
         Provide[CountryContainer.find_country_by_id_usecase]
     ),
 ):
+    """
+    Récupère les détails d'un pays spécifique.
+
+    Args:
+        <header> id (int): L'ID du pays à récupérer.
+
+    Returns:
+        JSONResponse: Une réponse contenant les détails du pays.
+    """
     try:
         country = usecase.execute(id)
         content = {"item": jsonable_encoder(country)}
@@ -121,11 +143,19 @@ def endpoint_usecase_patch_country_by_id(
         Provide[CountryContainer.update_country_usecase]
     ),
 ):
+    """
+    Met à jour les informations d'un pays existant.
+
+    Args:
+        <header> id (int): L'ID du pays à mettre à jour.
+        <body> payload (UpdateCountryPayload): Les nouvelles données pour le pays.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         country = usecase.execute(id, payload)
-        content = {
-            "message": f"Le pays '{country.name}' a bien été modifié."
-        }
+        content = {"message": f"Le pays '{country.name}' a bien été modifié."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -145,6 +175,15 @@ def endpoint_usecase_delete_country_by_id(
         Provide[CountryContainer.delete_country_usecase]
     ),
 ):
+    """
+    Supprime un pays existant.
+
+    Args:
+        <header> id (int): L'ID du pays à supprimer.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         country = usecase.execute(id)
         content = {"message": f"Le pays '{country.name}' a bien été supprimé."}

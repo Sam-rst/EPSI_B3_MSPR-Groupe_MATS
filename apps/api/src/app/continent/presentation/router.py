@@ -39,7 +39,9 @@ continent_router = APIRouter(
         status.HTTP_201_CREATED: {"description": "Ressource créée avec succès"},
         status.HTTP_400_BAD_REQUEST: {"description": "Requête invalide"},
         status.HTTP_404_NOT_FOUND: {"description": "Ressource non trouvée"},
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Erreur interne du serveur"},
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "description": "Erreur interne du serveur"
+        },
     },
 )
 
@@ -47,7 +49,6 @@ continent_router = APIRouter(
 @continent_router.get(
     "",
     summary="Récupérer tous les continents",
-    description="Cette route permet de récupérer la liste de tous les continents disponibles dans le système.",
 )
 @inject
 def endpoint_usecase_get_all_continents(
@@ -55,6 +56,12 @@ def endpoint_usecase_get_all_continents(
         Provide[ContinentContainer.find_all_continents_usecase]
     ),
 ):
+    """
+    Récupère tous les continents disponibles.
+
+    Returns:
+        JSONResponse: Une réponse contenant la liste des continents et leur nombre.
+    """
     try:
         continents = usecase.execute()
         content = {"count": len(continents), "items": jsonable_encoder(continents)}
@@ -72,7 +79,6 @@ def endpoint_usecase_get_all_continents(
 @continent_router.post(
     "",
     summary="Créer un nouveau continent",
-    description="Cette route permet de créer un nouveau continent en fournissant les informations nécessaires via un payload.",
 )
 @inject
 def endpoint_usecase_add_continent(
@@ -81,6 +87,15 @@ def endpoint_usecase_add_continent(
         Provide[ContinentContainer.add_continent_usecase]
     ),
 ):
+    """
+    Crée un nouveau continent.
+
+    Args:
+        <body> payload: CreateContinentPayload --> Les données nécessaires pour créer un continent.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation et l'ID du continent créé.
+    """
     try:
         continent = usecase.execute(payload)
         content = {
@@ -100,7 +115,6 @@ def endpoint_usecase_add_continent(
 @continent_router.get(
     "/{id}",
     summary="Récupérer un continent par ID",
-    description="Cette route permet de récupérer les détails d'un continent spécifique en utilisant son ID.",
 )
 @inject
 def endpoint_usecase_get_continent_by_id(
@@ -109,6 +123,15 @@ def endpoint_usecase_get_continent_by_id(
         Provide[ContinentContainer.find_continent_by_id_usecase]
     ),
 ):
+    """
+    Récupère les détails d'un continent spécifique.
+
+    Args:
+        <header> id (int): L'ID du continent à récupérer.
+
+    Returns:
+        JSONResponse: Une réponse contenant les détails du continent.
+    """
     try:
         continent = usecase.execute(id)
         content = {"item": jsonable_encoder(continent)}
@@ -126,7 +149,6 @@ def endpoint_usecase_get_continent_by_id(
 @continent_router.patch(
     "/{id}",
     summary="Mettre à jour un continent",
-    description="Cette route permet de mettre à jour les informations d'un continent existant en utilisant son ID.",
 )
 @inject
 def endpoint_usecase_patch_continent_by_id(
@@ -136,11 +158,19 @@ def endpoint_usecase_patch_continent_by_id(
         Provide[ContinentContainer.update_continent_usecase]
     ),
 ):
+    """
+    Met à jour les informations d'un continent existant.
+
+    Args:
+        <header> id (int): L'ID du continent à mettre à jour.
+        <body> payload (UpdateContinentPayload): Les nouvelles données pour le continent.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         continent = usecase.execute(id, payload)
-        content = {
-            "message": f"Le continent '{continent.name}' a bien été modifié."
-        }
+        content = {"message": f"Le continent '{continent.name}' a bien été modifié."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -155,7 +185,6 @@ def endpoint_usecase_patch_continent_by_id(
 @continent_router.delete(
     "/{id}",
     summary="Supprimer un continent",
-    description="Cette route permet de supprimer un continent existant en utilisant son ID.",
 )
 @inject
 def endpoint_usecase_delete_continent_by_id(
@@ -164,6 +193,15 @@ def endpoint_usecase_delete_continent_by_id(
         Provide[ContinentContainer.delete_continent_usecase]
     ),
 ):
+    """
+    Supprime un continent existant.
+
+    Args:
+        <header> id (int): L'ID du continent à supprimer.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         continent = usecase.execute(id)
         content = {"message": f"Le continent '{continent.name}' a bien été supprimé."}

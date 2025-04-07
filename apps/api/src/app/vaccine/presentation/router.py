@@ -52,6 +52,12 @@ def endpoint_usecase_get_all_vaccines(
         Provide[VaccineContainer.find_all_vaccines_usecase]
     ),
 ):
+    """
+    Récupère tous les vaccins disponibles.
+
+    Returns:
+        JSONResponse: Une réponse contenant la liste des vaccins et leur nombre.
+    """
     try:
         vaccines = usecase.execute()
         content = {"count": len(vaccines), "items": jsonable_encoder(vaccines)}
@@ -65,14 +71,22 @@ def endpoint_usecase_get_all_vaccines(
             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
         )
 
+
 @vaccine_router.post("")
 @inject
 def endpoint_usecase_add_vaccine(
     payload: CreateVaccinePayload,
-    usecase: AddVaccineUseCase = Depends(
-        Provide[VaccineContainer.add_vaccine_usecase]
-    ),
+    usecase: AddVaccineUseCase = Depends(Provide[VaccineContainer.add_vaccine_usecase]),
 ):
+    """
+    Crée un nouveau vaccin.
+
+    Args:
+        <body> payload (CreateVaccinePayload): Les données nécessaires pour créer un vaccin.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation et l'ID du vaccin créé.
+    """
     try:
         vaccine = usecase.execute(payload)
         content = {
@@ -97,6 +111,15 @@ def endpoint_usecase_get_vaccine_by_id(
         Provide[VaccineContainer.find_vaccine_by_id_usecase]
     ),
 ):
+    """
+    Récupère les détails d'un vaccin spécifique.
+
+    Args:
+        <header> id (int): L'ID du vaccin à récupérer.
+
+    Returns:
+        JSONResponse: Une réponse contenant les détails du vaccin.
+    """
     try:
         vaccine = usecase.execute(id)
         content = {"item": jsonable_encoder(vaccine)}
@@ -120,11 +143,19 @@ def endpoint_usecase_patch_vaccine_by_id(
         Provide[VaccineContainer.update_vaccine_usecase]
     ),
 ):
+    """
+    Met à jour les informations d'un vaccin existant.
+
+    Args:
+        <header> id (int): L'ID du vaccin à mettre à jour.
+        <body> payload (UpdateVaccinePayload): Les nouvelles données pour le vaccin.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         vaccine = usecase.execute(id, payload)
-        content = {
-            "message": f"Le vaccin '{vaccine.name}' a bien été modifié."
-        }
+        content = {"message": f"Le vaccin '{vaccine.name}' a bien été modifié."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -144,6 +175,15 @@ def endpoint_usecase_delete_vaccine_by_id(
         Provide[VaccineContainer.delete_vaccine_usecase]
     ),
 ):
+    """
+    Supprime un vaccin existant.
+
+    Args:
+        <header> id (int): L'ID du vaccin à supprimer.
+
+    Returns:
+        JSONResponse: Une réponse contenant un message de confirmation.
+    """
     try:
         vaccine = usecase.execute(id)
         content = {"message": f"Le vaccin '{vaccine.name}' a bien été supprimé."}
