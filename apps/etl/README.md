@@ -39,3 +39,5 @@ Analyze IT est une application ETL (Extract, Transform, Load) développée pour 
 
 # Installer les dépendances
 pip install -r requirements.txt
+
+![Schéma ](docs/architecture/img/ArchitectureETL.svg)
