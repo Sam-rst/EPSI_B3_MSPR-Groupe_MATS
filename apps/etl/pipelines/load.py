@@ -5,7 +5,6 @@ import os
 import yaml
 from datetime import datetime
 from tqdm import tqdm
-import pandas as pd
 
 class PostgresConnector:
     def __init__(self, host="localhost", database="mspr", user="postgres", password="postgres", port=2345):
@@ -128,12 +127,12 @@ class PostgresConnector:
     
     def execute_etl_process(
         self,
-        mappings_path=None,         # on laisse None par défaut
+        mappings_path=None,                                                         # on laisse None par défaut
         base_folder="../cleaned"
     ):
         if mappings_path is None:
             # On calcule un chemin absolu vers mappings.yaml
-            current_dir = os.path.dirname(__file__)  # dossier contenant load.py
+            current_dir = os.path.dirname(__file__)                                 # dossier contenant load.py
             mappings_path = os.path.join(current_dir, "mappings.yaml")
 
         with open(mappings_path, "r", encoding="utf-8") as f:
