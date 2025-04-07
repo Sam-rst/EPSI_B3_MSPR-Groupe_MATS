@@ -120,6 +120,8 @@ class PostgresConnector:
     #         self.connection.commit()
     #         return True
     #     except Exception as e:
+    #         import traceback
+    #         traceback.print_exc()
     #         print(f"Erreur lors du chargement du CSV: {e}")
     #         self.connection.rollback()
     #         return False
