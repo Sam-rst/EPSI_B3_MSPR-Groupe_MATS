@@ -79,7 +79,6 @@ Cliquez sur le bouton "Traiter les fichiers" pour démarrer le pipeline ETL. L'a
 3. *Charger dans PostgreSQL* (optionnel mais recommandé)
 Après le traitement, cliquez sur "Charger dans PostgreSQL" pour ouvrir la boîte de dialogue de connexion:
 
--  Remplissez les informations de connexion (hôte, base de données, utilisateur, mot de passe)
 - Testez la connexion avec le bouton "Tester connexion"
 - Lancez le chargement avec "Charger dans PostgreSQL"
 
