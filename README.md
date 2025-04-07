@@ -17,7 +17,6 @@ Contributeurs :
 - [➡️ Documentation ETL](apps/etl/README.md)
 - [➡️ Documentation Merise](docs/diagrams/merise/merise.md)
 - [➡️ Documentation Architecture](docs/architecture/architecture.md)
-- ➡️ Documentation IA (MSPR à venir)
 
 ## **📜 Architecture logicielle du projet**  
 

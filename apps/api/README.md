@@ -82,6 +82,29 @@ Le diagramme de séquence **AddCountryUseCase** illustre le processus métier po
 
 ---
 
+## 🗄️ Migrations de la Base de Données
+
+Les migrations de la base de données sont gérées par **Alembic**, un outil puissant de migration pour SQLAlchemy.
+
+### Principes de Base
+
+Les migrations permettent de :
+
+- Versionner les changements de schéma de base de données
+- Effectuer des mises à jour sans perte de données
+- Revenir à une version précédente du schéma si nécessaire
+
+### Bonnes Pratiques
+
+1. **Créez des messages descriptifs** pour vos migrations afin de facilement identifier leur but.
+2. **Vérifiez toujours les fichiers de migration générés** avant de les appliquer pour éviter les erreurs.
+3. **Testez les migrations** sur un environnement de développement avant de les appliquer en production.
+4. **Ne modifiez jamais une migration déjà appliquée** sur d'autres environnements.
+
+Pour plus d'informations, consultez la [documentation des migrations](docs/migrations/migrations.md).
+
+---
+
 ## 🤝 Comment Contribuer
 
 ### 1️⃣ **Cloner le Projet**

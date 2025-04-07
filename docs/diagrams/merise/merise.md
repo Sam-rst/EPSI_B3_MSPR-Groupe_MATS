@@ -9,6 +9,7 @@ Bienvenue dans la documentation Merise du projet. Ce document présente les mod�
 ## 📝 Introduction
 
 La méthode **Merise** est utilisée pour modéliser les données et les traitements d'un système d'information. Elle repose sur trois niveaux de modélisation :
+
 1. **Modèle Conceptuel de Données (MCD)** : Définit les entités, leurs attributs et les relations.
 2. **Modèle Logique de Données (MLD)** : Traduit le MCD en un modèle relationnel.
 3. **Modèle Physique de Données (MPD)** : Détaille la structure physique de la base de données.
@@ -54,12 +55,15 @@ Voici le diagramme MPD du projet :
 ## 🛠️ Instructions pour Modifier les Diagrammes
 
 ### 1️⃣ Modifier les Fichiers Source
+
 Les fichiers source des diagrammes sont écrits en syntaxe PlantUML :
+
 - [`mcd/mcd.puml`](mcd/mcd.puml) pour le MCD.
 - [`mld/mld.puml`](mld/mld.puml) pour le MLD.
 - [`mpd/mpd.puml`](mpd/mpd.puml) pour le MPD.
 
 ### 2️⃣ Générer les Diagrammes
+
 Utilisez un outil comme [PlantUML](https://plantuml.com/) ou une extension dans votre IDE (par exemple, VS Code avec l'extension PlantUML) pour générer les diagrammes à partir des fichiers `.puml`.
 
 ---
