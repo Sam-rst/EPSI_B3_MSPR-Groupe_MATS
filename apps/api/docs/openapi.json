@@ -1,0 +1,1622 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Hello World",
+        "operationId": "hello_world__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/continents": {
+      "get": {
+        "tags": [
+          "Continents"
+        ],
+        "summary": "Récupérer tous les continents",
+        "description": "Récupère tous les continents disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des continents et leur nombre.",
+        "operationId": "endpoint_usecase_get_all_continents_continents_get",
+        "responses": {
+          "200": {
+            "description": "Requête réussie",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Ressource créée avec succès"
+          },
+          "400": {
+            "description": "Requête invalide"
+          },
+          "404": {
+            "description": "Ressource non trouvée"
+          },
+          "500": {
+            "description": "Erreur interne du serveur"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Continents"
+        ],
+        "summary": "Créer un nouveau continent",
+        "description": "Crée un nouveau continent.\n\nArgs:\n    <body> payload: CreateContinentPayload --> Les données nécessaires pour créer un continent.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID du continent créé.",
+        "operationId": "endpoint_usecase_add_continent_continents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContinentPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Requête réussie",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Ressource créée avec succès"
+          },
+          "400": {
+            "description": "Requête invalide"
+          },
+          "404": {
+            "description": "Ressource non trouvée"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur interne du serveur"
+          }
+        }
+      }
+    },
+    "/continents/{id}": {
+      "get": {
+        "tags": [
+          "Continents"
+        ],
+        "summary": "Récupérer un continent par ID",
+        "description": "Récupère les détails d'un continent spécifique.\n\nArgs:\n    <header> id (int): L'ID du continent à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails du continent.",
+        "operationId": "endpoint_usecase_get_continent_by_id_continents__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requête réussie",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Ressource créée avec succès"
+          },
+          "400": {
+            "description": "Requête invalide"
+          },
+          "404": {
+            "description": "Ressource non trouvée"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur interne du serveur"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Continents"
+        ],
+        "summary": "Mettre à jour un continent",
+        "description": "Met à jour les informations d'un continent existant.\n\nArgs:\n    <header> id (int): L'ID du continent à mettre à jour.\n    <body> payload (UpdateContinentPayload): Les nouvelles données pour le continent.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_patch_continent_by_id_continents__id__patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContinentPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Requête réussie",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Ressource créée avec succès"
+          },
+          "400": {
+            "description": "Requête invalide"
+          },
+          "404": {
+            "description": "Ressource non trouvée"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur interne du serveur"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Continents"
+        ],
+        "summary": "Supprimer un continent",
+        "description": "Supprime un continent existant.\n\nArgs:\n    <header> id (int): L'ID du continent à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_delete_continent_by_id_continents__id__delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requête réussie",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Ressource créée avec succès"
+          },
+          "400": {
+            "description": "Requête invalide"
+          },
+          "404": {
+            "description": "Ressource non trouvée"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur interne du serveur"
+          }
+        }
+      }
+    },
+    "/countries": {
+      "get": {
+        "tags": [
+          "countries"
+        ],
+        "summary": "Endpoint Usecase Get All Countries",
+        "description": "Récupère tous les pays disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des pays et leur nombre.",
+        "operationId": "endpoint_usecase_get_all_countries_countries_get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "countries"
+        ],
+        "summary": "Endpoint Usecase Add Country",
+        "description": "Crée un nouveau pays.\n\nArgs:\n    <body> payload (CreateCountryPayload): Les données nécessaires pour créer un pays.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID du pays créé.",
+        "operationId": "endpoint_usecase_add_country_countries_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCountryPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/countries/{id}": {
+      "get": {
+        "tags": [
+          "countries"
+        ],
+        "summary": "Endpoint Usecase Get Country By Id",
+        "description": "Récupère les détails d'un pays spécifique.\n\nArgs:\n    <header> id (int): L'ID du pays à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails du pays.",
+        "operationId": "endpoint_usecase_get_country_by_id_countries__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "countries"
+        ],
+        "summary": "Endpoint Usecase Patch Country By Id",
+        "description": "Met à jour les informations d'un pays existant.\n\nArgs:\n    <header> id (int): L'ID du pays à mettre à jour.\n    <body> payload (UpdateCountryPayload): Les nouvelles données pour le pays.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_patch_country_by_id_countries__id__patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCountryPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "countries"
+        ],
+        "summary": "Endpoint Usecase Delete Country By Id",
+        "description": "Supprime un pays existant.\n\nArgs:\n    <header> id (int): L'ID du pays à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_delete_country_by_id_countries__id__delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/vaccines": {
+      "get": {
+        "tags": [
+          "vaccines"
+        ],
+        "summary": "Endpoint Usecase Get All Vaccines",
+        "description": "Récupère tous les vaccins disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des vaccins et leur nombre.",
+        "operationId": "endpoint_usecase_get_all_vaccines_vaccines_get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "vaccines"
+        ],
+        "summary": "Endpoint Usecase Add Vaccine",
+        "description": "Crée un nouveau vaccin.\n\nArgs:\n    <body> payload (CreateVaccinePayload): Les données nécessaires pour créer un vaccin.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID du vaccin créé.",
+        "operationId": "endpoint_usecase_add_vaccine_vaccines_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVaccinePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/vaccines/{id}": {
+      "get": {
+        "tags": [
+          "vaccines"
+        ],
+        "summary": "Endpoint Usecase Get Vaccine By Id",
+        "description": "Récupère les détails d'un vaccin spécifique.\n\nArgs:\n    <header> id (int): L'ID du vaccin à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails du vaccin.",
+        "operationId": "endpoint_usecase_get_vaccine_by_id_vaccines__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "vaccines"
+        ],
+        "summary": "Endpoint Usecase Patch Vaccine By Id",
+        "description": "Met à jour les informations d'un vaccin existant.\n\nArgs:\n    <header> id (int): L'ID du vaccin à mettre à jour.\n    <body> payload (UpdateVaccinePayload): Les nouvelles données pour le vaccin.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_patch_vaccine_by_id_vaccines__id__patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVaccinePayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "vaccines"
+        ],
+        "summary": "Endpoint Usecase Delete Vaccine By Id",
+        "description": "Supprime un vaccin existant.\n\nArgs:\n    <header> id (int): L'ID du vaccin à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_delete_vaccine_by_id_vaccines__id__delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/epidemics": {
+      "get": {
+        "tags": [
+          "epidemics"
+        ],
+        "summary": "Endpoint Usecase Get All Epidemics",
+        "description": "Récupère toutes les épidémies disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des épidémies et leur nombre.",
+        "operationId": "endpoint_usecase_get_all_epidemics_epidemics_get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "epidemics"
+        ],
+        "summary": "Endpoint Usecase Add Epidemic",
+        "description": "Crée une nouvelle épidémie.\n\nArgs:\n    <body> payload (CreateEpidemicPayload): Les données nécessaires pour créer une épidémie.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID de l'épidémie créée.",
+        "operationId": "endpoint_usecase_add_epidemic_epidemics_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEpidemicPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/epidemics/{id}": {
+      "get": {
+        "tags": [
+          "epidemics"
+        ],
+        "summary": "Endpoint Usecase Get Epidemic By Id",
+        "description": "Récupère les détails d'une épidémie spécifique.\n\nArgs:\n    <header> id (int): L'ID de l'épidémie à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails de l'épidémie.",
+        "operationId": "endpoint_usecase_get_epidemic_by_id_epidemics__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "epidemics"
+        ],
+        "summary": "Endpoint Usecase Patch Epidemic By Id",
+        "description": "Met à jour les informations d'une épidémie existante.\n\nArgs:\n    <header> id (int): L'ID de l'épidémie à mettre à jour.\n    <body> payload (UpdateEpidemicPayload): Les nouvelles données pour l'épidémie.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_patch_epidemic_by_id_epidemics__id__patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEpidemicPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "epidemics"
+        ],
+        "summary": "Endpoint Usecase Delete Epidemic By Id",
+        "description": "Supprime une épidémie existante.\n\nArgs:\n    <header> id (int): L'ID de l'épidémie à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_delete_epidemic_by_id_epidemics__id__delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateContinentPayload": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "population": {
+            "type": "integer",
+            "title": "Population"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "code",
+          "population"
+        ],
+        "title": "CreateContinentPayload"
+      },
+      "CreateCountryPayload": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "iso2": {
+            "type": "string",
+            "title": "Iso2"
+          },
+          "iso3": {
+            "type": "string",
+            "title": "Iso3"
+          },
+          "population": {
+            "type": "integer",
+            "title": "Population"
+          },
+          "continent_id": {
+            "type": "integer",
+            "title": "Continent Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "iso2",
+          "iso3",
+          "population",
+          "continent_id"
+        ],
+        "title": "CreateCountryPayload"
+      },
+      "CreateEpidemicPayload": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "title": "End Date"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "pathogen_name": {
+            "type": "string",
+            "title": "Pathogen Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "transmission_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transmission Mode"
+          },
+          "symptoms": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symptoms"
+          },
+          "reproduction_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reproduction Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "start_date",
+          "end_date",
+          "type",
+          "pathogen_name",
+          "description",
+          "transmission_mode",
+          "symptoms",
+          "reproduction_rate"
+        ],
+        "title": "CreateEpidemicPayload"
+      },
+      "CreateVaccinePayload": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "laboratory": {
+            "type": "string",
+            "title": "Laboratory"
+          },
+          "technology": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology"
+          },
+          "dose": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dose"
+          },
+          "efficacy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Efficacy"
+          },
+          "storage_temperature": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Temperature"
+          },
+          "epidemic_id": {
+            "type": "integer",
+            "title": "Epidemic Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "laboratory",
+          "epidemic_id"
+        ],
+        "title": "CreateVaccinePayload"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "UpdateContinentPayload": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "population": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Population"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "code",
+          "population"
+        ],
+        "title": "UpdateContinentPayload"
+      },
+      "UpdateCountryPayload": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "iso2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iso2"
+          },
+          "iso3": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iso3"
+          },
+          "population": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Population"
+          },
+          "continent_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continent Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "iso2",
+          "iso3",
+          "population",
+          "continent_id"
+        ],
+        "title": "UpdateCountryPayload"
+      },
+      "UpdateEpidemicPayload": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          },
+          "pathogen_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pathogen Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "transmission_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transmission Mode"
+          },
+          "symptoms": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symptoms"
+          },
+          "reproduction_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reproduction Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "start_date",
+          "end_date",
+          "type",
+          "pathogen_name",
+          "description",
+          "transmission_mode",
+          "symptoms",
+          "reproduction_rate"
+        ],
+        "title": "UpdateEpidemicPayload"
+      },
+      "UpdateVaccinePayload": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "laboratory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Laboratory"
+          },
+          "technology": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology"
+          },
+          "dose": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dose"
+          },
+          "efficacy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Efficacy"
+          },
+          "storage_temperature": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Temperature"
+          },
+          "epidemic_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epidemic Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "laboratory",
+          "technology",
+          "dose",
+          "efficacy",
+          "storage_temperature",
+          "epidemic_id"
+        ],
+        "title": "UpdateVaccinePayload"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

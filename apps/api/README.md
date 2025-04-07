@@ -12,6 +12,15 @@ Bienvenue dans le projet **MSPR-API** ! Ce document est conçu pour vous aider �
 
 ---
 
+## Documentation OpenAPI
+
+L'API est documentée automatiquement grâce à FastAPI. Vous pouvez accéder à la documentation interactive en utilisant l'URL suivante :
+[http://localhost:8000/docs](http://localhost:8000/docs)
+
+Ou si vous voulez mettre en place un swagger via le openapi.json, voici le fichier : [docs/openapi.json](docs/openapi.json)
+
+---
+
 ## 🏗️ Vue d'Ensemble de l'Architecture
 
 L'application est organisée en plusieurs couches pour garantir une séparation claire des responsabilités et faciliter la maintenance. Son architecture se base sur le principe de la **Clean Architecture**. Voici un aperçu des principales couches :
