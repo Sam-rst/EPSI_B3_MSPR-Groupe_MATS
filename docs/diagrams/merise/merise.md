@@ -1,72 +1,76 @@
-# Documentation Merise
+# 📊 Documentation Merise
 
 [⬅️ Retour au README.md](/README.md)
 
-Cette documentation présente les modèles conceptuels et logiques de données (MCD et MLD) pour le projet.
+Bienvenue dans la documentation Merise du projet. Ce document présente les modèles conceptuels, logiques et physiques de données (MCD, MLD et MPD) utilisés pour concevoir et structurer la base de données.
 
 ---
 
-## Modèle Conceptuel de Données (MCD)
+## 📝 Introduction
+
+La méthode **Merise** est utilisée pour modéliser les données et les traitements d'un système d'information. Elle repose sur trois niveaux de modélisation :
+1. **Modèle Conceptuel de Données (MCD)** : Définit les entités, leurs attributs et les relations.
+2. **Modèle Logique de Données (MLD)** : Traduit le MCD en un modèle relationnel.
+3. **Modèle Physique de Données (MPD)** : Détaille la structure physique de la base de données.
+
+---
+
+## 🧩 Modèle Conceptuel de Données (MCD)
 
 Le **Modèle Conceptuel de Données (MCD)** représente les entités, leurs attributs et les relations entre elles. Il est utilisé pour définir les besoins fonctionnels en termes de données.
 
-### Diagramme MCD
+### 📌 Diagramme MCD
 
-![Modèle Conceptuel de Données](mcd/img/MCD.svg)
+Voici le diagramme MCD du projet :
 
----
-
-## Modèle Logique de Données (MLD)
-
-Le **Modèle Logique de Données (MLD)** est une traduction du MCD en un modèle plus proche de la structure des bases de données relationnelles. Il inclut les clés primaires, les clés étrangères et les cardinalités.
-
-### Diagramme MLD
-
-![Modèle Logique de Données](mld/img/MLD.svg)
+![Modèle Conceptuel de Données](mcd/img/MCD_V3.svg)
 
 ---
 
-## Modèle Physique de Données (MPD)
+## 🛠️ Modèle Logique de Données (MLD)
 
-Le **Modèle Physique de Données (MPD)** détaille la structure physique de la base de données, y compris les types de données, les index et les contraintes. Il est spécifique à un SGBD (Système de Gestion de Base de Données) particulier.
+Le **Modèle Logique de Données (MLD)** est une traduction du MCD en un modèle relationnel. Il inclut les clés primaires, les clés étrangères et les cardinalités.
 
-### Diagramme MPD
+### 📌 Diagramme MLD
 
-![Modèle Physique de Données](mpd/img/MPD.svg)
+Voici le diagramme MLD du projet :
 
----
-
-## Fichiers associés
-
-- **MCD** :
-  - Fichier source : [`mcd/mcd.puml`](mcd/mcd.puml)
-  - Diagramme généré (en SVG): [`mcd/img/MCD.svg`](mcd/img/MCD.svg)
-  - Diagramme généré (en PNG): [`mcd/img/MCD.png`](mcd/img/MCD.png)
-- **MLD** :
-  - Fichier source : [`mld/mld.puml`](mld/mld.puml)
-  - Diagramme généré (en SVG): [`mld/img/MLD.svg`](mld/img/MLD.svg)
-  - Diagramme généré (en PNG): [`mld/img/MLD.png`](mld/img/MLD.png)
-- **MPD** :
-  - Fichier source : [`mpd/mpd.puml`](mpd/mpd.puml)
-  - Diagramme généré (en SVG): [`mpd/img/MPD.svg`](mpd/img/MPD.svg)
-  - Diagramme généré (en PNG): [`mpd/img/MPD.png`](mpd/img/MPD.png)
+![Modèle Logique de Données](mld/img/MLD_V3.svg)
 
 ---
 
-## Instructions pour modifier les diagrammes
+## 🗄️ Modèle Physique de Données (MPD)
 
-1. **Modifier les fichiers source** :
-   - Les fichiers source des diagrammes sont écrits en syntaxe PlantUML :
-     - [`mcd/mcd.puml`](mcd/mcd.puml) pour le MCD.
-     - [`mld/mld.puml`](mld/mld.puml) pour le MLD.
-     - [`mpd/mpd.puml`](mpd/mpd.puml) pour le MPD.
+Le **Modèle Physique de Données (MPD)** détaille la structure physique de la base de données, y compris les types de données, les index et les contraintes. Ce modèle est spécifique au SGBD utilisé (PostgreSQL dans notre cas).
 
-2. **Générer les diagrammes** :
-   - Utilisez un outil comme [PlantUML](https://plantuml.com/) ou une extension dans votre IDE (par exemple, VS Code avec l'extension PlantUML).
+### 📌 Diagramme MPD
+
+Voici le diagramme MPD du projet :
+
+![Modèle Physique de Données](mpd/img/MPD_V2.svg)
 
 ---
 
-## Références
+## 🛠️ Instructions pour Modifier les Diagrammes
+
+### 1️⃣ Modifier les Fichiers Source
+Les fichiers source des diagrammes sont écrits en syntaxe PlantUML :
+- [`mcd/mcd.puml`](mcd/mcd.puml) pour le MCD.
+- [`mld/mld.puml`](mld/mld.puml) pour le MLD.
+- [`mpd/mpd.puml`](mpd/mpd.puml) pour le MPD.
+
+### 2️⃣ Générer les Diagrammes
+Utilisez un outil comme [PlantUML](https://plantuml.com/) ou une extension dans votre IDE (par exemple, VS Code avec l'extension PlantUML) pour générer les diagrammes à partir des fichiers `.puml`.
+
+---
+
+## 📚 Références
 
 - [Documentation officielle de PlantUML](https://plantuml.com/)
-- [Méthode Merise](https://fr.wikipedia.org/wiki/Merise)
+- [Méthode Merise (Wikipedia)](https://fr.wikipedia.org/wiki/Merise)
+
+---
+
+## 🎉 Conclusion
+
+Cette documentation vous permet de comprendre la structure des données du projet et de contribuer efficacement à son évolution. Si vous avez des questions ou des suggestions, n'hésitez pas à les partager avec l'équipe. 🚀

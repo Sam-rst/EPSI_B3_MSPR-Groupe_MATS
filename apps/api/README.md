@@ -53,7 +53,7 @@ apps/
 
 Découvrez le cycle de vie complet d'une requête API, de l'envoi de la requête par l'utilisateur jusqu'à la réponse renvoyée par le système :
 
-📖 [Cycle de Vie d'une Requête API](docs/uml/life_cycle/api_request/life_cycle_api_request.md)
+📖 [Cycle de Vie d'une Requête API](docs/uml/sequences/api_request/life_cycle_api_request.md)
 
 ---
 

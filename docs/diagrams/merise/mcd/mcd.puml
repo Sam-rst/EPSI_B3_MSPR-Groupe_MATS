@@ -135,9 +135,9 @@ Country "1..1" -- "0..n" Continent : contains >
 DailyWise "1..1" -- "0..n" Country : located_in >
 Statistic "1..1" -- "0..n" DailyWise : related_to >
 Statistic "0..1" -- "0..n" Country : has >
+Statistic "0..1" -- "0..n" Vaccine : has >
+Statistic "0..1" -- "0..n" Epidemic : correlate_to >
 Vaccine "1..1" -- "0..n" Epidemic : used_for >
-Statistic "1..1" -- "0..n" Epidemic : correlate_to >
-Vaccine "0..n" -- "0..n" DailyWise : used_in >
 User "0..n" -- "0..n" Role : group >
 
 @enduml

@@ -127,6 +127,7 @@ table(statistic) {
   {field} daily_wise_id: //BIGINT REFERENCES daily_wise(id)//
   {field} epidemic_id: //BIGINT REFERENCES epidemic(id)//
   {field} country_id: //BIGINT REFERENCES country(id)//
+  {field} vaccine_id: //BIGINT REFERENCES vaccine(id)//
   {field} published_at: //VARCHAR(50)//
   {field} published_by: //VARCHAR(50)//
   {field} created_at: //TIMESTAMP DEFAULT CURRENT_TIMESTAMP//
@@ -151,28 +152,14 @@ table(user_role) {
   {field} is_deleted: //BOOLEAN DEFAULT FALSE//
 }
 
-table(daily_wise_vaccine) {
-  {static} id: //BIGSERIAL//
-  {field} daily_wise_id: //BIGINT REFERENCES daily_wise(id)//
-  {field} vaccine_id: //BIGINT REFERENCES vaccine(id)//
-  {field} created_at: //TIMESTAMP DEFAULT CURRENT_TIMESTAMP//
-  {field} created_by: //VARCHAR(50) DEFAULT 'system'//
-  {field} updated_at: //TIMESTAMP DEFAULT CURRENT_TIMESTAMP//
-  {field} updated_by: //VARCHAR(50) DEFAULT 'system'//
-  {field} deleted_at: //TIMESTAMP//
-  {field} deleted_by: //VARCHAR(50)//
-  {field} is_deleted: //BOOLEAN DEFAULT FALSE//
-}
-
 ' Définition des relations
 country --> continent
 daily_wise --> country
 statistic --> daily_wise
 statistic --> country
-vaccine --> epidemic
 statistic --> epidemic
-daily_wise_vaccine --> daily_wise
-daily_wise_vaccine --> vaccine
+statistic --> vaccine
+vaccine --> epidemic
 user_role --> user
 user_role --> role
 @enduml

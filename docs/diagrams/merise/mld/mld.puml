@@ -126,6 +126,7 @@ table(statistic) {
   {static} //#daily_wise_id//
   {static} //#epidemic_id//
   {static} //#country_id//
+  {static} //#vaccine_id//
   published_at
   published_by
   created_at
@@ -150,28 +151,14 @@ table(user_role) {
   is_deleted
 }
 
-table(daily_wise_vaccine) {
-  {static} id
-  {static} //#daily_wise_id//
-  {static} //#vaccine_id//
-  created_at
-  created_by
-  updated_at
-  updated_by
-  deleted_at
-  deleted_by
-  is_deleted
-}
-
 ' Définition des relations
 country --> continent
 daily_wise --> country
 statistic --> daily_wise
 statistic --> country
-vaccine --> epidemic
 statistic --> epidemic
-daily_wise_vaccine --> daily_wise
-daily_wise_vaccine --> vaccine
+statistic --> vaccine
+vaccine --> epidemic
 user_role --> user
 user_role --> role
 @enduml
