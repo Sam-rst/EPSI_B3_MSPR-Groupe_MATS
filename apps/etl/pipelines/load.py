@@ -5,7 +5,6 @@ import os
 import yaml
 from datetime import datetime
 from tqdm import tqdm
-import pandas as pd
 
 class PostgresConnector:
     def __init__(self, host="localhost", database="mspr", user="postgres", password="postgres", port=2345):
@@ -80,62 +79,62 @@ class PostgresConnector:
             self.connection.rollback()
             return False
     
-    def load_csv_to_staging(self, csv_path, table_name='staging_country_vaccinations'):
-        """Charge un fichier CSV dans une table de staging"""
-        if not self.connection or self.connection.closed:
-            if not self.connect():
-                return False
+    # def load_csv_to_staging(self, csv_path, table_name='staging_country_vaccinations'):
+    #     """Charge un fichier CSV dans une table de staging"""
+    #     if not self.connection or self.connection.closed:
+    #         if not self.connect():
+    #             return False
                 
-        try:
-            # Vérifier si la table existe, sinon la créer
-            check_table_query = f"""
-            SELECT EXISTS (
-                SELECT FROM information_schema.tables 
-                WHERE table_name = '{table_name}'
-            );
-            """
-            self.cursor.execute(check_table_query)
-            table_exists = self.cursor.fetchone()[0]
+    #     try:
+    #         # Vérifier si la table existe, sinon la créer
+    #         check_table_query = f"""
+    #         SELECT EXISTS (
+    #             SELECT FROM information_schema.tables 
+    #             WHERE table_name = '{table_name}'
+    #         );
+    #         """
+    #         self.cursor.execute(check_table_query)
+    #         table_exists = self.cursor.fetchone()[0]
             
-            if not table_exists:
-                create_table_query = f"""
-                CREATE TABLE {table_name} (
-                    country TEXT,
-                    vaccine TEXT,
-                    report_date DATE,
-                    total_vaccination BIGINT,
-                    file_loaded_at TIMESTAMP DEFAULT NOW()
-                );
-                """
-                self.cursor.execute(create_table_query)
-                self.connection.commit()
+    #         if not table_exists:
+    #             create_table_query = f"""
+    #             CREATE TABLE {table_name} (
+    #                 country TEXT,
+    #                 vaccine TEXT,
+    #                 report_date DATE,
+    #                 total_vaccination BIGINT,
+    #                 file_loaded_at TIMESTAMP DEFAULT NOW()
+    #             );
+    #             """
+    #             self.cursor.execute(create_table_query)
+    #             self.connection.commit()
             
-            # Utiliser COPY pour charger le CSV
-            with open(csv_path, 'r') as f:
-                next(f)  # Sauter l'en-tête
-                self.cursor.copy_expert(
-                    f"COPY {table_name} (country, vaccine, report_date, total_vaccination) FROM STDIN WITH CSV",
-                    f
-                )
+    #         # Utiliser COPY pour charger le CSV
+    #         with open(csv_path, 'r') as f:
+    #             next(f)  # Sauter l'en-tête
+    #             self.cursor.copy_expert(
+    #                 f"COPY {table_name} (country, vaccine, report_date, total_vaccination) FROM STDIN WITH CSV",
+    #                 f
+    #             )
             
-            self.connection.commit()
-            return True
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-            print(f"Erreur lors du chargement du CSV: {e}")
-            self.connection.rollback()
-            return False
+    #         self.connection.commit()
+    #         return True
+    #     except Exception as e:
+    #         import traceback
+    #         traceback.print_exc()
+    #         print(f"Erreur lors du chargement du CSV: {e}")
+    #         self.connection.rollback()
+    #         return False
             
     
     def execute_etl_process(
         self,
-        mappings_path=None,         # on laisse None par défaut
+        mappings_path=None,                                                         # on laisse None par défaut
         base_folder="../cleaned"
     ):
         if mappings_path is None:
             # On calcule un chemin absolu vers mappings.yaml
-            current_dir = os.path.dirname(__file__)  # dossier contenant load.py
+            current_dir = os.path.dirname(__file__)                                 # dossier contenant load.py
             mappings_path = os.path.join(current_dir, "mappings.yaml")
 
         with open(mappings_path, "r", encoding="utf-8") as f:
