@@ -20,6 +20,9 @@ from src.app.continent.application.usecase.find_continent_by_id_usecase import (
 from src.app.continent.application.usecase.update_continent_usecase import (
     UpdateContinentUseCase,
 )
+from src.app.continent.application.usecase.delete_continent_usecase import (
+    DeleteContinentUseCase,
+)
 
 # =====Payloads=====
 from src.app.continent.presentation.model.payload.create_continent_payload import (
@@ -28,26 +31,24 @@ from src.app.continent.presentation.model.payload.create_continent_payload impor
 from src.app.continent.presentation.model.payload.update_continent_payload import (
     UpdateContinentPayload,
 )
-from src.app.continent.application.usecase.delete_continent_usecase import (
-    DeleteContinentUseCase,
-)
 
 continent_router = APIRouter(
-    tags=["continents"],
+    tags=["Continents"],
     responses={
-        status.HTTP_200_OK: {"description": "Ok"},
-        status.HTTP_201_CREATED: {"description": "Created"},
-        status.HTTP_400_BAD_REQUEST: {"description": "Bad request"},
-        status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"},
-        status.HTTP_403_FORBIDDEN: {"description": "Forbidden"},
-        status.HTTP_404_NOT_FOUND: {"description": "Not found"},
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {"description": "Unprocessable entity"},
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Internal server error"},
+        status.HTTP_200_OK: {"description": "Requête réussie"},
+        status.HTTP_201_CREATED: {"description": "Ressource créée avec succès"},
+        status.HTTP_400_BAD_REQUEST: {"description": "Requête invalide"},
+        status.HTTP_404_NOT_FOUND: {"description": "Ressource non trouvée"},
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Erreur interne du serveur"},
     },
 )
 
 
-@continent_router.get("")
+@continent_router.get(
+    "",
+    summary="Récupérer tous les continents",
+    description="Cette route permet de récupérer la liste de tous les continents disponibles dans le système.",
+)
 @inject
 def endpoint_usecase_get_all_continents(
     usecase: FindAllContinentsUseCase = Depends(
@@ -68,7 +69,11 @@ def endpoint_usecase_get_all_continents(
         )
 
 
-@continent_router.post("")
+@continent_router.post(
+    "",
+    summary="Créer un nouveau continent",
+    description="Cette route permet de créer un nouveau continent en fournissant les informations nécessaires via un payload.",
+)
 @inject
 def endpoint_usecase_add_continent(
     payload: CreateContinentPayload,
@@ -92,7 +97,11 @@ def endpoint_usecase_add_continent(
         )
 
 
-@continent_router.get("/{id}")
+@continent_router.get(
+    "/{id}",
+    summary="Récupérer un continent par ID",
+    description="Cette route permet de récupérer les détails d'un continent spécifique en utilisant son ID.",
+)
 @inject
 def endpoint_usecase_get_continent_by_id(
     id: int,
@@ -114,7 +123,11 @@ def endpoint_usecase_get_continent_by_id(
         )
 
 
-@continent_router.patch("/{id}")
+@continent_router.patch(
+    "/{id}",
+    summary="Mettre à jour un continent",
+    description="Cette route permet de mettre à jour les informations d'un continent existant en utilisant son ID.",
+)
 @inject
 def endpoint_usecase_patch_continent_by_id(
     id: int,
@@ -139,7 +152,11 @@ def endpoint_usecase_patch_continent_by_id(
         )
 
 
-@continent_router.delete("/{id}")
+@continent_router.delete(
+    "/{id}",
+    summary="Supprimer un continent",
+    description="Cette route permet de supprimer un continent existant en utilisant son ID.",
+)
 @inject
 def endpoint_usecase_delete_continent_by_id(
     id: int,
