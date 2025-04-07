@@ -13,19 +13,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  etl:
-    build: ./apps/etl
-    container_name: MSPR-ETL
-    restart: unless-stopped
-    depends_on:
-      - db
-    env_file:
-      - .env
-    ports:
-      - "8001:8000"
-    volumes:
-      - ./apps/etl:/app
-
   api:
     build: ./apps/api
     container_name: MSPR-API
