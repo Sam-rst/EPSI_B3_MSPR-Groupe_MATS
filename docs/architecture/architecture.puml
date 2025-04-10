@@ -34,7 +34,7 @@ rectangle "ENVIRONNEMENT" {
 
     rectangle "Docker Compose (Tous les services)" {
 
-        rectangle "API Gateway - Backend (à venir)" {
+        rectangle "API Gateway (à venir) - Backend" {
 
             node "ETL" <<ETL>> {
             }
@@ -56,12 +56,11 @@ rectangle "ENVIRONNEMENT" {
             }
 
             "ETL" --> "PostgreSQL" : Write
-            Developer --> "API Rest" : HTTP (Auth à venir)
-            Developer --> "PostgreSQL" : CONNEXION
+            Developer <--> "API Rest"
+            Developer --> "PostgreSQL"
             "API Rest" --> "PostgreSQL" : CRUD
             "PostgreSQL" --> "API Rest" : Response
             "ETL" --> "PostgreSQL" : Read
-            "API Rest" --> Developer : Response
         }
 
         node "Metabase (dataviz)" <<Dataviz>> {
@@ -74,8 +73,9 @@ rectangle "ENVIRONNEMENT" {
 
         "Metabase (dataviz)" --> "PostgreSQL" : Read
         Client --> "Metabase (dataviz)"
+        Client --> "InterfaceETL"
         Developer --> InterfaceETL
-        InterfaceETL --> "ETL" : Exécute pipeline
+        InterfaceETL --> "ETL" : Execute pipeline
     }
 }
 @enduml
