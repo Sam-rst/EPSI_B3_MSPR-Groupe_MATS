@@ -87,6 +87,7 @@ workflows:
               ignore:
                 - /^feature\/.*/
                 - /^hotfix\/.*/
+                - /^bugfix\/.*/
                 - develop
                 - test
                 - main
@@ -104,6 +105,17 @@ workflows:
       - tests:
           requires:
             - build # Exécution des tests après la compilation
+
+  bugfix: # Pas besoin de déploiement pour les branches bugfix
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - /^bugfix\/.*/ # Déclenchement du build uniquement pour les branches bugfix
+      - tests:
+          requires:
+            - build
 
   hotfix: # Pas besoin de déploiement pour les branches hotfix
     jobs:
