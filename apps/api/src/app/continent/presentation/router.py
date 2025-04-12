@@ -37,7 +37,7 @@ from src.app.continent.presentation.model.payload.update_continent_payload impor
 
 # =====DTOs=====
 from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dto import (
-    BulkInsertResponseDTO,
+    BulkInsertContinentsResponseDTO,
 )
 
 continent_router = APIRouter(
@@ -245,7 +245,7 @@ def endpoint_usecase_import_continents(
         JSONResponse: Une réponse contenant le résultat de l'importation.
     """
     try:
-        result: BulkInsertResponseDTO = usecase.execute(payload)
+        result: BulkInsertContinentsResponseDTO = usecase.execute(payload)
         content = jsonable_encoder(result)
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:

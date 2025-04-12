@@ -4,7 +4,7 @@ from src.app.continent.presentation.model.payload.create_continent_payload impor
 )
 from src.app.continent.domain.interface.continent_repository import ContinentRepository
 from src.app.base.application.usecase.base_usecase import BaseUseCase
-from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dto import BulkInsertResponseDTO, BulkInsertErrorItemDTO, BulkInsertSuccessItemDTO
+from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dto import BulkInsertContinentsResponseDTO, BulkInsertContinentsErrorItemDTO, BulkInsertContinentsSuccessItemDTO
 
 class ImportContinentsUseCase(BaseUseCase):
     def __init__(self, repository: ContinentRepository):
@@ -12,7 +12,7 @@ class ImportContinentsUseCase(BaseUseCase):
 
     def execute(
         self, payloads: list[CreateContinentPayload]
-    ) -> BulkInsertResponseDTO:
+    ) -> BulkInsertContinentsResponseDTO:
         try:
             success = []
             errors = []
@@ -22,7 +22,7 @@ class ImportContinentsUseCase(BaseUseCase):
                     if not existing_continent.is_deleted:
                         # Si le continent existe et n'est pas supprimé, on l'ajoute à la liste des erreurs
                         errors.append(
-                            BulkInsertErrorItemDTO(
+                            BulkInsertContinentsErrorItemDTO(
                                 code=payload.code,
                                 error="Le code continent existe déjà",
                             )
@@ -31,7 +31,7 @@ class ImportContinentsUseCase(BaseUseCase):
                         # Si le continent existe mais est supprimé, on le restaure
                         self.repository.reactivate(existing_continent)
                         success.append(
-                            BulkInsertSuccessItemDTO(
+                            BulkInsertContinentsSuccessItemDTO(
                                 code=payload.code,
                                 status="reactivated",
                             )
@@ -40,12 +40,12 @@ class ImportContinentsUseCase(BaseUseCase):
                     # Si le continent n'existe pas, on le crée
                     self.repository.create(payload)
                     success.append(
-                        BulkInsertSuccessItemDTO(
+                        BulkInsertContinentsSuccessItemDTO(
                             code=payload.code,
                             status="created",
                         )
                     )
-            return BulkInsertResponseDTO(
+            return BulkInsertContinentsResponseDTO(
                 success=success,
                 errors=errors,
             )
