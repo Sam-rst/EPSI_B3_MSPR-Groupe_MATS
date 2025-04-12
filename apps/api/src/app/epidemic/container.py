@@ -23,6 +23,9 @@ from src.app.epidemic.application.usecase.update_epidemic_usecase import (
 from src.app.epidemic.application.usecase.delete_epidemic_usecase import (
     DeleteEpidemicUseCase,
 )
+from src.app.epidemic.application.usecase.import_epidemics_usecase import (
+    ImportEpidemicsUseCase,
+)
 
 
 class EpidemicContainer(containers.DeclarativeContainer):
@@ -54,4 +57,7 @@ class EpidemicContainer(containers.DeclarativeContainer):
     )
     delete_epidemic_usecase = providers.Factory(
         DeleteEpidemicUseCase, repository=repository
+    )
+    import_epidemics_usecase = providers.Factory(
+        ImportEpidemicsUseCase, repository=repository
     )

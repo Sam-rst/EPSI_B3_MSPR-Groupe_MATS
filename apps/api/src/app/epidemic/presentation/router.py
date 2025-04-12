@@ -21,6 +21,9 @@ from src.app.epidemic.application.usecase.update_epidemic_usecase import (
 from src.app.epidemic.application.usecase.delete_epidemic_usecase import (
     DeleteEpidemicUseCase,
 )
+from src.app.epidemic.application.usecase.import_epidemics_usecase import (
+    ImportEpidemicsUseCase,
+)
 
 # =====Payloads=====
 from src.app.epidemic.presentation.model.payload.create_epidemic_payload import (
@@ -28,6 +31,11 @@ from src.app.epidemic.presentation.model.payload.create_epidemic_payload import 
 )
 from src.app.epidemic.presentation.model.payload.update_epidemic_payload import (
     UpdateEpidemicPayload,
+)
+
+# =====DTOs=====
+from src.app.epidemic.presentation.model.dto.bulk_insert_epidemics_response_dto import (
+    BulkInsertEpidemicsResponseDTO,
 )
 
 epidemic_router = APIRouter(
@@ -190,6 +198,39 @@ def endpoint_usecase_delete_epidemic_by_id(
         epidemic = usecase.execute(id)
         content = {"message": f"L'épidémie '{epidemic.name}' a bien été supprimée."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
+
+@epidemic_router.post(
+    "/import",
+    summary="Importer plusieurs epidemics",
+)
+@inject
+def endpoint_usecase_import_continents(
+    payload: list[CreateEpidemicPayload],
+    usecase: ImportEpidemicsUseCase = Depends(
+        Provide[EpidemicContainer.import_epidemics_usecase]
+    ),
+):
+    """
+    Importe plusieurs epidemics à la fois.
+
+    Args:
+        <body> payload (list[CreateEpidemicPayload]): La liste des continents à importer.
+
+    Returns:
+        JSONResponse: Une réponse contenant le résultat de l'importation.
+    """
+    try:
+        result: BulkInsertEpidemicsResponseDTO = usecase.execute(payload)
+        content = jsonable_encoder(result)
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
