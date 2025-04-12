@@ -8,4 +8,3 @@ from src.app.user.infrastructure.model.user_role_association import UserRoleAsso
 from src.app.epidemic.infrastructure.model.epidemic_model import EpidemicModel
 from src.app.daily_wise.infrastructure.model.daily_wise_model import DailyWiseModel
 from src.app.statistic.infrastructure.model.statistic_model import StatisticModel
-from src.app.daily_wise.infrastructure.model.daily_wise_vaccine_association import DailyWiseVaccineAssociation 

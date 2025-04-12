@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, ForeignKey, Float, Date
+from sqlalchemy import Column, String, Float, Date
 from sqlalchemy.orm import relationship
 from enum import Enum
 
@@ -26,5 +26,5 @@ class EpidemicModel(BaseModel):
     symptoms = Column(String, nullable=True)
     reproduction_rate = Column(Float, nullable=True)
 
-    vaccines = relationship("VaccineModel", back_populates="epidemic")
-    statistics = relationship("StatisticModel", back_populates="epidemic")
+    vaccines = relationship("VaccineModel", back_populates="epidemics")
+    statistics = relationship("StatisticModel", back_populates="epidemics")

@@ -1,9 +1,10 @@
-from sqlalchemy import Column, BigInteger, String, ForeignKey, Float
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from enum import Enum
 
 from src.app.base.infrastructure.model.base_model import BaseModel
-from src.app.user.infrastructure.model.user_role_association import UserRoleAssociation
+from src.app.user.infrastructure.model.user_role_association import (
+    UserRoleAssociation,
+)
 
 
 class UserModel(BaseModel):
@@ -17,9 +18,8 @@ class UserModel(BaseModel):
     gender = Column(String(10), nullable=True)
     birthdate = Column(String(10), nullable=True)
 
-    # Relation Many-to-Many avec RoleModel
     roles = relationship(
         "RoleModel",
-        secondary=UserRoleAssociation.__table__,
-        back_populates="users"
+        secondary=UserRoleAssociation.__tablename__,
+        back_populates="users",
     )
