@@ -222,7 +222,7 @@ def endpoint_usecase_import_continents(
     Importe plusieurs epidemics à la fois.
 
     Args:
-        <body> payload (list[CreateEpidemicPayload]): La liste des continents à importer.
+        <body> payload (list[CreateEpidemicPayload]): La liste des epidemics à importer.
 
     Returns:
         JSONResponse: Une réponse contenant le résultat de l'importation.
