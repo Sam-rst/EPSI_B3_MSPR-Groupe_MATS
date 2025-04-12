@@ -18,11 +18,15 @@ from src.app.continent.application.usecase.find_continent_by_id_usecase import (
     FindContinentByIdUseCase,
 )
 from src.app.continent.application.usecase.update_continent_usecase import (
-    UpdateContinentUseCase
+    UpdateContinentUseCase,
 )
 from src.app.continent.application.usecase.delete_continent_usecase import (
-    DeleteContinentUseCase
+    DeleteContinentUseCase,
 )
+from src.app.continent.application.usecase.import_continents_usecase import (
+    ImportContinentsUseCase,
+)
+
 
 class ContinentContainer(containers.DeclarativeContainer):
     modules = ["src.app.continent.presentation.router"]
@@ -48,10 +52,13 @@ class ContinentContainer(containers.DeclarativeContainer):
     )
     find_continent_by_id_usecase = providers.Factory(
         FindContinentByIdUseCase, repository=repository
-    ) 
+    )
     update_continent_usecase = providers.Factory(
         UpdateContinentUseCase, repository=repository
     )
     delete_continent_usecase = providers.Factory(
         DeleteContinentUseCase, repository=repository
+    )
+    import_continents_usecase = providers.Factory(
+        ImportContinentsUseCase, repository=repository
     )

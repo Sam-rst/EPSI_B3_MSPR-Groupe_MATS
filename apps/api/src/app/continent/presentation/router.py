@@ -23,6 +23,9 @@ from src.app.continent.application.usecase.update_continent_usecase import (
 from src.app.continent.application.usecase.delete_continent_usecase import (
     DeleteContinentUseCase,
 )
+from src.app.continent.application.usecase.import_continents_usecase import (
+    ImportContinentsUseCase,
+)
 
 # =====Payloads=====
 from src.app.continent.presentation.model.payload.create_continent_payload import (
@@ -30,6 +33,11 @@ from src.app.continent.presentation.model.payload.create_continent_payload impor
 )
 from src.app.continent.presentation.model.payload.update_continent_payload import (
     UpdateContinentPayload,
+)
+
+# =====DTOs=====
+from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dto import (
+    BulkInsertResponseDTO,
 )
 
 continent_router = APIRouter(
@@ -206,6 +214,40 @@ def endpoint_usecase_delete_continent_by_id(
         continent = usecase.execute(id)
         content = {"message": f"Le continent '{continent.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
+
+
+@continent_router.post(
+    "/import",
+    summary="Importer plusieurs continents",
+)
+@inject
+def endpoint_usecase_import_continents(
+    payload: list[CreateContinentPayload],
+    usecase: ImportContinentsUseCase = Depends(
+        Provide[ContinentContainer.import_continents_usecase]
+    ),
+):
+    """
+    Importe plusieurs continents à la fois.
+
+    Args:
+        <body> payload (list[CreateContinentPayload]): La liste des continents à importer.
+
+    Returns:
+        JSONResponse: Une réponse contenant le résultat de l'importation.
+    """
+    try:
+        result: BulkInsertResponseDTO = usecase.execute(payload)
+        content = jsonable_encoder(result)
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
