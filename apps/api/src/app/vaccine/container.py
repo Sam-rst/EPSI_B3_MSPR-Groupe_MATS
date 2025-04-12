@@ -23,6 +23,9 @@ from src.app.vaccine.application.usecase.update_vaccine_usecase import (
 from src.app.vaccine.application.usecase.delete_vaccine_usecase import (
     DeleteVaccineUseCase,
 )
+from src.app.vaccine.application.usecase.import_vaccines_usecase import (
+    ImportVaccinesUseCase,
+)
 from src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory import (
     EpidemicRepositoryInMemory,
 )
@@ -74,4 +77,8 @@ class VaccineContainer(containers.DeclarativeContainer):
     )
     delete_vaccine_usecase = providers.Factory(
         DeleteVaccineUseCase, repository=repository
+    )
+    import_vaccines_usecase = providers.Factory(
+        ImportVaccinesUseCase, repository=repository,
+        epidemic_repository=epidemic_repository
     )

@@ -21,6 +21,9 @@ from src.app.vaccine.application.usecase.update_vaccine_usecase import (
 from src.app.vaccine.application.usecase.delete_vaccine_usecase import (
     DeleteVaccineUseCase,
 )
+from src.app.vaccine.application.usecase.import_vaccines_usecase import (
+    ImportVaccinesUseCase,
+)
 
 # =====Payloads=====
 from src.app.vaccine.presentation.model.payload.create_vaccine_payload import (
@@ -28,6 +31,11 @@ from src.app.vaccine.presentation.model.payload.create_vaccine_payload import (
 )
 from src.app.vaccine.presentation.model.payload.update_vaccine_payload import (
     UpdateVaccinePayload,
+)
+
+# =====DTOs=====
+from src.app.vaccine.presentation.model.dto.bulk_insert_vaccines_response_dto import (
+    BulkInsertVaccinesResponseDTO,
 )
 
 vaccine_router = APIRouter(
@@ -188,6 +196,40 @@ def endpoint_usecase_delete_vaccine_by_id(
         vaccine = usecase.execute(id)
         content = {"message": f"Le vaccin '{vaccine.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
+
+
+@vaccine_router.post(
+    "/import",
+    summary="Importer plusieurs vaccins",
+)
+@inject
+def endpoint_usecase_import_continents(
+    payload: list[CreateVaccinePayload],
+    usecase: ImportVaccinesUseCase = Depends(
+        Provide[VaccineContainer.import_vaccines_usecase]
+    ),
+):
+    """
+    Importe plusieurs vaccines à la fois.
+
+    Args:
+        <body> payload (list[CreateVaccinePayload]): La liste des vaccines à importer.
+
+    Returns:
+        JSONResponse: Une réponse contenant le résultat de l'importation.
+    """
+    try:
+        result: BulkInsertVaccinesResponseDTO = usecase.execute(payload)
+        content = jsonable_encoder(result)
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
