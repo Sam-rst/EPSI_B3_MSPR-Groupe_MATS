@@ -207,6 +207,7 @@ def endpoint_usecase_delete_epidemic_by_id(
             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
         )
 
+
 @epidemic_router.post(
     "/import",
     summary="Importer plusieurs epidemics",

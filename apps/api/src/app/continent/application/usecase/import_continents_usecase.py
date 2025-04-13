@@ -4,7 +4,12 @@ from src.app.continent.presentation.model.payload.create_continent_payload impor
 )
 from src.app.continent.domain.interface.continent_repository import ContinentRepository
 from src.app.base.application.usecase.base_usecase import BaseUseCase
-from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dto import BulkInsertContinentsResponseDTO, BulkInsertContinentsErrorItemDTO, BulkInsertContinentsSuccessItemDTO
+from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dto import (
+    BulkInsertContinentsResponseDTO,
+    BulkInsertContinentsErrorItemDTO,
+    BulkInsertContinentsSuccessItemDTO,
+)
+
 
 class ImportContinentsUseCase(BaseUseCase):
     def __init__(self, repository: ContinentRepository):

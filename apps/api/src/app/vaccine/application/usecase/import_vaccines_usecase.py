@@ -15,7 +15,9 @@ from src.app.vaccine.presentation.model.dto.bulk_insert_vaccines_response_dto im
 
 
 class ImportVaccinesUseCase(BaseUseCase):
-    def __init__(self, repository: VaccineRepository, epidemic_repository: EpidemicRepository):
+    def __init__(
+        self, repository: VaccineRepository, epidemic_repository: EpidemicRepository
+    ):
         super().__init__(repository)
         self._epidemic_repository = epidemic_repository
 

@@ -79,6 +79,7 @@ class VaccineContainer(containers.DeclarativeContainer):
         DeleteVaccineUseCase, repository=repository
     )
     import_vaccines_usecase = providers.Factory(
-        ImportVaccinesUseCase, repository=repository,
-        epidemic_repository=epidemic_repository
+        ImportVaccinesUseCase,
+        repository=repository,
+        epidemic_repository=epidemic_repository,
     )
