@@ -26,6 +26,16 @@ services:
     volumes:
       - ./apps/api:/app
 
+  seeder:
+    build: ./apps/seeder
+    container_name: MSPR-SEEDER
+    depends_on:
+      - api
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+
   metabase:
     image: metabase/metabase:latest
     container_name: MSPR-METABASE
