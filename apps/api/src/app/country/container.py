@@ -23,6 +23,9 @@ from src.app.country.application.usecase.update_country_usecase import (
 from src.app.country.application.usecase.delete_country_usecase import (
     DeleteCountryUseCase,
 )
+from src.app.country.application.usecase.import_countries_usecase import (
+    ImportCountriesUseCase,
+)
 from src.app.continent.infrastructure.repository.continent_repo_in_memory import (
     ContinentRepositoryInMemory,
 )
@@ -76,4 +79,9 @@ class CountryContainer(containers.DeclarativeContainer):
     )
     delete_country_usecase = providers.Factory(
         DeleteCountryUseCase, repository=repository
+    )
+    import_countries_usecase = providers.Factory(
+        ImportCountriesUseCase,
+        repository=repository,
+        continent_repository=continent_repository,
     )

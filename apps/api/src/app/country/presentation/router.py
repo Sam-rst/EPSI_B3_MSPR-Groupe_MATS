@@ -21,6 +21,9 @@ from src.app.country.application.usecase.update_country_usecase import (
 from src.app.country.application.usecase.delete_country_usecase import (
     DeleteCountryUseCase,
 )
+from src.app.country.application.usecase.import_countries_usecase import (
+    ImportCountriesUseCase,
+)
 
 # =====Payloads=====
 from src.app.country.presentation.model.payload.create_country_payload import (
@@ -28,6 +31,11 @@ from src.app.country.presentation.model.payload.create_country_payload import (
 )
 from src.app.country.presentation.model.payload.update_country_payload import (
     UpdateCountryPayload,
+)
+
+# =====DTOs=====
+from src.app.country.presentation.model.dto.bulk_insert_countries_response_dto import (
+    BulkInsertCountriesResponseDTO,
 )
 
 country_router = APIRouter(
@@ -188,6 +196,40 @@ def endpoint_usecase_delete_country_by_id(
         country = usecase.execute(id)
         content = {"message": f"Le pays '{country.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
+
+
+@country_router.post(
+    "/import",
+    summary="Importer plusieurs pays",
+)
+@inject
+def endpoint_usecase_import_continents(
+    payload: list[CreateCountryPayload],
+    usecase: ImportCountriesUseCase = Depends(
+        Provide[CountryContainer.import_countries_usecase]
+    ),
+):
+    """
+    Importe plusieurs pays à la fois.
+
+    Args:
+        <body> payload (list[CreateCountryPayload]): La liste des pays à importer.
+
+    Returns:
+        JSONResponse: Une réponse contenant le résultat de l'importation.
+    """
+    try:
+        result: BulkInsertCountriesResponseDTO = usecase.execute(payload)
+        content = jsonable_encoder(result)
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
