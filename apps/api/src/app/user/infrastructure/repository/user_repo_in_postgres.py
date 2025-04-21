@@ -2,18 +2,22 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from src.config.database import db
+from src.app.user.domain.interface.user_repository import UserRepository
 from src.app.user.infrastructure.model.user_model import UserModel
 from src.app.user.presentation.model.payload.create_user_payload import CreateUserPayload
 from src.app.user.presentation.model.payload.update_user_payload import UpdateUserPayload
-from src.app.base.infrastructure.repository.base_repo_in_postgres import BaseRepositoryInPostgres
 
 
-class UserRepositoryInPostgres(BaseRepositoryInPostgres):
+class UserRepositoryInPostgres(UserRepository):
     def __init__(self):
         """
         Initialise le repository avec une session SQLAlchemy.
         """
-        super().__init__(db.get_session())
+        self._session = db.get_session()
+
+    @property
+    def session(self) -> Session:
+        return self._session
 
     def create(self, payload: CreateUserPayload) -> UserModel:
         try:
@@ -34,9 +38,7 @@ class UserRepositoryInPostgres(BaseRepositoryInPostgres):
             self.session.rollback()
             raise e
 
-    def update(
-        self, user: UserModel, payload: UpdateUserPayload
-    ) -> Optional[UserModel]:
+    def update(self, user: UserModel, payload: UpdateUserPayload) -> Optional[UserModel]:
         try:
             if payload.firstname:
                 user.firstname = payload.firstname
@@ -110,9 +112,6 @@ class UserRepositoryInPostgres(BaseRepositoryInPostgres):
     def find_all(self) -> List[UserModel]:
         """
         Récupère tous les utilisateurs non supprimés.
-
-        Raises:
-            e: Exception lors de la récupération des utilisateurs
 
         Returns:
             List[UserModel]: Liste des utilisateurs
