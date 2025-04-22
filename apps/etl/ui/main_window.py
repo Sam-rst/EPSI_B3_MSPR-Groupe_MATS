@@ -207,6 +207,23 @@ class MainWindow:
         # Afficher la fenêtre de connexion
         login_window = LoginWindow(self.root, on_login_success)
     
+    def logout(self):
+        """Déconnecte l'utilisateur et retourne à l'écran de connexion"""
+        # Effacer l'interface actuelle
+        self.main_frame.destroy()
+        
+        # Importer et afficher la fenêtre de connexion
+        from ui.login_window import LoginWindow
+        
+        def on_login_success(user):
+            # Réinitialiser l'application
+            from ui.main_window import MainWindow
+            login_window.main_frame.destroy()
+            MainWindow(self.root, user)
+        
+        # Afficher la fenêtre de connexion
+        login_window = LoginWindow(self.root, on_login_success)
+    
     def change_output_dir(self):
         """Permet à l'utilisateur de choisir un nouveau répertoire de sortie"""
         new_dir = filedialog.askdirectory(
