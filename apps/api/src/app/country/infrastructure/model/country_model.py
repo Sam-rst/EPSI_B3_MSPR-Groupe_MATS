@@ -21,5 +21,5 @@ class CountryModel(BaseModel):
 
     users = relationship(
         "UserModel",
-        back_populates="country_id",
+        back_populates="countries",
     )
