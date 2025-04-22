@@ -15,9 +15,10 @@ from ui.styles import (
 
 
 class MainWindow:
-    def __init__(self, root):
+    def __init__(self, root, user=None):
         self.root = root
         self.root.configure(bg=MAIN_BG_COLOR)
+        self.user = user  # Informations sur l'utilisateur connecté
         
         self.output_dir = DEFAULT_OUTPUT_DIR
         
@@ -40,13 +41,39 @@ class MainWindow:
         self.main_frame = tk.Frame(self.root, bg=MAIN_BG_COLOR)
         self.main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
         
+        # Frame pour l'en-tête avec titre et info utilisateur
+        header_frame = tk.Frame(self.main_frame, bg=MAIN_BG_COLOR)
+        header_frame.pack(fill=tk.X, pady=(0, 20))
+        
         title_label = tk.Label(
-            self.main_frame,
+            header_frame,
             text="Analyze IT",
             font=TITLE_FONT,
             bg=MAIN_BG_COLOR
         )
-        title_label.pack(pady=(0, 20))
+        title_label.pack(side=tk.LEFT)
+        
+        # Informations utilisateur si disponible
+        if self.user:
+            user_frame = tk.Frame(header_frame, bg=MAIN_BG_COLOR)
+            user_frame.pack(side=tk.RIGHT)
+            
+            user_label = tk.Label(
+                user_frame,
+                text=f"Utilisateur: {self.user['login']} ({self.user['role']})",
+                font=ITEM_FONT,
+                bg=MAIN_BG_COLOR
+            )
+            user_label.pack(side=tk.LEFT, padx=(0, 10))
+            
+            logout_button = tk.Button(
+                user_frame,
+                text="Déconnexion",
+                font=ITEM_FONT,
+                command=self.logout
+            )
+            configure_button_style(logout_button, is_primary=False)
+            logout_button.pack(side=tk.RIGHT)
         
         top_button_frame = tk.Frame(self.main_frame, bg=MAIN_BG_COLOR)
         top_button_frame.pack(fill=tk.X, pady=(0, 10))
@@ -151,6 +178,23 @@ class MainWindow:
         )
         configure_button_style(db_button, is_primary=False)
         db_button.pack(side=tk.BOTTOM, pady=10)
+    
+    def logout(self):
+        """Déconnecte l'utilisateur et retourne à l'écran de connexion"""
+        # Effacer l'interface actuelle
+        self.main_frame.destroy()
+        
+        # Importer et afficher la fenêtre de connexion
+        from ui.login_window import LoginWindow
+        
+        def on_login_success(user):
+            # Réinitialiser l'application
+            from ui.main_window import MainWindow
+            login_window.main_frame.destroy()
+            MainWindow(self.root, user)
+        
+        # Afficher la fenêtre de connexion
+        login_window = LoginWindow(self.root, on_login_success)
     
     def change_output_dir(self):
         """Permet à l'utilisateur de choisir un nouveau répertoire de sortie"""
@@ -314,12 +358,12 @@ class MainWindow:
             except Exception as e:
                 messagebox.showerror("Erreur", f"Erreur lors de la connexion: {str(e)}")
         
-        #Fonction pour charger les donnees
+        # Fonction pour charger les données
         def load_data():
             try:
                 from pipelines.load import PostgresConnector
                 
-                #Recuperer le chemin du premier fichier transformz
+                # Récupérer le chemin du premier fichier transformé
                 if not self.pipeline.transformed_datasets:
                     messagebox.showwarning("Attention", "Aucun fichier transformé disponible")
                     return
@@ -327,7 +371,7 @@ class MainWindow:
                 first_dataset_key = list(self.pipeline.transformed_datasets.keys())[0]
                 first_dataset = self.pipeline.transformed_datasets[first_dataset_key]
                 
-                #Connexion a PostgreSQL
+                # Connexion à PostgreSQL
                 db = PostgresConnector(
                     host=host_var.get(),
                     database=db_var.get(),
@@ -348,8 +392,6 @@ class MainWindow:
                     base_folder=self.output_dir
                 ):
                     messagebox.showinfo("Succès", "Données chargées avec succès dans PostgreSQL")
-                    # Supprimer le fichier CSV temporaire
-                    os.remove(temp_csv_path)
                     self.update_status("Données chargées dans PostgreSQL")
                 else:
                     messagebox.showerror("Erreur", "Échec du chargement des données")
