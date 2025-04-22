@@ -9,6 +9,8 @@ from src.app.vaccine.container import VaccineContainer
 from src.app.vaccine.presentation.router import vaccine_router
 from src.app.epidemic.container import EpidemicContainer
 from src.app.epidemic.presentation.router import epidemic_router
+from src.app.user.container import UserContainer
+from src.app.user.presentation.router import user_router
 
 
 class Container(containers.DeclarativeContainer):
@@ -17,6 +19,7 @@ class Container(containers.DeclarativeContainer):
         CountryContainer,
         VaccineContainer,
         EpidemicContainer,
+        UserContainer,
     ]  # A ajouter les autres containers si il y en a d'autres
     [container().wire(modules=container.modules) for container in containers]
 
@@ -35,3 +38,4 @@ class Container(containers.DeclarativeContainer):
     router.include_router(country_router, prefix="/countries")
     router.include_router(vaccine_router, prefix="/vaccines")
     router.include_router(epidemic_router, prefix="/epidemics")
+    router.include_router(user_router, prefix="/users")

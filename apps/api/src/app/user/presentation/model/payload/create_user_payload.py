@@ -4,10 +4,7 @@ from datetime import date
 
 
 class CreateUserPayload(BaseModel):
-    firstname: str
-    lastname: str
-    username: str
-    email: EmailStr
-    password: str
-    gender: Optional[str] = None
-    birthdate: Optional[date] = None
+  username: str
+  password: str
+  role_id: int
+  region_id: int

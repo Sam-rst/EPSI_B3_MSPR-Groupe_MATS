@@ -10,15 +10,40 @@ class AddUserUseCase(BaseUseCase):
     def __init__(self, repository: UserRepository):
         super().__init__(repository)
 
-    def execute(self, payload: CreateUserPayload) -> UserEntity | UserModel:
+    def execute(self, payload: CreateUserPayload) -> UserModel:
         try:
-            existing_user = self.repository.find_by_email(payload.email)
+            # Déduire le firstname et le lastname à partir du username
+            if "." not in payload.username:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Le username doit être au format 'firstname.lastname'.",
+                )
+            firstname, lastname = payload.username.split(".", 1).lower()
+            firstname = firstname.capitalize()
+            lastname = lastname.capitalize()
+
+            # Générer l'email
+            email = f"{payload.username}@analyseit.com"
+
+            # Vérifier si un utilisateur avec cet email existe déjà
+            existing_user = self.repository.find_by_email(email)
             if existing_user:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Un utilisateur avec cet email existe déjà.",
                 )
-            return self.repository.create(payload)
+
+            # Créer le modèle utilisateur
+            user_model = UserModel(
+                firstname=firstname,
+                lastname=lastname,
+                username=payload.username,
+                email=email,
+                password=payload.password,
+            )
+
+            # Sauvegarder l'utilisateur dans le repository
+            return self.repository.create(user_model)
 
         except HTTPException as http_exc:
             raise HTTPException(

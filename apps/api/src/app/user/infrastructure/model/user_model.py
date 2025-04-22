@@ -15,8 +15,6 @@ class UserModel(BaseModel):
     username = Column(String(50), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String(100), nullable=False)
-    gender = Column(String(10), nullable=True)
-    birthdate = Column(String(10), nullable=True)
 
     roles = relationship(
         "RoleModel",
