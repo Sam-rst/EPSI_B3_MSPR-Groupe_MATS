@@ -18,3 +18,8 @@ class CountryModel(BaseModel):
     statistics = relationship("StatisticModel", back_populates="countries")
 
     daily_wises = relationship("DailyWiseModel", back_populates="countries")
+
+    users = relationship(
+        "UserModel",
+        back_populates="country_id",
+    )
