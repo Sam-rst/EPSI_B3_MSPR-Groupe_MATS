@@ -8,3 +8,4 @@ tkinterdnd2==0.4.3
 dependency_injector==4.43.0
 pyyaml==6.0.2
 tqdm==4.66.5
+requests
