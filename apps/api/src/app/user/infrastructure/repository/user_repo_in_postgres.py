@@ -21,14 +21,18 @@ class UserRepositoryInPostgres(UserRepository):
 
     def create(self, payload: CreateUserPayload) -> UserModel:
         try:
+            email = f"{payload.username.lower()}@analyseit.com"
+            firstname, lastname = payload.username.split(".", 1)
+            firstname = firstname.capitalize()
+            lastname = lastname.capitalize()
+            
+            # Créer le modèle utilisateur
             model = UserModel(
-                firstname=payload.firstname,
-                lastname=payload.lastname,
+                firstname=firstname,
+                lastname=lastname,
                 username=payload.username,
-                email=payload.email,
+                email=email,
                 password=payload.password,
-                gender=payload.gender,
-                birthdate=payload.birthdate,
             )
             self.session.add(model)
             self.session.commit()

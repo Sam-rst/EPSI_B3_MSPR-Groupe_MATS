@@ -18,9 +18,6 @@ class AddUserUseCase(BaseUseCase):
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Le username doit être au format 'firstname.lastname'.",
                 )
-            firstname, lastname = payload.username.split(".", 1)
-            firstname = firstname.capitalize()
-            lastname = lastname.capitalize()
 
             # Générer l'email
             email = f"{payload.username.lower()}@analyseit.com"
@@ -33,17 +30,8 @@ class AddUserUseCase(BaseUseCase):
                     detail="Un utilisateur avec cet email existe déjà.",
                 )
 
-            # Créer le modèle utilisateur
-            user_model = UserModel(
-                firstname=firstname,
-                lastname=lastname,
-                username=payload.username,
-                email=email,
-                password=payload.password,
-            )
-
             # Sauvegarder l'utilisateur dans le repository
-            return self.repository.create(user_model)
+            return self.repository.create(payload)
 
         except HTTPException as http_exc:
             raise HTTPException(

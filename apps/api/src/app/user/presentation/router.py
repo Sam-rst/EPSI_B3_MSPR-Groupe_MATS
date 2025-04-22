@@ -33,31 +33,31 @@ user_router = APIRouter(
 )
 
 
-@user_router.get("")
-@inject
-def endpoint_usecase_get_all_users(
-    usecase: FindAllUsersUseCase = Depends(
-        Provide[UserContainer.find_all_users_usecase]
-    ),
-):
-    """
-    Récupère tous les utilisateurs disponibles.
+# @user_router.get("")
+# @inject
+# def endpoint_usecase_get_all_users(
+#     usecase: FindAllUsersUseCase = Depends(
+#         Provide[UserContainer.find_all_users_usecase]
+#     ),
+# ):
+#     """
+#     Récupère tous les utilisateurs disponibles.
 
-    Returns:
-        JSONResponse: Une réponse contenant la liste des utilisateurs et leur nombre.
-    """
-    try:
-        users = usecase.execute()
-        content = {"count": len(users), "items": jsonable_encoder(users)}
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except HTTPException as http_exc:
-        return JSONResponse(
-            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
-        )
-    except Exception as e:
-        return JSONResponse(
-            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
-        )
+#     Returns:
+#         JSONResponse: Une réponse contenant la liste des utilisateurs et leur nombre.
+#     """
+#     try:
+#         users = usecase.execute()
+#         content = {"count": len(users), "items": jsonable_encoder(users)}
+#         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+#     except HTTPException as http_exc:
+#         return JSONResponse(
+#             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+#         )
+#     except Exception as e:
+#         return JSONResponse(
+#             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+#         )
 
 
 @user_router.post("")
@@ -122,37 +122,37 @@ def endpoint_usecase_get_user_by_id(
         )
 
 
-@user_router.patch("/{id}")
-@inject
-def endpoint_usecase_patch_user_by_id(
-    id: int,
-    payload: UpdateUserPayload,
-    usecase: UpdateUserUseCase = Depends(
-        Provide[UserContainer.update_user_usecase]
-    ),
-):
-    """
-    Met à jour les informations d'un utilisateur existant.
+# @user_router.patch("/{id}")
+# @inject
+# def endpoint_usecase_patch_user_by_id(
+#     id: int,
+#     payload: UpdateUserPayload,
+#     usecase: UpdateUserUseCase = Depends(
+#         Provide[UserContainer.update_user_usecase]
+#     ),
+# ):
+#     """
+#     Met à jour les informations d'un utilisateur existant.
 
-    Args:
-        <header> id (int): L'ID de l'utilisateur à mettre à jour.
-        <body> payload (UpdateUserPayload): Les nouvelles données pour l'utilisateur.
+#     Args:
+#         <header> id (int): L'ID de l'utilisateur à mettre à jour.
+#         <body> payload (UpdateUserPayload): Les nouvelles données pour l'utilisateur.
 
-    Returns:
-        JSONResponse: Une réponse contenant un message de confirmation.
-    """
-    try:
-        user = usecase.execute(id, payload)
-        content = {"message": f"L'utilisateur '{user.firstname} {user.lastname}' a bien été modifié."}
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    except HTTPException as http_exc:
-        return JSONResponse(
-            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
-        )
-    except Exception as e:
-        return JSONResponse(
-            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
-        )
+#     Returns:
+#         JSONResponse: Une réponse contenant un message de confirmation.
+#     """
+#     try:
+#         user = usecase.execute(id, payload)
+#         content = {"message": f"L'utilisateur '{user.firstname} {user.lastname}' a bien été modifié."}
+#         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+#     except HTTPException as http_exc:
+#         return JSONResponse(
+#             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+#         )
+#     except Exception as e:
+#         return JSONResponse(
+#             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+#         )
 
 
 @user_router.delete("/{id}")
