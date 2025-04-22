@@ -18,12 +18,12 @@ class AddUserUseCase(BaseUseCase):
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Le username doit être au format 'firstname.lastname'.",
                 )
-            firstname, lastname = payload.username.split(".", 1).lower()
+            firstname, lastname = payload.username.split(".", 1)
             firstname = firstname.capitalize()
             lastname = lastname.capitalize()
 
             # Générer l'email
-            email = f"{payload.username}@analyseit.com"
+            email = f"{payload.username.lower()}@analyseit.com"
 
             # Vérifier si un utilisateur avec cet email existe déjà
             existing_user = self.repository.find_by_email(email)
