@@ -30,7 +30,7 @@ class User:
         return cls(
             id=data["id"],
             username=data["username"],
-            role=data["role"],
+            role=data["role_id"],
             region=data["region"]
         )
 

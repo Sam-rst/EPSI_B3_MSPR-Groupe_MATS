@@ -9,84 +9,93 @@
         "epidemic_id": 1
     },
     {
-        "name": "Pfizer-BioNTech COVID-19 Vaccine",
-        "laboratory": "Pfizer/BioNTech",
-        "technology": "mRNA",
-        "dose": "2 doses + boosters",
-        "efficacy": 0.95,
-        "storage_temperature": "-70°C",
+        "name": "CanSino",
+        "laboratory": "CanSino Biologics",
+        "technology": "Viral vector (adenovirus type 5)",
+        "dose": "1 dose",
+        "efficacy": 65.28,
+        "storage_temperature": "2–8°C",
         "epidemic_id": 2
     },
     {
-        "name": "Moderna COVID-19 Vaccine",
+        "name": "Covaxin",
+        "laboratory": "Bharat Biotech",
+        "technology": "Inactivated virus",
+        "dose": "2 doses, 4 weeks apart",
+        "efficacy": 77.8,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Johnson&Johnson",
+        "laboratory": "Johnson & Johnson",
+        "technology": "Viral vector (adenovirus type 26)",
+        "dose": "1 dose",
+        "efficacy": 66.9,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Moderna",
         "laboratory": "Moderna",
         "technology": "mRNA",
-        "dose": "2 doses + boosters",
-        "efficacy": 0.94,
-        "storage_temperature": "-20°C",
+        "dose": "2 doses, 4 weeks apart",
+        "efficacy": 94.1,
+        "storage_temperature": "-20°C (long terme), 2–8°C (30 jours)",
         "epidemic_id": 2
     },
     {
-        "name": "Johnson & Johnson COVID-19 Vaccine",
-        "laboratory": "Johnson & Johnson",
-        "technology": "Viral Vector",
-        "dose": "1 dose",
-        "efficacy": 0.66,
-        "storage_temperature": "2-8°C",
+        "name": "Novavax",
+        "laboratory": "Novavax",
+        "technology": "Protein subunit",
+        "dose": "2 doses, 3 weeks apart",
+        "efficacy": 89.7,
+        "storage_temperature": "2–8°C",
         "epidemic_id": 2
     },
     {
-        "name": "rVSV-ZEBOV Ebola Vaccine",
-        "laboratory": "Merck",
-        "technology": "Live attenuated virus",
-        "dose": "1 dose",
-        "efficacy": 0.97,
-        "storage_temperature": "-60°C",
-        "epidemic_id": 3
+        "name": "Oxford/AstraZeneca",
+        "laboratory": "AstraZeneca",
+        "technology": "Viral vector (adenovirus from chimpanzee)",
+        "dose": "2 doses, 4-12 weeks apart",
+        "efficacy": 76.0,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
     },
     {
-        "name": "Fluzone H1N1 Vaccine",
-        "laboratory": "Sanofi Pasteur",
+        "name": "Pfizer/BioNTech",
+        "laboratory": "Pfizer/BioNTech",
+        "technology": "mRNA",
+        "dose": "2 doses, 3 weeks apart",
+        "efficacy": 95.0,
+        "storage_temperature": "-70°C (long terme), 2–8°C (5 jours)",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Sinopharm/Beijing",
+        "laboratory": "Sinopharm",
         "technology": "Inactivated virus",
-        "dose": "1-2 doses",
-        "efficacy": 0.62,
-        "storage_temperature": "2-8°C",
-        "epidemic_id": 4
+        "dose": "2 doses, 3–4 weeks apart",
+        "efficacy": 79.0,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
     },
     {
-        "name": "Oral Cholera Vaccine (OCV)",
-        "laboratory": "Shanchol",
-        "technology": "Inactivated bacteria",
-        "dose": "2 doses",
-        "efficacy": 0.65,
-        "storage_temperature": "2-8°C",
-        "epidemic_id": 5
+        "name": "Sinovac",
+        "laboratory": "Sinovac Biotech",
+        "technology": "Inactivated virus",
+        "dose": "2 doses, 2–4 weeks apart",
+        "efficacy": 51.0,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
     },
     {
-        "name": "Plague Vaccine",
-        "laboratory": "Institut Pasteur",
-        "technology": "Killed bacteria",
-        "dose": "Multiple doses",
-        "efficacy": 0.5,
-        "storage_temperature": "2-8°C",
-        "epidemic_id": 6
-    },
-    {
-        "name": "Sleeping Sickness Experimental Vaccine",
-        "laboratory": "DNDi",
-        "technology": "DNA-based",
-        "dose": "Multiple doses",
-        "efficacy": 0.7,
-        "storage_temperature": "2-8°C",
-        "epidemic_id": 7
-    },
-    {
-        "name": "RTS,S Malaria Vaccine",
-        "laboratory": "GSK",
-        "technology": "Protein-based",
-        "dose": "4 doses",
-        "efficacy": 0.39,
-        "storage_temperature": "2-8°C",
-        "epidemic_id": 8
+        "name": "Sputnik V",
+        "laboratory": "Gamaleya Research Institute",
+        "technology": "Viral vector (adenovirus 26 and 5)",
+        "dose": "2 doses, 3 weeks apart",
+        "efficacy": 91.6,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
     }
 ]

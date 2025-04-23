@@ -3,6 +3,7 @@ from typing import List
 from src.app.base.domain.interface.base_repository import BaseRepository
 from src.app.user.domain.entity.user_entity import UserEntity
 from src.app.user.infrastructure.model.user_model import UserModel
+from src.app.auth.presentation.model.payload.register_payload import RegisterPayload
 
 
 class UserRepository(BaseRepository, ABC):
@@ -15,7 +16,7 @@ class UserRepository(BaseRepository, ABC):
         return self._data
 
     @abstractmethod
-    def create(self, user: UserEntity | UserModel) -> UserEntity | UserModel:
+    def create(self, payload: RegisterPayload) -> UserEntity | UserModel:
         pass
 
     @abstractmethod

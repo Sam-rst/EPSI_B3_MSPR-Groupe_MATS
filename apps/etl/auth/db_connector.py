@@ -13,11 +13,11 @@ class PostgresConnector:
         # Récupérer les informations de connexion depuis les variables d'environnement
         # Avec des valeurs par défaut pour le développement local
         self.connection_params = {
-            'host': os.environ.get('POSTGRES_HOST', 'localhost'),  # Utiliser localhost par défaut
-            'database': os.environ.get('POSTGRES_DB', 'mspr'),
-            'user': os.environ.get('POSTGRES_USER', 'postgres'),
-            'password': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-            'port': int(os.environ.get('POSTGRES_PORT', 2345))
+            'host': os.environ.get('ETL_POSTGRES_HOST', 'localhost'),  # Utiliser localhost par défaut
+            'database': os.environ.get('ETL_POSTGRES_DB', 'mspr'),
+            'user': os.environ.get('ETL_POSTGRES_USER', 'postgres'),
+            'password': os.environ.get('ETL_POSTGRES_PASSWORD', 'postgres'),
+            'port': int(os.environ.get('ETL_POSTGRES_PORT', 5432))
         }
         self.connection = None
         self.cursor = None

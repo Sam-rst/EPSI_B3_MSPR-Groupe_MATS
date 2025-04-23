@@ -511,6 +511,13 @@
         "continent_id": 5
     },
     {
+        "name": "Hong Kong",
+        "iso2": "HK",
+        "iso3": "HKG",
+        "population": 7496981,
+        "continent_id": 4
+    },
+    {
         "name": "Hungary",
         "iso2": "HU",
         "iso3": "HUN",
