@@ -39,7 +39,7 @@ class LoginUserUseCase(BaseUseCase):
         return self._jwt_service
 
     def execute(self, payload: LoginPayload) -> LoginResponse:
-        # try:
+        try:
             # Déduire le firstname et le lastname à partir du username
             if "." not in payload.username:
                 raise HTTPException(
@@ -68,23 +68,21 @@ class LoginUserUseCase(BaseUseCase):
                 lastname=user.lastname,
                 username=user.username,
                 email=user.email,
-                # role=self.role_repository.find_by_id(user.role_id).name,
                 role_id=user.role_id,
-                # country=self.country_repository.find_by_id(user.country_id).name,
                 country_id=user.country_id,
                 access_token=self.jwt_service.create_access_token(
-                    data={"sub": user.username}
+                    data={"sub": user.username, "id": user.id}
                 ),
             )
 
-        # except HTTPException as http_exc:
-        #     raise HTTPException(
-        #         status_code=http_exc.status_code,
-        #         detail=http_exc.detail,
-        #     )
+        except HTTPException as http_exc:
+            raise HTTPException(
+                status_code=http_exc.status_code,
+                detail=http_exc.detail,
+            )
 
-        # except Exception as e:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        #         detail=f"Une erreur inattendue est survenue: {str(e)}",
-        #     )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Une erreur inattendue est survenue: {str(e)}",
+            )
