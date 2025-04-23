@@ -3,6 +3,7 @@ from tkinter import filedialog, messagebox
 import os
 import sys
 sys.path.append('..')
+from tkinter import ttk
 
 from pipelines.extract import FileListPanel
 from pipelines.pipeline import ETLPipeline
@@ -178,6 +179,16 @@ class MainWindow:
         )
         configure_button_style(db_button, is_primary=False)
         db_button.pack(side=tk.BOTTOM, pady=10)
+
+        self.progress_bar = ttk.Progressbar(
+            self.main_frame,
+            orient="horizontal",
+            mode="determinate",
+            length=400
+        )
+        self.progress_bar.pack(pady=(0, 10))
+        self.progress_bar["value"] = 0
+        self.progress_bar["maximum"] = 100
     
     def logout(self):
         """Déconnecte l'utilisateur et retourne à l'écran de connexion"""
@@ -266,20 +277,39 @@ class MainWindow:
         """Exécute le pipeline ETL sur les fichiers sélectionnés"""
         print("Démarrage du pipeline ETL")
         selected_files = self.file_list_panel.get_selected_files()
-        
-        print(f"Fichiers sélectionnés : {len(selected_files)}")
-        if not selected_files:
-            messagebox.showwarning("Attention", "Aucun fichier sélectionné")
+        selected_count = len(selected_files)
+
+        print(f"Fichiers sélectionnés : {selected_count}")
+
+        if selected_count == 0:
+            messagebox.showwarning("Attention", "Aucun fichier sélectionné.")
             return
+
+        if selected_count > 30:
+            messagebox.showerror("Erreur", "Le traitement est limité à 30 fichiers maximum.")
+            return
+
+        if selected_count > 10:
+            messagebox.showwarning("Avertissement", "Le traitement de plus de 10 fichiers peut prendre du temps.")
         
         self.update_status("Traitement en cours...")
+        self.progress_bar["value"] = 0
         self.root.update()
         
         try:
             self.pipeline = ETLPipeline(output_dir=self.output_dir)
             
-            success = self.pipeline.run(selected_files)
+            def update_progress(current, total):
+                percent = int((current / total) * 100)
+                self.progress_bar["value"] = percent
+                self.root.update_idletasks()
+
+            success = self.pipeline.run(selected_files, on_progress=update_progress)
             
+            for i in range(len(selected_files)):
+                self.progress_bar["value"] = int((i + 1) / len(selected_files) * 100)
+                self.root.update_idletasks()
+
             if success:
                 output_dir = os.path.abspath(self.output_dir)
                 message = f"Traitement terminé avec succès !\nLes fichiers nettoyés sont disponibles dans :\n{output_dir}"

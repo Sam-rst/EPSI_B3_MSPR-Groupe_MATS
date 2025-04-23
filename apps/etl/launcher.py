@@ -1,13 +1,9 @@
-"""
-Lanceur principal de l'application.
-Ce script sert de point d'entrée unique et permet de choisir entre l'ETL et le Dashboard.
-"""
-
 import tkinter as tk
 import os
 import sys
 import importlib.util
 from tkinter import messagebox
+from configapp import APP_TITLE, DEFAULT_SIZE, MIN_WIDTH, MIN_HEIGHT
 
 # Ajouter le répertoire courant au path pour l'importation
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -65,9 +61,9 @@ def configure_button_style(button, is_primary=True):
 class LauncherApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Analyze IT - Lanceur")
-        self.root.geometry("800x600")
-        self.root.minsize(800, 600)
+        self.root.title(APP_TITLE)
+        self.root.geometry(DEFAULT_SIZE)
+        self.root.minsize(MIN_HEIGHT, MIN_HEIGHT)
         
         # Configurer le redimensionnement
         self.root.grid_rowconfigure(0, weight=1)
@@ -332,14 +328,35 @@ class LauncherApp:
         self.show_app_selection_screen()
 
 
+# def main():
+#     """Fonction principale de lancement de l'application"""
+#     if has_dnd:
+#         root = TkinterDnD.Tk()
+#     else:
+#         root = tk.Tk()
+        
+#     app = LauncherApp(root)
+#     root.mainloop()
+
 def main():
-    """Fonction principale de lancement de l'application"""
+    """Lancement direct du dashboard admin sans authentification"""
     if has_dnd:
         root = TkinterDnD.Tk()
     else:
         root = tk.Tk()
-        
+    
     app = LauncherApp(root)
+
+    # Forcer un utilisateur admin simulé
+    app.current_user = {
+        "login": "admin_dev",
+        "role": 0,  # 0 ou 1 = admin selon ta logique (ici on assume <=1 = admin)
+        "region": "global"
+    }
+
+    # Appel direct du dashboard
+    app.launch_etl_app()
+    
     root.mainloop()
 
 if __name__ == "__main__":

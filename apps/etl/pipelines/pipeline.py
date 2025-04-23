@@ -1,5 +1,6 @@
 from pipelines.export import Export
 from pipelines.transform import DataTransformer
+import os
 from configapp import DEFAULT_OUTPUT_DIR
 
 class ETLPipeline:
@@ -10,7 +11,7 @@ class ETLPipeline:
         self.datasets = {}
         self.transformed_datasets = {}
     
-    def run(self, input_files):
+    def run(self, input_files, on_progress=None):
         """Execute le pipeline ETL
         
         Args:
@@ -25,5 +26,18 @@ class ETLPipeline:
             print("Aucun dataset n'a été chargé. Le pipeline s'arrête.")
             return False
         
-        self.transformed_datasets = self.transformer.transform_and_save(self.datasets)
+        total_files = len(self.datasets)
+        self.transformed_datasets = {}
+
+        for i, (name, df) in enumerate(self.datasets.items()):
+            transformed_df = self.transformer.transform_dataframe(df, dataset_name=name)
+            self.transformed_datasets[name] = transformed_df
+
+            output_path = os.path.join(self.output_dir, f"{name}_cleaned.csv")
+            transformed_df.to_csv(output_path, index=False)
+            print(f"Fichier sauvegardé: {output_path}")
+
+            if on_progress:
+                on_progress(i + 1, total_files)
+
         return len(self.transformed_datasets) > 0
