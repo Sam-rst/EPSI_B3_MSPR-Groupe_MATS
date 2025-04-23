@@ -328,35 +328,14 @@ class LauncherApp:
         self.show_app_selection_screen()
 
 
-# def main():
-#     """Fonction principale de lancement de l'application"""
-#     if has_dnd:
-#         root = TkinterDnD.Tk()
-#     else:
-#         root = tk.Tk()
-        
-#     app = LauncherApp(root)
-#     root.mainloop()
-
 def main():
-    """Lancement direct du dashboard admin sans authentification"""
+    """Fonction principale de lancement de l'application"""
     if has_dnd:
         root = TkinterDnD.Tk()
     else:
         root = tk.Tk()
-    
+        
     app = LauncherApp(root)
-
-    # Forcer un utilisateur admin simulé
-    app.current_user = {
-        "login": "admin_dev",
-        "role": 0,  # 0 ou 1 = admin selon ta logique (ici on assume <=1 = admin)
-        "region": "global"
-    }
-
-    # Appel direct du dashboard
-    app.launch_etl_app()
-    
     root.mainloop()
 
 if __name__ == "__main__":
