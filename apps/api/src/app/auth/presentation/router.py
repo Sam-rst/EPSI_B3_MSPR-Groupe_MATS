@@ -12,6 +12,7 @@ from src.app.auth.application.usecase.login_user_usecase import LoginUserUseCase
 from src.app.auth.application.usecase.change_password_usecase import (
     ChangePasswordUseCase,
 )
+from src.app.auth.application.usecase.verify_token_usecase import VerifyTokenUseCase
 
 # =====Payloads=====
 from src.app.auth.presentation.model.payload.register_payload import RegisterPayload
@@ -97,13 +98,13 @@ def reset_password(token: str, new_password: str):
 @inject
 def verify_token(
     token: str,
-    jwt_service: JWTService = Depends(Provide[AuthContainer.jwt_service]),
+    usecase: VerifyTokenUseCase = Depends(Provide[AuthContainer.verify_token_usecase]),
 ):
     try:
-        payload = jwt_service.verify_token(token)
+        payload = usecase.execute(token)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"message": "Token is valid", "payload": payload},
+            content={"message": "Token is valid", "payload": jsonable_encoder(payload)},
         )
     except ValueError as e:
         return JSONResponse(

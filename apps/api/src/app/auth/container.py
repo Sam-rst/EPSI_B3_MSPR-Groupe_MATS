@@ -13,12 +13,12 @@ from src.app.auth.application.usecase.login_user_usecase import LoginUserUseCase
 from src.app.auth.application.usecase.change_password_usecase import (
     ChangePasswordUseCase,
 )
+from src.app.auth.application.usecase.verify_token_usecase import VerifyTokenUseCase
 from src.app.auth.infrastructure.service.jwt_service import JWTService
 
 
 class AuthContainer(containers.DeclarativeContainer):
     modules = ["src.app.auth.presentation.router"]
-    
 
     # Définir les repositories
     repository_user_in_memory = providers.Singleton(UserRepositoryInMemory)
@@ -65,4 +65,7 @@ class AuthContainer(containers.DeclarativeContainer):
     )
     change_password_usecase = providers.Factory(
         ChangePasswordUseCase, user_repository=user_repository
+    )
+    verify_token_usecase = providers.Factory(
+        VerifyTokenUseCase, user_repository=user_repository, jwt_service=jwt_service
     )
