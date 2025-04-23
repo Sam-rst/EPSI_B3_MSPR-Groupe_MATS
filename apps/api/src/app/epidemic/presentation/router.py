@@ -39,7 +39,6 @@ from src.app.epidemic.presentation.model.dto.bulk_insert_epidemics_response_dto 
 )
 
 epidemic_router = APIRouter(
-    tags=["epidemics"],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},

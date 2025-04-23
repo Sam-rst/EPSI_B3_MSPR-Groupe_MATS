@@ -40,3 +40,4 @@ if __name__ == "__main__":
     import_data("countries", "/data/countries.json")
     import_data("epidemics", "/data/epidemics.json")
     import_data("vaccines", "/data/vaccines.json")
+    import_data("roles", "/data/roles.json")

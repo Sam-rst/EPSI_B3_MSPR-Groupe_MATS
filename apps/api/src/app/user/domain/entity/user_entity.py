@@ -107,6 +107,10 @@ class UserEntity(BaseEntity):
         self._roles = value
         self.update("system")
 
+    def verify_password(self, password_to_verify: str) -> bool:
+        """Vérifie le mot de passe de l'utilisateur."""
+        return self._password == password_to_verify
+
     def update(self, updated_by: str):
         return super().update(updated_by)
 

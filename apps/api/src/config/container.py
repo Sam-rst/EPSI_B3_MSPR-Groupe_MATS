@@ -11,6 +11,10 @@ from src.app.epidemic.container import EpidemicContainer
 from src.app.epidemic.presentation.router import epidemic_router
 from src.app.user.container import UserContainer
 from src.app.user.presentation.router import user_router
+from src.app.role.container import RoleContainer
+from src.app.role.presentation.router import role_router
+from src.app.auth.container import AuthContainer
+from src.app.auth.presentation.router import auth_router
 
 
 class Container(containers.DeclarativeContainer):
@@ -20,6 +24,8 @@ class Container(containers.DeclarativeContainer):
         VaccineContainer,
         EpidemicContainer,
         UserContainer,
+        RoleContainer,
+        AuthContainer,
     ]  # A ajouter les autres containers si il y en a d'autres
     [container().wire(modules=container.modules) for container in containers]
 
@@ -34,8 +40,10 @@ class Container(containers.DeclarativeContainer):
         return {"message": "Application is running"}
 
     # A ajouter les autres routes si il y en a d'autres
-    router.include_router(continent_router, prefix="/continents")
-    router.include_router(country_router, prefix="/countries")
-    router.include_router(vaccine_router, prefix="/vaccines")
-    router.include_router(epidemic_router, prefix="/epidemics")
-    router.include_router(user_router, prefix="/users")
+    router.include_router(continent_router, prefix="/continents", tags=["Continents"])
+    router.include_router(country_router, prefix="/countries", tags=["Countries"])
+    router.include_router(vaccine_router, prefix="/vaccines", tags=["Vaccines"])
+    router.include_router(epidemic_router, prefix="/epidemics", tags=["Epidemics"])
+    router.include_router(user_router, prefix="/users", tags=["Users"])
+    router.include_router(role_router, prefix="/roles", tags=["Roles"])
+    router.include_router(auth_router, prefix="/auth", tags=["Authentication"])

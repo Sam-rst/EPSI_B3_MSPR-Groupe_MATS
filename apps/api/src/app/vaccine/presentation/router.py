@@ -39,7 +39,6 @@ from src.app.vaccine.presentation.model.dto.bulk_insert_vaccines_response_dto im
 )
 
 vaccine_router = APIRouter(
-    tags=["vaccines"],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},

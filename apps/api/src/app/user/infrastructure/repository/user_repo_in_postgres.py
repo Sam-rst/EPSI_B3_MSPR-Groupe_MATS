@@ -4,8 +4,12 @@ from sqlalchemy.orm import Session
 from src.config.database import db
 from src.app.user.domain.interface.user_repository import UserRepository
 from src.app.user.infrastructure.model.user_model import UserModel
-from src.app.user.presentation.model.payload.create_user_payload import CreateUserPayload
-from src.app.user.presentation.model.payload.update_user_payload import UpdateUserPayload
+from src.app.auth.presentation.model.payload.register_payload import (
+    RegisterPayload,
+)
+from src.app.user.presentation.model.payload.update_user_payload import (
+    UpdateUserPayload,
+)
 
 
 class UserRepositoryInPostgres(UserRepository):
@@ -19,20 +23,22 @@ class UserRepositoryInPostgres(UserRepository):
     def session(self) -> Session:
         return self._session
 
-    def create(self, payload: CreateUserPayload) -> UserModel:
+    def create(self, payload: RegisterPayload) -> UserModel:
         try:
             email = f"{payload.username.lower()}@analyseit.com"
             firstname, lastname = payload.username.split(".", 1)
             firstname = firstname.capitalize()
             lastname = lastname.capitalize()
-            
+
             # Créer le modèle utilisateur
             model = UserModel(
                 firstname=firstname,
                 lastname=lastname,
                 username=payload.username,
                 email=email,
-                password=payload.password,
+                password=payload.password_hashed,
+                country_id=payload.country_id,
+                role_id=payload.role_id,
             )
             self.session.add(model)
             self.session.commit()
@@ -42,28 +48,11 @@ class UserRepositoryInPostgres(UserRepository):
             self.session.rollback()
             raise e
 
-    def update(self, user: UserModel, payload: UpdateUserPayload) -> Optional[UserModel]:
+    def update(
+        self, user: UserModel, payload: UpdateUserPayload
+    ) -> Optional[UserModel]:
         try:
-            if payload.firstname:
-                user.firstname = payload.firstname
-            if payload.lastname:
-                user.lastname = payload.lastname
-            if payload.username:
-                user.username = payload.username
-            if payload.email:
-                user.email = payload.email
-            if payload.password:
-                user.password = payload.password
-            if payload.gender:
-                user.gender = payload.gender
-            if payload.birthdate:
-                user.birthdate = payload.birthdate
-            if payload.roles:
-                user.roles = payload.roles
-            user.update("system")
-            self.session.commit()
-
-            return user
+            pass
         except Exception as e:
             self.session.rollback()
             raise e
@@ -103,9 +92,7 @@ class UserRepositoryInPostgres(UserRepository):
     def find_by_email(self, email: str) -> Optional[UserModel]:
         try:
             user = (
-                self.session.query(UserModel)
-                .filter(UserModel.email == email)
-                .first()
+                self.session.query(UserModel).filter(UserModel.email == email).first()
             )
 
             return user
@@ -128,6 +115,13 @@ class UserRepositoryInPostgres(UserRepository):
             )
 
             return users
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def verify_password(self, user: UserModel, password_to_verify: str) -> bool:
+        try:
+            return user.password == password_to_verify
         except Exception as e:
             self.session.rollback()
             raise e

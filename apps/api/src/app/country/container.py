@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from src.config.config import Config
+from src.core.config import settings
 
 from src.app.country.infrastructure.repository.country_repo_in_memory import (
     CountryRepositoryInMemory,
@@ -36,7 +36,6 @@ from src.app.continent.infrastructure.repository.continent_repo_in_postgres impo
 
 class CountryContainer(containers.DeclarativeContainer):
     modules = ["src.app.country.presentation.router"]
-    config = providers.Singleton(Config)
 
     # Définir les repositories
     repository_in_memory = providers.Singleton(CountryRepositoryInMemory)
@@ -50,12 +49,12 @@ class CountryContainer(containers.DeclarativeContainer):
 
     # Sélectionner le repository en fonction de la configuration
     repository = providers.Selector(
-        config.provided.REPOSITORY_TYPE,
+        lambda: settings.REPOSITORY_TYPE.lower(),
         in_memory=repository_in_memory,
         in_postgres=repository_in_postgres,
     )
     continent_repository = providers.Selector(
-        config.provided.REPOSITORY_TYPE,
+        lambda: settings.REPOSITORY_TYPE.lower(),
         in_memory=continent_repository_in_memory,
         in_postgres=continent_repository_in_postgres,
     )

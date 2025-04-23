@@ -2,9 +2,6 @@ from sqlalchemy import Column, String, BigInteger, ForeignKey
 from sqlalchemy.orm import relationship
 
 from src.app.base.infrastructure.model.base_model import BaseModel
-from src.app.user.infrastructure.model.user_role_association import (
-    UserRoleAssociation,
-)
 
 
 class UserModel(BaseModel):
@@ -19,8 +16,5 @@ class UserModel(BaseModel):
     country_id = Column(BigInteger, ForeignKey("country.id"))
     countries = relationship("CountryModel", back_populates="users")
 
-    roles = relationship(
-        "RoleModel",
-        secondary=UserRoleAssociation.__tablename__,
-        back_populates="users",
-    )
+    role_id = Column(BigInteger, ForeignKey("role.id"))
+    roles = relationship("RoleModel", back_populates="users")

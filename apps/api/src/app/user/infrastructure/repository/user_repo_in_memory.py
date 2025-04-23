@@ -1,7 +1,7 @@
 from typing import List, Optional
 from src.app.user.domain.interface.user_repository import UserRepository
 from src.app.user.domain.entity.user_entity import UserEntity
-from src.app.user.presentation.model.payload.create_user_payload import CreateUserPayload
+from src.app.auth.presentation.model.payload.register_payload import RegisterPayload
 from src.app.user.presentation.model.payload.update_user_payload import UpdateUserPayload
 
 
@@ -9,16 +9,14 @@ class UserRepositoryInMemory(UserRepository):
     def __init__(self):
         self._data: List[UserEntity] = []
 
-    def create(self, payload: CreateUserPayload) -> UserEntity:
+    def create(self, payload: RegisterPayload) -> UserEntity:
         """Crée un utilisateur en mémoire."""
         user_created = UserEntity(
             firstname=payload.firstname,
             lastname=payload.lastname,
             username=payload.username,
             email=payload.email,
-            password=payload.password,
-            gender=payload.gender,
-            birthdate=payload.birthdate,
+            password=payload.password_has,
         )
         self._data.append(user_created)
         return user_created
@@ -74,6 +72,12 @@ class UserRepositoryInMemory(UserRepository):
     def find_all(self) -> List[UserEntity]:
         """Récupère tous les utilisateurs non supprimés."""
         return [user for user in self._data if not user.is_deleted]
+    
+    def verify_password(
+        self, user: UserEntity, password_to_verify: str
+    ) -> bool:
+        """Vérifie le mot de passe d'un utilisateur."""
+        return user.verify_password(password_to_verify)
 
     def reactivate(self, user: UserEntity) -> UserEntity:
         """Réactive un utilisateur supprimé."""

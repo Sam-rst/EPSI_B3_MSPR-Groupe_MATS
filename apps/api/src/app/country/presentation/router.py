@@ -39,7 +39,6 @@ from src.app.country.presentation.model.dto.bulk_insert_countries_response_dto i
 )
 
 country_router = APIRouter(
-    tags=["countries"],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},

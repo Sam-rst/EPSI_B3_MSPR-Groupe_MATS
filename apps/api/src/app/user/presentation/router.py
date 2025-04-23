@@ -11,6 +11,7 @@ from src.app.user.container import UserContainer
 from src.app.user.application.usecase.add_user_usecase import AddUserUseCase
 from src.app.user.application.usecase.find_all_users_usecase import FindAllUsersUseCase
 from src.app.user.application.usecase.find_user_by_id_usecase import FindUserByIdUseCase
+from src.app.user.application.usecase.find_user_by_username_usecase import FindUserByUsernameUseCase
 from src.app.user.application.usecase.update_user_usecase import UpdateUserUseCase
 from src.app.user.application.usecase.delete_user_usecase import DeleteUserUseCase
 
@@ -19,7 +20,6 @@ from src.app.user.presentation.model.payload.create_user_payload import CreateUs
 from src.app.user.presentation.model.payload.update_user_payload import UpdateUserPayload
 
 user_router = APIRouter(
-    tags=["users"],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},
@@ -91,7 +91,7 @@ def endpoint_usecase_add_user(
         )
 
 
-@user_router.get("/{id}")
+@user_router.get("/id/{id}")
 @inject
 def endpoint_usecase_get_user_by_id(
     id: int,
@@ -121,6 +121,35 @@ def endpoint_usecase_get_user_by_id(
             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
         )
 
+@user_router.get("/username/{username}")
+@inject
+def endpoint_usecase_get_user_by_username(
+    username: str,
+    usecase: FindUserByUsernameUseCase = Depends(
+        Provide[UserContainer.find_user_by_username_usecase]
+    ),
+):
+    """
+    Récupère les détails d'un utilisateur spécifique.
+
+    Args:
+        <header> username (int): Le username de l'utilisateur à récupérer.
+
+    Returns:
+        JSONResponse: Une réponse contenant les détails de l'utilisateur.
+    """
+    try:
+        user = usecase.execute(username)
+        content = {"item": jsonable_encoder(user)}
+        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 # @user_router.patch("/{id}")
 # @inject

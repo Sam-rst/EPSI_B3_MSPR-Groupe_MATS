@@ -15,21 +15,15 @@ class UserRepository(BaseRepository, ABC):
         return self._data
 
     @abstractmethod
-    def create(
-        self, user: UserEntity | UserModel
-    ) -> UserEntity | UserModel:
+    def create(self, user: UserEntity | UserModel) -> UserEntity | UserModel:
         pass
 
     @abstractmethod
-    def update(
-        self, user: UserEntity | UserModel
-    ) -> UserEntity | UserModel:
+    def update(self, user: UserEntity | UserModel) -> UserEntity | UserModel:
         pass
 
     @abstractmethod
-    def delete(
-        self, user: UserEntity | UserModel
-    ) -> UserEntity | UserModel:
+    def delete(self, user: UserEntity | UserModel) -> UserEntity | UserModel:
         pass
 
     @abstractmethod
@@ -49,7 +43,11 @@ class UserRepository(BaseRepository, ABC):
         pass
 
     @abstractmethod
-    def reactivate(
-        self, user: UserEntity | UserModel
-    ) -> UserEntity | UserModel:
+    def verify_password(
+        self, user: UserEntity | UserModel, password_to_verify: str
+    ) -> bool:
+        pass
+
+    @abstractmethod
+    def reactivate(self, user: UserEntity | UserModel) -> UserEntity | UserModel:
         pass

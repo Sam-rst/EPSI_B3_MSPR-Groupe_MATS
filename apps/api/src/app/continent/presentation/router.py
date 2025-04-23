@@ -41,7 +41,6 @@ from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dt
 )
 
 continent_router = APIRouter(
-    tags=["Continents"],
     responses={
         status.HTTP_200_OK: {"description": "Requête réussie"},
         status.HTTP_201_CREATED: {"description": "Ressource créée avec succès"},
