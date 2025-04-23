@@ -1,5 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
+import hashlib
 
 from src.config.database import db
 from src.app.user.domain.interface.user_repository import UserRepository
@@ -29,6 +30,7 @@ class UserRepositoryInPostgres(UserRepository):
             firstname, lastname = payload.username.split(".", 1)
             firstname = firstname.capitalize()
             lastname = lastname.capitalize()
+            password_hashed = hashlib.sha256(payload.password.encode()).hexdigest()
 
             # Créer le modèle utilisateur
             model = UserModel(
@@ -36,7 +38,7 @@ class UserRepositoryInPostgres(UserRepository):
                 lastname=lastname,
                 username=payload.username,
                 email=email,
-                password=payload.password_hashed,
+                password=password_hashed,
                 country_id=payload.country_id,
                 role_id=payload.role_id,
             )
@@ -121,7 +123,8 @@ class UserRepositoryInPostgres(UserRepository):
 
     def verify_password(self, user: UserModel, password_to_verify: str) -> bool:
         try:
-            return user.password == password_to_verify
+            password_hashed = hashlib.sha256(password_to_verify.encode()).hexdigest()
+            return user.password == password_hashed
         except Exception as e:
             self.session.rollback()
             raise e

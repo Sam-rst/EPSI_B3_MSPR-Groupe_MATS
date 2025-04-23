@@ -100,14 +100,16 @@ class LoginWindow:
             return
         
         # Authentification via l'API
+        print(username, password)
         user_data = self.api.authenticate(username, password)
+        print(user_data)
         
         if user_data:
             self.root.unbind("<Return>")
             # Sauvegarde de l'utilisateur connecté
             self.current_user = {
                 "login": username,
-                "role": user_data["role"],
+                "role": user_data["role_id"],
                 "region": user_data["region"]
             }
             # Appel du callback de connexion réussie

@@ -20,11 +20,11 @@ if config.config_file_name is not None:
 load_dotenv()
 
 # Construire l'URL de la base depuis les variables d'env
-db_user = os.getenv("POSTGRES_USER")
-db_password = os.getenv("POSTGRES_PASSWORD")
-db_host = os.getenv("POSTGRES_HOST", "localhost")
-db_port = os.getenv("POSTGRES_PORT", "5432")
-db_name = os.getenv("POSTGRES_DB")
+db_user = os.getenv("ALEMBIC_POSTGRES_USER")
+db_password = os.getenv("ALEMBIC_POSTGRES_PASSWORD")
+db_host = os.getenv("ALEMBIC_POSTGRES_HOST", "localhost")
+db_port = os.getenv("ALEMBIC_POSTGRES_PORT", "5432")
+db_name = os.getenv("ALEMBIC_POSTGRES_DB")
 
 database_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 

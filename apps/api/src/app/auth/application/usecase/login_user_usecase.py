@@ -56,7 +56,7 @@ class LoginUserUseCase(BaseUseCase):
                 )
 
             # Vérifier si le mot de passe est correct
-            if not self.user_repository.verify_password(user, payload.password_hashed):
+            if not self.user_repository.verify_password(user, payload.password):
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Mot de passe incorrect.",

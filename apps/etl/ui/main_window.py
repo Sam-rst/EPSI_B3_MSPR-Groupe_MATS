@@ -61,7 +61,7 @@ class MainWindow:
             
             user_label = tk.Label(
                 user_frame,
-                text=f"Utilisateur: {self.user['login']} ({self.user['role']})",
+                text=f"Utilisateur: {self.user['username']} ({self.user['role_id']})",
                 font=ITEM_FONT,
                 bg=MAIN_BG_COLOR
             )
@@ -338,7 +338,7 @@ class MainWindow:
         dialog.transient(self.root)
         dialog.grab_set()
         
-        host_var = tk.StringVar(value="db")
+        host_var = tk.StringVar(value="localhost")
         db_var = tk.StringVar(value="mspr")
         user_var = tk.StringVar(value="postgres")
         password_var = tk.StringVar(value="postgres")
@@ -379,6 +379,7 @@ class MainWindow:
                     password=password_var.get(),
                     port=int(port_var.get())
                 )
+                print(db.connection_params)
                 
                 if db.connect():
                     messagebox.showinfo("Succès", "Connexion établie avec succès!")
