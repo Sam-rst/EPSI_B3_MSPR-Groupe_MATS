@@ -7,7 +7,7 @@ from datetime import datetime
 from tqdm import tqdm
 
 class PostgresConnector:
-    def __init__(self, host="localhost", database="mspr", user="postgres", password="postgres", port=2345):
+    def __init__(self, host="localhost", database="mspr", user="postgres", password="postgres", port=5432):
         """
         Initialise la connexion à PostgreSQL avec les valeurs par défaut
         fournies ou des valeurs d'environnement si disponibles
@@ -79,59 +79,23 @@ class PostgresConnector:
             self.connection.rollback()
             return False
     
-    # def load_csv_to_staging(self, csv_path, table_name='staging_country_vaccinations'):
-    #     """Charge un fichier CSV dans une table de staging"""
-    #     if not self.connection or self.connection.closed:
-    #         if not self.connect():
-    #             return False
-                
-    #     try:
-    #         # Vérifier si la table existe, sinon la créer
-    #         check_table_query = f"""
-    #         SELECT EXISTS (
-    #             SELECT FROM information_schema.tables 
-    #             WHERE table_name = '{table_name}'
-    #         );
-    #         """
-    #         self.cursor.execute(check_table_query)
-    #         table_exists = self.cursor.fetchone()[0]
-            
-    #         if not table_exists:
-    #             create_table_query = f"""
-    #             CREATE TABLE {table_name} (
-    #                 country TEXT,
-    #                 vaccine TEXT,
-    #                 report_date DATE,
-    #                 total_vaccination BIGINT,
-    #                 file_loaded_at TIMESTAMP DEFAULT NOW()
-    #             );
-    #             """
-    #             self.cursor.execute(create_table_query)
-    #             self.connection.commit()
-            
-    #         # Utiliser COPY pour charger le CSV
-    #         with open(csv_path, 'r') as f:
-    #             next(f)  # Sauter l'en-tête
-    #             self.cursor.copy_expert(
-    #                 f"COPY {table_name} (country, vaccine, report_date, total_vaccination) FROM STDIN WITH CSV",
-    #                 f
-    #             )
-            
-    #         self.connection.commit()
-    #         return True
-    #     except Exception as e:
-    #         import traceback
-    #         traceback.print_exc()
-    #         print(f"Erreur lors du chargement du CSV: {e}")
-    #         self.connection.rollback()
-    #         return False
-            
-    
     def execute_etl_process(
         self,
         mappings_path=None,                                                         # on laisse None par défaut
-        base_folder="../cleaned"
+        base_folder="../cleaned",
+        specific_files=None                                                         # nouveau paramètre
     ):
+        """
+        Exécute le processus ETL pour charger les données dans PostgreSQL.
+        
+        Args:
+            mappings_path (str, optional): Chemin vers le fichier de mappings. 
+                Par défaut, recherche un fichier mappings.yaml dans le même dossier.
+            base_folder (str, optional): Dossier contenant les fichiers CSV nettoyés.
+                Par défaut "../cleaned".
+            specific_files (str or list, optional): Nom du fichier ou liste des noms de fichiers à traiter.
+                Si None, tous les fichiers définis dans le mapping sont traités.
+        """
         if mappings_path is None:
             # On calcule un chemin absolu vers mappings.yaml
             current_dir = os.path.dirname(__file__)                                 # dossier contenant load.py
@@ -139,35 +103,68 @@ class PostgresConnector:
 
         with open(mappings_path, "r", encoding="utf-8") as f:
             mappings = yaml.safe_load(f)
-        def get_or_create_continent(cur, continent_name):
+            
+        # Convertir specific_files en liste si c'est une chaîne
+        if specific_files and isinstance(specific_files, str):
+            specific_files = [specific_files]
+            
+        print("✅ Mappings chargés :", mappings)
+        print("🧪 Nombre de fichiers à traiter :", len(mappings.get('files', [])))
+        print("🧬 Type de chaque entrée :")
+        for i, f in enumerate(mappings.get('files', [])):
+            print(f"   - [{i}] {f} (type={type(f)})")
+
+        def find_continent_id(cur, continent_name):
+            """Recherche l'ID d'un continent par son nom, retourne 1 si non trouvé"""
             if not continent_name:
-                return None
+                return 1
+            
             cur.execute("SELECT id FROM continent WHERE name = %s AND is_deleted IS NOT TRUE", (continent_name,))
             result = cur.fetchone()
             if result:
                 return result[0]
             else:
-                cur.execute("""
-                    INSERT INTO continent (name, code, population, id, is_deleted)
-                    VALUES (%s, %s, %s, DEFAULT, FALSE)
-                    RETURNING id
-                """, (continent_name, 'N/A', 0))
-                return cur.fetchone()[0]
+                print(f"⚠️ Continent '{continent_name}' non trouvé, utilisation de l'ID par défaut (1)")
+                return 1
 
-        def get_or_create_country(cur, country_name, continent_id=None):
+        def find_country_id(cur, country_name):
+            """Recherche l'ID d'un pays par son nom, retourne 1 si non trouvé"""
+            if not country_name:
+                return 1
+            
             cur.execute("SELECT id FROM country WHERE name = %s AND is_deleted IS NOT TRUE", (country_name,))
             result = cur.fetchone()
             if result:
                 return result[0]
             else:
-                cur.execute("""
-                    INSERT INTO country (name, iso2, iso3, population, continent_id, id, is_deleted)
-                    VALUES (%s, NULL, NULL, NULL, %s, DEFAULT, FALSE)
-                    RETURNING id
-                """, (country_name, continent_id))
-                return cur.fetchone()[0]
+                print(f"⚠️ Pays '{country_name}' non trouvé, utilisation de l'ID par défaut (1)")
+                return 1
+
+        def find_vaccine_id(cur, vaccine_name):
+            """Recherche l'ID d'un vaccin par son nom, retourne 1 si non trouvé"""
+            if not vaccine_name:
+                return 1
+            
+            cur.execute("SELECT id FROM vaccine WHERE name = %s AND is_deleted IS NOT TRUE", (vaccine_name,))
+            result = cur.fetchone()
+            if result:
+                return result[0]
+            else:
+                print(f"⚠️ Vaccin '{vaccine_name}' non trouvé, utilisation de l'ID par défaut (1)")
+                return 1
+
+        def find_epidemic_id(cur, epidemic_name="COVID-19"):
+            """Recherche l'ID d'une épidémie par son nom, retourne 1 si non trouvé"""
+            cur.execute("SELECT id FROM epidemic WHERE name = %s AND is_deleted IS NOT TRUE", (epidemic_name,))
+            result = cur.fetchone()
+            if result:
+                return result[0]
+            else:
+                print(f"⚠️ Épidémie '{epidemic_name}' non trouvée, utilisation de l'ID par défaut (1)")
+                return 1
 
         def insert_daily_wise(cur, report_date, country_id, province=None, lat=None, lon=None):
+            """Insère une entrée dans daily_wise"""
             cur.execute("""
                 INSERT INTO daily_wise (date, province, latitude, longitude, country_id, id, is_deleted)
                 VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
@@ -176,65 +173,55 @@ class PostgresConnector:
             return cur.fetchone()[0]
 
         def insert_statistic(cur, label, value, country_id, epidemic_id, daily_wise_id):
+            """Insère une statistique"""
             if pd.isna(value):
                 return
+            
             cur.execute("""
                 INSERT INTO statistic (
-                    label, value, country_id, epidemic_id, dayly_wise_id, id, is_deleted
+                    label, value, country_id, epidemic_id, daily_wise_id, id, is_deleted
                 ) VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
             """, (label, float(value), country_id, epidemic_id, daily_wise_id))
-        
-        def get_or_create_vaccine(cur, vaccine_name):
-            if not vaccine_name:
-                return None
-            cur.execute("SELECT id FROM vaccine WHERE name = %s AND is_deleted IS NOT TRUE", (vaccine_name,))
-            result = cur.fetchone()
-            if result:
-                return result[0]
-            else:
-                cur.execute("""
-                    INSERT INTO vaccine (name, id, is_deleted)
-                    VALUES (%s, DEFAULT, FALSE)
-                    RETURNING id
-                """, (vaccine_name,))
-                return cur.fetchone()[0]
 
         def process_file(conn, cur, file_path, config):
+            """Traite un fichier CSV en recherchant les ID existants ou en utilisant l'ID par défaut"""
             df = pd.read_csv(file_path)
             df.columns = [col.strip() for col in df.columns]
             mapping = config['mapping']
             report_date_col = mapping.get('report_date', 'today')
+            
+            # ID par défaut pour l'épidémie (COVID-19)
+            epidemic_id = find_epidemic_id(cur)
 
             for _, row in tqdm(df.iterrows(), total=len(df), desc=file_path):
                 try:
+                    # Rechercher l'ID du continent si spécifié
                     continent_id = None
                     if 'continent' in mapping:
                         continent_col = mapping.get('continent')
                         continent = row[continent_col] if continent_col and continent_col in row else None
-                        continent_id = get_or_create_continent(cur, continent)
-
-                    country_col = mapping.get('country')
-                    country = row[country_col] if country_col in row else 'World'
-                    country_id = get_or_create_country(cur, country, continent_id)
-
-                    if 'population' in mapping:
-                        population_col = mapping.get('population')
-                        population = row[population_col] if population_col and population_col in row else None
-                        if population:
-                            try:
-                                cur.execute("UPDATE country SET population = %s WHERE id = %s", (int(population), country_id))
-                            except:
-                                pass
+                        if continent:
+                            continent_id = find_continent_id(cur, continent)
                     
-                    # Ajout vaccine
+                    # Rechercher l'ID du pays
+                    country_id = 1  # ID par défaut
+                    country_col = mapping.get('country')
+                    if country_col and country_col in row:
+                        country = row[country_col]
+                        if country and country != 'World':
+                            country_id = find_country_id(cur, country)
+                    
+                    # Rechercher l'ID du vaccin si spécifié
                     if 'vaccine' in mapping:
                         vaccine_col = mapping['vaccine']
                         vaccine_name = row[vaccine_col] if vaccine_col and vaccine_col in row else None
                         if vaccine_name:
-                            get_or_create_vaccine(cur, vaccine_name)        
+                            find_vaccine_id(cur, vaccine_name)
 
-                    report_date = datetime.today() if report_date_col == 'today' else datetime.strptime(row.get(report_date_col), "%Y-%m-%d")
+                    # Détermination de la date
+                    report_date = datetime.today() if report_date_col == 'today' else datetime.strptime(str(row.get(report_date_col)), "%Y-%m-%d")
 
+                    # Récupérer province et coordonnées si présents
                     province_col = mapping.get('province')
                     province = row[province_col] if province_col and province_col in row else None
                     lat_col = mapping.get('latitude')
@@ -242,13 +229,18 @@ class PostgresConnector:
                     lon_col = mapping.get('longitude')
                     lon = row[lon_col] if lon_col and lon_col in row else None
 
+                    # Insérer une entrée daily_wise
                     daily_wise_id = insert_daily_wise(cur, report_date, country_id, province, lat, lon)
 
+                    # Insérer les statistiques
                     for stat in mapping.get('statistics', []):
-                            label = stat['label']
-                            column = stat['column']
-                            value = row[column] if column in row else None
-                            insert_statistic(cur, label, value, country_id, 1, daily_wise_id)
+                        label = stat['label']
+                        column = stat['column']
+                        if column in row:
+                            value = row[column]
+                            insert_statistic(cur, label, value, country_id, epidemic_id, daily_wise_id)
+                        else:
+                            print(f"⚠️ Colonne '{column}' non trouvée dans le CSV pour la statistique '{label}'")
 
                     conn.commit()
                 except Exception as e:
@@ -257,33 +249,38 @@ class PostgresConnector:
                     print(f"[ERROR] Ligne ignorée : {e}")
                     conn.rollback()
 
-        import os
-        with open(mappings_path, "r", encoding="utf-8") as f:
-            mappings = yaml.safe_load(f)
-
-        print("✅ Mappings chargés :", mappings)
-        print("🧪 Nombre de fichiers à traiter :", len(mappings.get('files', [])))
-        print("🧬 Type de chaque entrée :")
-        for i, f in enumerate(mappings.get('files', [])):
-            print(f"   - [{i}] {f} (type={type(f)})")
-
-
+        # Vérification de la connexion à la base de données
         if not self.connection or self.connection.closed:
             if not self.connect():
                 return False
 
-        for entry in mappings['files']:
+        # Filtrer les entrées si specific_files est spécifié
+        if specific_files:
+            files_to_process = [entry for entry in mappings['files'] if entry['name'] in specific_files]
+            if not files_to_process:
+                print(f"⚠️ Aucun fichier spécifié trouvé dans les mappings : {specific_files}")
+                return False
+        else:
+            files_to_process = mappings['files']
+            
+        # Afficher le nombre de fichiers qui seront traités
+        print(f"📝 Nombre de fichiers qui seront traités : {len(files_to_process)}")
+
+        # Traiter chaque fichier
+        for entry in files_to_process:
             try:
-                print('➡️ Entry en cours :', entry)
-                file_name = entry['name']
-                file_path = os.path.join(base_folder, file_name)
+                print(f'\n➡️ Traitement du fichier : {entry["name"]}')
+                file_path = os.path.join(base_folder, entry['name'])
 
                 if os.path.exists(file_path):
                     process_file(self.connection, self.cursor, file_path, entry)
+                    print(f"✅ Fichier traité avec succès : {entry['name']}")
                 else:
-                    print(f"⚠️  Fichier non trouvé : {file_path}")
-                    print(f"⚠️  Fichier non trouvé : {file_path}")
+                    print(f"⚠️ Fichier non trouvé : {file_path}")
             except Exception as e:
                 import traceback
-                print(f"💥 Erreur lors du traitement de l'entrée : {entry}")
+                print(f"💥 Erreur lors du traitement de l'entrée : {entry['name']}")
                 traceback.print_exc()
+                
+        print("\n✅ Traitement ETL terminé")
+        return True

@@ -11,7 +11,7 @@ DB_CONFIG = {
     "dbname": "?",
     "user": "?",
     "password": "?",
-    "port": ?
+    "port": "?",
 }
 
 # === UTILITAIRES BASE ===
