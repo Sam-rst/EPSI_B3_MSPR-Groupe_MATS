@@ -417,9 +417,12 @@ class MainWindow:
                 self.update_status("Chargement des données dans PostgreSQL...")
                 self.root.update()
                 
+                transformed_files = [f"{name}_cleaned.csv" for name in self.pipeline.transformed_datasets.keys()]
+
                 if db.execute_etl_process(
                     mappings_path="pipelines/mappings.yaml",
-                    base_folder=self.output_dir
+                    base_folder=self.output_dir,
+                    specific_files=transformed_files
                 ):
                     messagebox.showinfo("Succès", "Données chargées avec succès dans PostgreSQL")
                     self.update_status("Données chargées dans PostgreSQL")
