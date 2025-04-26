@@ -1,7 +1,10 @@
 fastapi
+uvicorn
 sqlalchemy
 dependency_injector
 PyJWT
 python-dotenv
+psycopg2-binary
+alembic
+pylint
 pytest
-pytest-mock
