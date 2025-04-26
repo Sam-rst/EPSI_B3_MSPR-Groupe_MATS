@@ -36,7 +36,7 @@ TRANSLATIONS = {
         "wrong_credentials": "Nom d'utilisateur ou mot de passe incorrect.",
         "fill_all_fields_login": "Veuillez remplir tous les champs.",
         "language": "Langue:",
-        "max_length_exceeded": "Le nom d'utilisateur et le mot de passe ne doivent pas dépasser 100 caractères."
+        "max_length_exceeded": "Le nom d'utilisateur et le mot de passe ne doivent pas dépasser 100 caractères.",
     },
     "en": {
         "title": "Admin Dashboard - ETL",
@@ -68,7 +68,7 @@ TRANSLATIONS = {
         "wrong_credentials": "Incorrect username or password.",
         "fill_all_fields_login": "Please fill in all fields.",
         "language": "Language:",
-        "max_length_exceeded": "Username and password must not exceed 100 characters."
+        "max_length_exceeded": "Username and password must not exceed 100 characters.",
     },
     "es": {
         "title": "Panel de Administración - ETL",
@@ -100,7 +100,7 @@ TRANSLATIONS = {
         "wrong_credentials": "Nombre de usuario o contraseña incorrectos.",
         "fill_all_fields_login": "Por favor, rellene todos los campos.",
         "language": "Idioma:",
-        "max_length_exceeded": "El nombre de usuario y la contraseña no deben exceder los 100 caracteres."
+        "max_length_exceeded": "El nombre de usuario y la contraseña no deben exceder los 100 caracteres.",
     },
     "it": {
         "title": "Pannello di Amministrazione - ETL",
@@ -132,7 +132,7 @@ TRANSLATIONS = {
         "wrong_credentials": "Nome utente o password errati.",
         "fill_all_fields_login": "Si prega di compilare tutti i campi.",
         "language": "Lingua:",
-        "max_length_exceeded": "Il nome utente e la password non devono superare i 100 caratteri."
+        "max_length_exceeded": "Il nome utente e la password non devono superare i 100 caratteri.",
     },
     "de": {
         "title": "Admin-Dashboard - ETL",
@@ -164,28 +164,32 @@ TRANSLATIONS = {
         "wrong_credentials": "Falscher Benutzername oder Passwort.",
         "fill_all_fields_login": "Bitte füllen Sie alle Felder aus.",
         "language": "Sprache:",
-        "max_length_exceeded": "Benutzername und Passwort dürfen 100 Zeichen nicht überschreiten."
-    }
+        "max_length_exceeded": "Benutzername und Passwort dürfen 100 Zeichen nicht überschreiten.",
+    },
 }
+
 
 # Classe pour gérer les traductions
 class LanguageManager:
     def __init__(self, default_language="fr"):
         self.current_language = default_language
         self.translations = TRANSLATIONS
-        
+
     def get_text(self, key, **kwargs):
         """
         Récupère le texte traduit pour la clé donnée dans la langue actuelle.
         Supporte le formatage avec des variables.
         """
-        if self.current_language in self.translations and key in self.translations[self.current_language]:
+        if (
+            self.current_language in self.translations
+            and key in self.translations[self.current_language]
+        ):
             text = self.translations[self.current_language][key]
             if kwargs:
                 return text.format(**kwargs)
             return text
         return key
-    
+
     def set_language(self, language_code):
         """
         Change la langue actuelle.
@@ -195,7 +199,7 @@ class LanguageManager:
             self.current_language = language_code
             return True
         return False
-    
+
     def get_available_languages(self):
         """
         Retourne la liste des langues disponibles.

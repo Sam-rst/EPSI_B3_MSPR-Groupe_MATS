@@ -7,7 +7,7 @@ MIN_HEIGHT = 800
 # Répertoire de sortie
 DEFAULT_OUTPUT_DIR = "./cleaned/"
 
-SUPPORTED_FORMATS = ['.csv']
+SUPPORTED_FORMATS = [".csv"]
 
 UI_SETTINGS = {
     "padding": 10,

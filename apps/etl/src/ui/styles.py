@@ -6,7 +6,7 @@ ITEM_BG_COLOR = "#EEEEEE"
 
 # Bordures
 BORDER_COLOR = "#CCCCCC"
-BORDER_THICKNESS = 1 
+BORDER_THICKNESS = 1
 
 # Polices
 TITLE_FONT = ("Arial", 30, "bold")
@@ -23,6 +23,7 @@ BUTTON_PADDING_Y = 5
 ITEM_PADDING_X = 10
 ITEM_PADDING_Y = 8
 
+
 # Styles pour les boutons
 def configure_button_style(button, is_primary=True):
     if is_primary:
@@ -36,7 +37,7 @@ def configure_button_style(button, is_primary=True):
             borderwidth=0,
             activebackground="#3A6CFF",
             activeforeground="white",
-            cursor="hand2"
+            cursor="hand2",
         )
     else:
         button.configure(
@@ -49,52 +50,74 @@ def configure_button_style(button, is_primary=True):
             borderwidth=0,
             activebackground="#E0E0E0",
             activeforeground=TEXT_COLOR,
-            cursor="hand2"
+            cursor="hand2",
         )
 
+
 # Fonction pour créer un bouton arrondi via Canvas
-def create_rounded_button(canvas, x, y, width, height, radius, fill_color, text, command):
+def create_rounded_button(
+    canvas, x, y, width, height, radius, fill_color, text, command
+):
     # Points pour créer un polygone arrondi
     x1, y1 = x, y
     x2, y2 = x + width, y + height
-    
+
     # Dessiner un rectangle avec des coins arrondis
     button_bg = canvas.create_polygon(
-        x1+radius, y1,
-        x2-radius, y1,
-        x2, y1+radius,
-        x2, y2-radius,
-        x2-radius, y2,
-        x1+radius, y2,
-        x1, y2-radius,
-        x1, y1+radius,
+        x1 + radius,
+        y1,
+        x2 - radius,
+        y1,
+        x2,
+        y1 + radius,
+        x2,
+        y2 - radius,
+        x2 - radius,
+        y2,
+        x1 + radius,
+        y2,
+        x1,
+        y2 - radius,
+        x1,
+        y1 + radius,
         fill=fill_color,
         outline=fill_color,
         smooth=True,
-        tags="button_bg"
+        tags="button_bg",
     )
-    
+
     # Ajouter le texte
     button_text = canvas.create_text(
-        x + width/2, y + height/2,
+        x + width / 2,
+        y + height / 2,
         text=text,
         fill="white",
         font=BUTTON_FONT,
-        tags="button_text"
+        tags="button_text",
     )
-    
+
     # Ajouter les gestionnaires d'événements
     canvas.tag_bind("button_bg", "<Button-1>", lambda e: command())
     canvas.tag_bind("button_text", "<Button-1>", lambda e: command())
-    
+
     # Effet de survol
-    canvas.tag_bind("button_bg", "<Enter>", 
-                  lambda e: canvas.itemconfig("button_bg", fill="#3A6CFF"))
-    canvas.tag_bind("button_text", "<Enter>", 
-                  lambda e: canvas.itemconfig("button_bg", fill="#3A6CFF"))
-    canvas.tag_bind("button_bg", "<Leave>", 
-                  lambda e: canvas.itemconfig("button_bg", fill=fill_color))
-    canvas.tag_bind("button_text", "<Leave>", 
-                  lambda e: canvas.itemconfig("button_bg", fill=fill_color))
-    
+    canvas.tag_bind(
+        "button_bg", "<Enter>", lambda e: canvas.itemconfig("button_bg", fill="#3A6CFF")
+    )
+    canvas.tag_bind(
+        "button_text",
+        "<Enter>",
+        lambda e: canvas.itemconfig("button_bg", fill="#3A6CFF"),
+    )
+    canvas.tag_bind(
+        "button_bg",
+        "<Leave>",
+        lambda e: canvas.itemconfig("button_bg", fill=fill_color),
+    )
+    canvas.tag_bind(
+        "button_text",
+        "<Leave>",
+        lambda e: canvas.itemconfig("button_bg", fill=fill_color),
+    )
+
     return (button_bg, button_text)

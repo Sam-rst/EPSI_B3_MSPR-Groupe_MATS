@@ -43,7 +43,7 @@ class APIService:
 
         try:
             response = requests.post(
-                f"{self.auth_endpoint}/verify-token", json={"token": token_to_verify}
+                f"{self.auth_endpoint}/verify-token", params={"token": token_to_verify}
             )
             return response.status_code == 200
         except Exception as e:
@@ -56,7 +56,7 @@ class APIService:
         """
         try:
             headers = {}
-            if self.token:
+            if self.verify_token(self.token):
                 headers["Authorization"] = f"Bearer {self.token}"
 
             response = requests.get(self.users_endpoint, headers=headers)
@@ -85,13 +85,13 @@ class APIService:
 
         try:
             headers = {}
-            if self.token:
+            if self.verify_token(self.token):
                 headers["Authorization"] = f"Bearer {self.token}"
-
-            response = requests.post(
-                f"{self.auth_endpoint}/register", json=payload, headers=headers
-            )
-            return response.status_code in [200, 201, 204]
+                response = requests.post(
+                    f"{self.auth_endpoint}/register", json=payload, headers=headers
+                )
+                return response.status_code in [200, 201, 204]
+            return False
         except Exception as e:
             print(f"Erreur lors de l'ajout d'un utilisateur: {e}")
             return False
@@ -112,3 +112,6 @@ class APIService:
         except Exception as e:
             print(f"Erreur lors de la suppression d'un utilisateur: {e}")
             return False
+
+
+api_service = APIService()

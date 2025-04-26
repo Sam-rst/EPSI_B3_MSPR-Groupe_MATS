@@ -8,7 +8,7 @@ from configapp import APP_TITLE, DEFAULT_SIZE, MIN_WIDTH, MIN_HEIGHT
 # Ajouter le répertoire courant au path pour l'importation
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from auth.db_connector import PostgresConnector
-from auth.api_service import APIService
+from auth.api_service import api_service
 
 # Gestion du drag & drop pour l'ETL si nécessaire
 try:
@@ -75,7 +75,7 @@ class LauncherApp:
         self.root.grid_columnconfigure(0, weight=1)
 
         # Initialisation de l'API
-        self.api = APIService()
+        self.api = api_service
 
         # Cache des infos utilisateurs
         self.current_user = None

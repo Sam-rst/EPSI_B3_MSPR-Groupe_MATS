@@ -210,7 +210,9 @@ class PostgresConnector:
             )
             return cur.fetchone()[0]
 
-        def insert_statistic(cur, label, value, country_id, epidemic_id, daily_wise_id, vaccine_id):
+        def insert_statistic(
+            cur, label, value, country_id, epidemic_id, daily_wise_id, vaccine_id
+        ):
             """Insère une statistique"""
             if pd.isna(value):
                 return
@@ -221,7 +223,14 @@ class PostgresConnector:
                     label, value, country_id, epidemic_id, daily_wise_id, vaccine_id
                 ) VALUES (%s, %s, %s, %s, %s, %s)
             """,
-                (label, float(value), country_id, epidemic_id, daily_wise_id, vaccine_id),
+                (
+                    label,
+                    float(value),
+                    country_id,
+                    epidemic_id,
+                    daily_wise_id,
+                    vaccine_id,
+                ),
             )
 
         def process_file(conn, cur, file_path, config):
@@ -306,7 +315,7 @@ class PostgresConnector:
                                 country_id,
                                 epidemic_id,
                                 daily_wise_id,
-                                vaccine_id
+                                vaccine_id,
                             )
                         else:
                             print(
