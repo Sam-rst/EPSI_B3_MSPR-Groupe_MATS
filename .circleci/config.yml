@@ -4,6 +4,21 @@ orbs:
   python: circleci/python@2.0.3
 
 commands:
+  build-and-lint:
+    parameters:
+      app_path:
+        type: string
+      req_file:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: pip install -r <<parameters.req_file>>
+      - run:
+          name: Run linter
+          command: pylint <<parameters.app_path>>/
+
   run-all-tests:
     parameters:
       app_path:
@@ -37,20 +52,6 @@ commands:
           name: Run accessibility tests
           command: pytest <<parameters.app_path>>/tests/accessibility/
 
-  build-and-lint:
-    parameters:
-      app_path:
-        type: string
-      req_file:
-        type: string
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: pip install -r <<parameters.req_file>>
-      - run:
-          name: Run linter
-          command: pylint <<parameters.app_path>>/
 
 jobs:
   starter:
@@ -65,40 +66,40 @@ jobs:
     executor: python/default
     steps:
       - build-and-lint:
-          app_path: apps/api
+          app_path: apps/api/src
           req_file: apps/api/requirements.txt
 
   build-etl:
     executor: python/default
     steps:
       - build-and-lint:
-          app_path: apps/etl
+          app_path: apps/etl/src
           req_file: apps/etl/requirements.txt
 
   build-seeder:
     executor: python/default
     steps:
       - build-and-lint:
-          app_path: apps/seeder
+          app_path: apps/seeder/src
           req_file: apps/seeder/requirements.txt
 
   tests-api:
     executor: python/default
     steps:
       - run-all-tests:
-          app_path: apps/api
+          app_path: apps/api/src
           req_file: apps/api/requirements.tests.txt
   tests-etl:
     executor: python/default
     steps:
       - run-all-tests:
-          app_path: apps/etl
+          app_path: apps/etl/src
           req_file: apps/etl/requirements.tests.txt
   tests-seeder:
     executor: python/default
     steps:
       - run-all-tests:
-          app_path: apps/seeder
+          app_path: apps/seeder/src
           req_file: apps/seeder/requirements.tests.txt
 
   deploy:
