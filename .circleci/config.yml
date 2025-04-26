@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@2.0.3
+  docker: circleci/docker@2.4.0
 
 commands:
   build-and-lint:
@@ -54,8 +55,50 @@ commands:
           name: Run accessibility tests
           command: pytest <<parameters.app_path>>/src/tests/accessibility/ || [[ $? == 5 ]]
 
+  build-and-push-image:
+    description: "Build & Push Docker Image"
+    parameters:
+      app_name:
+        type: string
+      context_dir:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - docker/login:
+          registry: docker.io
+          username: $REGISTRY_USER
+          password: $REGISTRY_PASSWORD
+      - run:
+          name: Build & Push
+          command: |
+            TAG=${CIRCLE_BRANCH}
+            docker build <<parameters.context_dir>> -t docker.io/$REGISTRY_USER/<<parameters.app_name>>:${TAG}
+            docker push docker.io/$REGISTRY_USER/<<parameters.app_name>>:${TAG}
+
+  ssh-deploy:
+    description: "SSH into VPS and redeploy selected services"
+    parameters:
+      country:
+        type: string
+      env:
+        type: string
+      services:
+        type: string
+    steps:
+      - add_ssh_keys
+      - run:
+          name: Deploy on VPS
+          command: |
+            ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP <<-'EOSSH'
+              cd /srv/analyseit/<<parameters.country>>/<<parameters.env>>
+              docker compose pull <<parameters.services>>
+              docker compose up -d <<parameters.services>>
+            EOSSH
+
 
 jobs:
+  # ===== Steps between multiple tasks ===== #
   starter:
     docker:
       - image: cimg/python:3.11
@@ -80,6 +123,17 @@ jobs:
           name: "Tests validated"
           command: echo "Tests validated - branch correctly filtered"
 
+  deploy-ok:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - run:
+          name: "Deploy successful"
+          command: echo "Deploy successful - branch correctly filtered"
+
+
+
+  # ===== Jobs for build and lint ===== #
   build-api:
     executor:
       name: python/default
@@ -110,6 +164,9 @@ jobs:
           req_file: apps/seeder/requirements.txt
           note_min_linter: 6 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
 
+
+
+  # ===== Jobs for tests ===== #
   tests-api:
     executor:
       name: python/default
@@ -137,34 +194,104 @@ jobs:
           app_path: apps/seeder
           req_file: apps/seeder/requirements.tests.txt
 
-  deploy:
-    parameters:
-      environment:
-        type: string # Définition de l'environnement cible du déploiement (dev, integration, prod...)
-    executor: python/default
+
+
+  # ===== Jobs for building and pushing images to server ===== #
+  build-all-services:
+    docker:
+      - image: cimg/python:3.11
     steps:
-      - checkout # Récupération du code source
-      - run:
-          name: Prepare Deployment Environment
-          command: echo "Preparing deployment for <<parameters.environment>>..."
-      - run:
-          name: Deploy Application
-          command: echo "Deploying application to <<parameters.environment>> environment..."
-      - run:
-          name: Run Verification Tests
-          command: echo "Running verification tests..."
-      - run:
-          name: Run Functional Validation Tests
-          command: echo "Running functional validation tests..."
-      - run:
-          name: Run Load Tests
-          command: echo "Running load tests..."
-      - run:
-          name: Final Deployment Step
-          command: echo "Finalizing deployment to <<parameters.environment>>..."
-      - run:
-          name: Monitoring and Follow-up
-          command: echo "Starting monitoring and follow-up process..."
+      - build-and-push-image:
+          app_name: api
+          context_dir: apps/api
+      - build-and-push-image:
+          app_name: etl
+          context_dir: apps/etl
+      - build-and-push-image:
+          app_name: seeder
+          context_dir: apps/seeder
+      - build-and-push-image:
+          app_name: techapi
+          context_dir: apps/techapi
+      - build-and-push-image:
+          app_name: dataviz
+          context_dir: apps/dataviz
+
+  # ===== Jobs for deploying ===== #
+  # ➡️ Deploy Jobs US
+  deploy-us-dev:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: us
+          env: dev
+          services: "api etl seeder techapi dataviz"
+
+  deploy-us-test:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: us
+          env: test
+          services: "api etl seeder techapi dataviz"
+
+  deploy-us-prod:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: us
+          env: prod
+          services: "api etl seeder techapi dataviz"
+
+# ➡️ Deploy Jobs FR
+  deploy-fr-dev:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: fr
+          env: dev
+          services: "api etl seeder dataviz"
+
+  deploy-fr-test:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: fr
+          env: test
+          services: "api etl seeder dataviz"
+
+  deploy-fr-prod:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: fr
+          env: prod
+          services: "api etl seeder dataviz"
+
+# ➡️ Deploy Jobs CH
+  deploy-ch-dev:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: ch
+          env: dev
+          services: "api etl seeder"
+
+  deploy-ch-test:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: ch
+          env: test
+          services: "api etl seeder"
+
+  deploy-ch-prod:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: ch
+          env: prod
+          services: "api etl seeder"
 
 workflows:
   version: 2
@@ -318,7 +445,7 @@ workflows:
             - tests-etl
             - tests-seeder # Validation des tests
 
-  develop: # Besoin d'un déploiement sur vercel pour la branche develop
+  develop: # Besoin d'un déploiement sur notre serveur pour la branche develop
     jobs:
       - starter:
           filters:
@@ -352,11 +479,23 @@ workflows:
             - tests-api
             - tests-etl
             - tests-seeder # Validation des tests
-      - deploy:
-          name: deploy_dev
+      - build-all-services:
           requires:
-            - tests-ok # Déploiement sur vercel après validation des tests
-          environment: develop
+            - tests-ok # Construction des images Docker après validation des tests
+      - deploy-us-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur US après construction des images
+      - deploy-fr-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur FR après construction des images
+      - deploy-ch-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur CH après construction des images
+      - deploy-ok:
+          requires:
+            - deploy-us-dev
+            - deploy-fr-dev
+            - deploy-ch-dev # Validation du déploiement sur les serveurs US, FR et CH
 
   test: # Besoin d'un déploiement pour la branche test
     jobs:
@@ -392,11 +531,23 @@ workflows:
             - tests-api
             - tests-etl
             - tests-seeder # Validation des tests
-      - deploy:
-          name: deploy_test
+      - build-all-services:
           requires:
-            - tests-ok # Déploiement sur vercel après validation des tests
-          environment: test
+            - tests-ok # Construction des images Docker après validation des tests
+      - deploy-us-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur US après construction des images
+      - deploy-fr-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur FR après construction des images
+      - deploy-ch-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur CH après construction des images
+      - deploy-ok:
+          requires:
+            - deploy-us-dev
+            - deploy-fr-dev
+            - deploy-ch-dev # Validation du déploiement sur les serveurs US, FR et CH
 
   production: # Besoin d'un déploiement pour la branche main 
     jobs:
@@ -432,8 +583,20 @@ workflows:
             - tests-api
             - tests-etl
             - tests-seeder # Validation des tests
-      - deploy:
-          name: deploy_prod
+      - build-all-services:
           requires:
-            - tests-ok # Déploiement sur vercel après validation des tests
-          environment: production
+            - tests-ok # Construction des images Docker après validation des tests
+      - deploy-us-prod:
+          requires:
+            - build-all-services # Déploiement sur le serveur US après construction des images
+      - deploy-fr-prod:
+          requires:
+            - build-all-services # Déploiement sur le serveur FR après construction des images
+      - deploy-ch-prod:
+          requires:
+            - build-all-services # Déploiement sur le serveur CH après construction des images
+      - deploy-ok:
+          requires:
+            - deploy-us-prod
+            - deploy-fr-prod
+            - deploy-ch-prod # Validation du déploiement sur les serveurs US, FR et CH
