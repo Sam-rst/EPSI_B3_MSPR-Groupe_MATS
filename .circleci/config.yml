@@ -65,10 +65,10 @@ commands:
     steps:
       - checkout
       - setup_remote_docker
-      - docker/login:
-          registry: docker.io
-          username: $REGISTRY_USER
-          password: $REGISTRY_PASSWORD
+      - run:
+          name: Login to DockerHub
+          command: |
+            echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
       - run:
           name: Build & Push
           command: |
