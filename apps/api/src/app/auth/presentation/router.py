@@ -11,9 +11,6 @@ from src.app.auth.container import AuthContainer
 # =====Usecases=====
 from src.app.auth.application.usecase.register_user_usecase import RegisterUserUseCase
 from src.app.auth.application.usecase.login_user_usecase import LoginUserUseCase
-from src.app.auth.application.usecase.change_password_usecase import (
-    ChangePasswordUseCase,
-)
 from src.app.auth.application.usecase.verify_token_usecase import VerifyTokenUseCase
 
 # =====Payloads=====
@@ -23,9 +20,6 @@ from src.app.auth.presentation.model.payload.login_payload import LoginPayload
 # =====Responses=====
 from src.app.auth.presentation.model.response.register_response import RegisterResponse
 from src.app.auth.presentation.model.response.login_response import LoginResponse
-
-# =====Services=====
-from src.app.auth.infrastructure.service.jwt_service import JWTService
 
 auth_router = APIRouter(
     responses={

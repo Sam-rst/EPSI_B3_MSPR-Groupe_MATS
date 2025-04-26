@@ -6,7 +6,7 @@ from src.app.auth.presentation.model.payload.login_payload import LoginPayload
 from src.app.auth.presentation.model.response.login_response import LoginResponse
 from src.app.country.domain.interface.country_repository import CountryRepository
 from src.app.role.domain.interface.role_repository import RoleRepository
-from src.app.auth.infrastructure.service.jwt_service import JWTService
+from src.core.auth.authorizer import JWTService
 
 
 class LoginUserUseCase(BaseUseCase):
@@ -71,7 +71,16 @@ class LoginUserUseCase(BaseUseCase):
                 role_id=user.role_id,
                 country_id=user.country_id,
                 access_token=self.jwt_service.create_access_token(
-                    data={"sub": user.username, "id": user.id}
+                    data={
+                        "sub": user.username,
+                        "id": user.id,
+                        "role_id": user.role_id,
+                        "country_id": user.country_id,
+                        "email": user.email,
+                        "firstname": user.firstname,
+                        "lastname": user.lastname,
+                        "username": user.username,
+                    },
                 ),
             )
 

@@ -14,7 +14,7 @@ from src.app.auth.application.usecase.change_password_usecase import (
     ChangePasswordUseCase,
 )
 from src.app.auth.application.usecase.verify_token_usecase import VerifyTokenUseCase
-from src.app.auth.infrastructure.service.jwt_service import JWTService
+from src.core.auth.authorizer import JWTService
 
 
 class AuthContainer(containers.DeclarativeContainer):
