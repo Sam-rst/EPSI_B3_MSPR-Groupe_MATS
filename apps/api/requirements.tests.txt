@@ -1,3 +1,7 @@
 fastapi
+sqlalchemy
+dependency_injector
+PyJWT
+python-dotenv
 pytest
 pytest-mock
