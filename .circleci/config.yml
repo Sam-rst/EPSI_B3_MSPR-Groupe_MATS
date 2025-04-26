@@ -10,6 +10,8 @@ commands:
         type: string
       req_file:
         type: string
+      note_min_linter:
+        type: integer
     steps:
       - checkout
       - run:
@@ -17,7 +19,7 @@ commands:
           command: pip install -r <<parameters.req_file>>
       - run:
           name: Run linter
-          command: pylint <<parameters.app_path>>/
+          command: pylint <<parameters.app_path>>/ --fail-under=<<parameters.note_min_linter>>
 
   run-all-tests:
     parameters:
@@ -68,6 +70,7 @@ jobs:
       - build-and-lint:
           app_path: apps/api/src
           req_file: apps/api/requirements.txt
+          note_min_linter: 5 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
 
   build-etl:
     executor: python/default
@@ -75,6 +78,7 @@ jobs:
       - build-and-lint:
           app_path: apps/etl/src
           req_file: apps/etl/requirements.txt
+          note_min_linter: 4 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
 
   build-seeder:
     executor: python/default
@@ -82,6 +86,7 @@ jobs:
       - build-and-lint:
           app_path: apps/seeder/src
           req_file: apps/seeder/requirements.txt
+          note_min_linter: 6 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
 
   tests-api:
     executor: python/default
@@ -89,12 +94,14 @@ jobs:
       - run-all-tests:
           app_path: apps/api/src
           req_file: apps/api/requirements.tests.txt
+
   tests-etl:
     executor: python/default
     steps:
       - run-all-tests:
           app_path: apps/etl/src
           req_file: apps/etl/requirements.tests.txt
+
   tests-seeder:
     executor: python/default
     steps:
