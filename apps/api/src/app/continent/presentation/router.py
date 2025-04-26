@@ -1,8 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+
+from src.core.middlewares.limiter import limiter
 
 # =====Containers=====
 from src.app.continent.container import ContinentContainer
@@ -57,8 +59,10 @@ continent_router = APIRouter(
     "",
     summary="Récupérer tous les continents",
 )
+@limiter.limit("2/minute")
 @inject
 def endpoint_usecase_get_all_continents(
+    request: Request,
     usecase: FindAllContinentsUseCase = Depends(
         Provide[ContinentContainer.find_all_continents_usecase]
     ),
@@ -87,8 +91,10 @@ def endpoint_usecase_get_all_continents(
     "",
     summary="Créer un nouveau continent",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_add_continent(
+    request: Request,
     payload: CreateContinentPayload,
     usecase: AddContinentUseCase = Depends(
         Provide[ContinentContainer.add_continent_usecase]
@@ -123,8 +129,10 @@ def endpoint_usecase_add_continent(
     "/{id}",
     summary="Récupérer un continent par ID",
 )
+@limiter.limit("20/minute")
 @inject
 def endpoint_usecase_get_continent_by_id(
+    request: Request,
     id: int,
     usecase: FindContinentByIdUseCase = Depends(
         Provide[ContinentContainer.find_continent_by_id_usecase]
@@ -157,8 +165,10 @@ def endpoint_usecase_get_continent_by_id(
     "/{id}",
     summary="Mettre à jour un continent",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_patch_continent_by_id(
+    request: Request,
     id: int,
     payload: UpdateContinentPayload,
     usecase: UpdateContinentUseCase = Depends(
@@ -193,8 +203,10 @@ def endpoint_usecase_patch_continent_by_id(
     "/{id}",
     summary="Supprimer un continent",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_delete_continent_by_id(
+    request: Request,
     id: int,
     usecase: DeleteContinentUseCase = Depends(
         Provide[ContinentContainer.delete_continent_usecase]
@@ -227,8 +239,10 @@ def endpoint_usecase_delete_continent_by_id(
     "/import",
     summary="Importer plusieurs continents",
 )
+@limiter.limit("1/hour")
 @inject
 def endpoint_usecase_import_continents(
+    request: Request,
     payload: list[CreateContinentPayload],
     usecase: ImportContinentsUseCase = Depends(
         Provide[ContinentContainer.import_continents_usecase]

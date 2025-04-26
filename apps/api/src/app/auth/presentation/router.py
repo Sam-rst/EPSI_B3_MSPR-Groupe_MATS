@@ -1,7 +1,9 @@
-from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi import APIRouter, status, HTTPException, Depends, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+
+from src.core.middlewares.limiter import limiter
 
 # =====Containers=====
 from src.app.auth.container import AuthContainer
@@ -42,8 +44,10 @@ auth_router = APIRouter(
 @auth_router.post(
     "/register", status_code=status.HTTP_201_CREATED, response_model=RegisterResponse
 )
+@limiter.limit("2/minute")
 @inject
 def register_user(
+    request: Request,
     payload: RegisterPayload,
     usecase: RegisterUserUseCase = Depends(
         Provide[AuthContainer.register_user_usecase]
@@ -51,7 +55,9 @@ def register_user(
 ):
     try:
         result = usecase.execute(payload)
-        return JSONResponse(status_code=status.HTTP_201_CREATED, content=jsonable_encoder(result))
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED, content=jsonable_encoder(result)
+        )
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
@@ -65,14 +71,18 @@ def register_user(
 @auth_router.post(
     "/login", status_code=status.HTTP_200_OK, response_model=LoginResponse
 )
+@limiter.limit("5/minute")
 @inject
 def login_user(
+    request: Request,
     payload: LoginPayload,
     usecase: LoginUserUseCase = Depends(Provide[AuthContainer.login_user_usecase]),
 ):
     try:
         result = usecase.execute(payload)
-        return JSONResponse(status_code=status.HTTP_201_CREATED, content=jsonable_encoder(result))
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED, content=jsonable_encoder(result)
+        )
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
@@ -82,21 +92,12 @@ def login_user(
             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
         )
 
-@auth_router.post("/forgot-password")
-def forgot_password(email: str):
-    # TODO : Implémenter l'envoi d'un mail de reset avec token
-    raise HTTPException(status_code=501, detail="Not implemented yet")
-
-
-@auth_router.post("/reset-password")
-def reset_password(token: str, new_password: str):
-    # TODO : Vérifier le token reçu et changer le mot de passe
-    raise HTTPException(status_code=501, detail="Not implemented yet")
-
 
 @auth_router.post("/verify-token")
+@limiter.limit("30/minute")
 @inject
 def verify_token(
+    request: Request,
     token: str,
     usecase: VerifyTokenUseCase = Depends(Provide[AuthContainer.verify_token_usecase]),
 ):
@@ -114,3 +115,17 @@ def verify_token(
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
         )
+
+
+@auth_router.post("/forgot-password")
+@limiter.limit("2/minute")
+def forgot_password(request: Request, email: str):
+    # TODO : Implémenter l'envoi d'un mail de reset avec token
+    raise HTTPException(status_code=501, detail="Not implemented yet")
+
+
+@auth_router.post("/reset-password")
+@limiter.limit("2/minute")
+def reset_password(request: Request, token: str, new_password: str):
+    # TODO : Vérifier le token reçu et changer le mot de passe
+    raise HTTPException(status_code=501, detail="Not implemented yet")

@@ -1,8 +1,10 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+
+from src.core.middlewares.limiter import limiter
 
 # =====Containers=====
 from src.app.role.container import RoleContainer
@@ -42,8 +44,10 @@ role_router = APIRouter(
     "",
     summary="Récupérer tous les rôles",
 )
+@limiter.limit("2/minute")
 @inject
 def endpoint_usecase_get_all_roles(
+    request: Request,
     usecase: FindAllRolesUseCase = Depends(
         Provide[RoleContainer.find_all_roles_usecase]
     ),
@@ -72,8 +76,10 @@ def endpoint_usecase_get_all_roles(
     "",
     summary="Créer un nouveau role",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_add_role(
+    request: Request,
     payload: CreateRolePayload,
     usecase: AddRoleUseCase = Depends(
         Provide[RoleContainer.add_role_usecase]
@@ -108,8 +114,10 @@ def endpoint_usecase_add_role(
     "/{id}",
     summary="Récupérer un role par son ID",
 )
+@limiter.limit("20/minute")
 @inject
 def endpoint_usecase_get_role_by_id(
+    request: Request,
     id: int,
     usecase: FindRoleByIdUseCase = Depends(
         Provide[RoleContainer.find_role_by_id_usecase]
@@ -142,8 +150,10 @@ def endpoint_usecase_get_role_by_id(
     "/{id}",
     summary="Mettre à jour un role",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_patch_role_by_id(
+    request: Request,
     id: int,
     payload: UpdateRolePayload,
     usecase: UpdateRoleUseCase = Depends(
@@ -178,8 +188,10 @@ def endpoint_usecase_patch_role_by_id(
     "/{id}",
     summary="Supprimer un role",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_delete_role_by_id(
+    request: Request,
     id: int,
     usecase: DeleteRoleUseCase = Depends(
         Provide[RoleContainer.delete_role_usecase]
@@ -212,8 +224,10 @@ def endpoint_usecase_delete_role_by_id(
     "/import",
     summary="Importer plusieurs roles",
 )
+@limiter.limit("1/hour")
 @inject
 def endpoint_usecase_import_roles(
+    request: Request,
     payload: list[CreateRolePayload],
     usecase: ImportRolesUseCase = Depends(
         Provide[RoleContainer.import_roles_usecase]

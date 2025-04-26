@@ -1,8 +1,11 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+
+
+from src.core.middlewares.limiter import limiter
 
 # =====Containers=====
 from src.app.epidemic.container import EpidemicContainer
@@ -53,8 +56,10 @@ epidemic_router = APIRouter(
 
 
 @epidemic_router.get("")
+@limiter.limit("2/minute")
 @inject
 def endpoint_usecase_get_all_epidemics(
+    request: Request,
     usecase: FindAllEpidemicsUseCase = Depends(
         Provide[EpidemicContainer.find_all_epidemics_usecase]
     ),
@@ -80,8 +85,10 @@ def endpoint_usecase_get_all_epidemics(
 
 
 @epidemic_router.post("")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_add_epidemic(
+    request: Request,
     payload: CreateEpidemicPayload,
     usecase: AddEpidemicUseCase = Depends(
         Provide[EpidemicContainer.add_epidemic_usecase]
@@ -113,8 +120,10 @@ def endpoint_usecase_add_epidemic(
 
 
 @epidemic_router.get("/{id}")
+@limiter.limit("20/minute")
 @inject
 def endpoint_usecase_get_epidemic_by_id(
+    request: Request,
     id: int,
     usecase: FindEpidemicByIdUseCase = Depends(
         Provide[EpidemicContainer.find_epidemic_by_id_usecase]
@@ -144,8 +153,10 @@ def endpoint_usecase_get_epidemic_by_id(
 
 
 @epidemic_router.patch("/{id}")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_patch_epidemic_by_id(
+    request: Request,
     id: int,
     payload: UpdateEpidemicPayload,
     usecase: UpdateEpidemicUseCase = Depends(
@@ -177,8 +188,10 @@ def endpoint_usecase_patch_epidemic_by_id(
 
 
 @epidemic_router.delete("/{id}")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_delete_epidemic_by_id(
+    request: Request,
     id: int,
     usecase: DeleteEpidemicUseCase = Depends(
         Provide[EpidemicContainer.delete_epidemic_usecase]
@@ -211,8 +224,10 @@ def endpoint_usecase_delete_epidemic_by_id(
     "/import",
     summary="Importer plusieurs epidemics",
 )
+@limiter.limit("1/hour")
 @inject
 def endpoint_usecase_import_continents(
+    request: Request,
     payload: list[CreateEpidemicPayload],
     usecase: ImportEpidemicsUseCase = Depends(
         Provide[EpidemicContainer.import_epidemics_usecase]

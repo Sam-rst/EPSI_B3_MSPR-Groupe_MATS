@@ -1,8 +1,11 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+
+
+from src.core.middlewares.limiter import limiter
 
 # =====Containers=====
 from src.app.country.container import CountryContainer
@@ -53,8 +56,10 @@ country_router = APIRouter(
 
 
 @country_router.get("")
+@limiter.limit("2/minute")
 @inject
 def endpoint_usecase_get_all_countries(
+    request: Request,
     usecase: FindAllCountriesUseCase = Depends(
         Provide[CountryContainer.find_all_countries_usecase]
     ),
@@ -80,8 +85,10 @@ def endpoint_usecase_get_all_countries(
 
 
 @country_router.post("")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_add_country(
+    request: Request,
     payload: CreateCountryPayload,
     usecase: AddCountryUseCase = Depends(Provide[CountryContainer.add_country_usecase]),
 ):
@@ -111,8 +118,10 @@ def endpoint_usecase_add_country(
 
 
 @country_router.get("/{id}")
+@limiter.limit("20/minute")
 @inject
 def endpoint_usecase_get_country_by_id(
+    request: Request,
     id: int,
     usecase: FindCountryByIdUseCase = Depends(
         Provide[CountryContainer.find_country_by_id_usecase]
@@ -142,8 +151,10 @@ def endpoint_usecase_get_country_by_id(
 
 
 @country_router.patch("/{id}")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_patch_country_by_id(
+    request: Request,
     id: int,
     payload: UpdateCountryPayload,
     usecase: UpdateCountryUseCase = Depends(
@@ -175,8 +186,10 @@ def endpoint_usecase_patch_country_by_id(
 
 
 @country_router.delete("/{id}")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_delete_country_by_id(
+    request: Request,
     id: int,
     usecase: DeleteCountryUseCase = Depends(
         Provide[CountryContainer.delete_country_usecase]
@@ -209,8 +222,10 @@ def endpoint_usecase_delete_country_by_id(
     "/import",
     summary="Importer plusieurs pays",
 )
+@limiter.limit("1/hour")
 @inject
 def endpoint_usecase_import_continents(
+    request: Request,
     payload: list[CreateCountryPayload],
     usecase: ImportCountriesUseCase = Depends(
         Provide[CountryContainer.import_countries_usecase]
