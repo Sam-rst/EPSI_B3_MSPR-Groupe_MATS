@@ -34,25 +34,25 @@ commands:
           command: pip install -r <<parameters.req_file>>
       - run:
           name: Run unit tests
-          command: pytest <<parameters.app_path>>/src/tests/unit/
+          command: pytest <<parameters.app_path>>/src/tests/unit/ || [[ $? == 5 ]]
       - run:
           name: Run integration tests
-          command: pytest <<parameters.app_path>>/src/tests/integration/
+          command: pytest <<parameters.app_path>>/src/tests/integration/ || [[ $? == 5 ]]
       - run:
           name: Run regression tests
-          command: pytest <<parameters.app_path>>/src/tests/regression/
+          command: pytest <<parameters.app_path>>/src/tests/regression/ || [[ $? == 5 ]]
       - run:
           name: Run performance tests
-          command: pytest <<parameters.app_path>>/src/tests/performance/
+          command: pytest <<parameters.app_path>>/src/tests/performance/ || [[ $? == 5 ]]
       - run:
           name: Run security tests
-          command: pytest <<parameters.app_path>>/src/tests/security/
+          command: pytest <<parameters.app_path>>/src/tests/security/ || [[ $? == 5 ]]
       - run:
           name: Run compatibility tests
-          command: pytest <<parameters.app_path>>/src/tests/compatibility/
+          command: pytest <<parameters.app_path>>/src/tests/compatibility/ || [[ $? == 5 ]]
       - run:
           name: Run accessibility tests
-          command: pytest <<parameters.app_path>>/src/tests/accessibility/
+          command: pytest <<parameters.app_path>>/src/tests/accessibility/ || [[ $? == 5 ]]
 
 
 jobs:
