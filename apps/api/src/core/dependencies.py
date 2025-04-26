@@ -1,9 +1,8 @@
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from src.core.auth.authorizer import JWTService
+from src.core.auth.authorizer import jwt_service
 
 security = HTTPBearer()
-jwt_service = JWTService()  # Ou injecte-le proprement
 
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -13,5 +12,5 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token invalide ou expiré",
+            detail=f"Token invalide ou expiré : {e}",
         )

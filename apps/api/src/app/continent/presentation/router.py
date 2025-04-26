@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from src.core.middlewares.limiter import limiter
-
+from src.core.dependencies import get_current_user
 # =====Containers=====
 from src.app.continent.container import ContinentContainer
 
@@ -43,6 +43,7 @@ from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dt
 )
 
 continent_router = APIRouter(
+    dependencies=[Depends(get_current_user)],
     responses={
         status.HTTP_200_OK: {"description": "Requête réussie"},
         status.HTTP_201_CREATED: {"description": "Ressource créée avec succès"},

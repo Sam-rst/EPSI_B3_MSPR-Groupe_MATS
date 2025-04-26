@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from src.core.middlewares.limiter import limiter
+from src.core.dependencies import get_current_user
 
 # =====Containers=====
 from src.app.auth.container import AuthContainer
@@ -36,7 +37,10 @@ auth_router = APIRouter(
 
 
 @auth_router.post(
-    "/register", status_code=status.HTTP_201_CREATED, response_model=RegisterResponse
+    "/register",
+    status_code=status.HTTP_201_CREATED,
+    response_model=RegisterResponse,
+    dependencies=[Depends(get_current_user)],
 )
 @limiter.limit("2/minute")
 @inject
@@ -111,14 +115,14 @@ def verify_token(
         )
 
 
-@auth_router.post("/forgot-password")
+@auth_router.post("/forgot-password", dependencies=[Depends(get_current_user)])
 @limiter.limit("2/minute")
 def forgot_password(request: Request, email: str):
     # TODO : Implémenter l'envoi d'un mail de reset avec token
     raise HTTPException(status_code=501, detail="Not implemented yet")
 
 
-@auth_router.post("/reset-password")
+@auth_router.post("/reset-password", dependencies=[Depends(get_current_user)])
 @limiter.limit("2/minute")
 def reset_password(request: Request, token: str, new_password: str):
     # TODO : Vérifier le token reçu et changer le mot de passe

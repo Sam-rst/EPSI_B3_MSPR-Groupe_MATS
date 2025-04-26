@@ -14,7 +14,7 @@ from src.app.auth.application.usecase.change_password_usecase import (
     ChangePasswordUseCase,
 )
 from src.app.auth.application.usecase.verify_token_usecase import VerifyTokenUseCase
-from src.core.auth.authorizer import JWTService
+from src.core.auth.authorizer import jwt_service
 
 
 class AuthContainer(containers.DeclarativeContainer):
@@ -48,9 +48,6 @@ class AuthContainer(containers.DeclarativeContainer):
         in_memory=repository_role_in_memory,
         in_postgres=repository_role_in_postgres,
     )
-
-    # Services
-    jwt_service = providers.Singleton(JWTService)
 
     # Définir les usecases
     register_user_usecase = providers.Factory(

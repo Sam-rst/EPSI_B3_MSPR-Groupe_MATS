@@ -6,6 +6,7 @@ from fastapi.encoders import jsonable_encoder
 
 
 from src.core.middlewares.limiter import limiter
+from src.core.dependencies import get_current_user
 
 # =====Containers=====
 from src.app.epidemic.container import EpidemicContainer
@@ -42,6 +43,7 @@ from src.app.epidemic.presentation.model.dto.bulk_insert_epidemics_response_dto 
 )
 
 epidemic_router = APIRouter(
+    dependencies=[Depends(get_current_user)],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},

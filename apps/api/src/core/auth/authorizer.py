@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 from datetime import datetime, timedelta
 from typing import Optional
+from dependency_injector import providers
 import jwt
 from src.core.config.settings import JWT_SECRET_KEY, JWT_ACCESS_TOKEN_EXPIRES
 
@@ -61,3 +62,5 @@ class JWTService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error verifying token: {str(e)}",
             )
+
+jwt_service = JWTService()

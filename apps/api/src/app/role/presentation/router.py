@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from src.core.middlewares.limiter import limiter
+from src.core.dependencies import get_current_user
 
 # =====Containers=====
 from src.app.role.container import RoleContainer
@@ -27,6 +28,7 @@ from src.app.role.presentation.model.dto.bulk_insert_roles_response_dto import (
 )
 
 role_router = APIRouter(
+    dependencies=[Depends(get_current_user)],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},
