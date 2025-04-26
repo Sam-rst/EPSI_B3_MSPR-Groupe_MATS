@@ -1,8 +1,3 @@
-# adminDashboard/models.py
-"""
-Module contenant les modèles de données pour l'application Admin Dashboard.
-"""
-
 import os
 import sys
 from typing import Dict, List

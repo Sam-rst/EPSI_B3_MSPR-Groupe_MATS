@@ -74,13 +74,11 @@ class APIService:
         Ajoute un nouvel utilisateur via l'API.
         Le mot de passe sera hashé côté serveur.
         """
-        # Hasher le mot de passe avant de l'envoyer
-        hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         # Préparer le payload selon le format attendu par l'API
         payload = {
             "username": username,
-            "password_hashed": hashed_password,
+            "password": password,
             "role_id": role_id,
             "country_id": region_id,
         }
