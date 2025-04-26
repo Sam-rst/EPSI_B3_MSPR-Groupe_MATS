@@ -100,7 +100,7 @@ jobs:
       tag: "3.11"
     steps:
       - run-all-tests:
-          app_path: apps/api/src
+          app_path: apps/api
           req_file: apps/api/requirements.tests.txt
 
   tests-etl:
@@ -109,7 +109,7 @@ jobs:
       tag: "3.11"
     steps:
       - run-all-tests:
-          app_path: apps/etl/src
+          app_path: apps/etl
           req_file: apps/etl/requirements.tests.txt
 
   tests-seeder:
@@ -118,7 +118,7 @@ jobs:
       tag: "3.11"
     steps:
       - run-all-tests:
-          app_path: apps/seeder/src
+          app_path: apps/seeder
           req_file: apps/seeder/requirements.tests.txt
 
   deploy:
