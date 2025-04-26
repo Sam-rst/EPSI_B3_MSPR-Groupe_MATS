@@ -5,7 +5,7 @@ from src.app.base.application.usecase.base_usecase import BaseUseCase
 from src.app.auth.presentation.model.response.login_response import LoginResponse
 from src.app.country.domain.interface.country_repository import CountryRepository
 from src.app.role.domain.interface.role_repository import RoleRepository
-from src.app.auth.infrastructure.service.jwt_service import JWTService
+from src.core.auth.authorizer import JWTService
 
 
 class VerifyTokenUseCase(BaseUseCase):
