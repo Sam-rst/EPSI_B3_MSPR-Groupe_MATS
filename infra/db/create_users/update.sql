@@ -56,9 +56,12 @@ GRANT CONNECT ON DATABASE metabase TO metabase_user;
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT USAGE ON SCHEMA public TO metabase_user;
 
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO metabase_user;
+GRANT ALL PRIVILEGES ON DATABASE metabase TO metabase_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO metabase_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO metabase_user;
 
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO metabase_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO metabase_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO metabase_user;
 
 ------------------------------------------------
 -- 4. BONUS : Interdire l'accès à toute nouvelle base par défaut
