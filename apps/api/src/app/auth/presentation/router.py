@@ -40,7 +40,7 @@ auth_router = APIRouter(
     "/register",
     status_code=status.HTTP_201_CREATED,
     response_model=RegisterResponse,
-    dependencies=[Depends(get_current_user)],
+    # dependencies=[Depends(get_current_user)],
 )
 @limiter.limit("2/minute")
 @inject
@@ -79,7 +79,7 @@ def login_user(
     try:
         result = usecase.execute(payload)
         return JSONResponse(
-            status_code=status.HTTP_201_CREATED, content=jsonable_encoder(result)
+            status_code=status.HTTP_200_OK, content=jsonable_encoder(result)
         )
     except HTTPException as http_exc:
         return JSONResponse(
