@@ -3,49 +3,103 @@ version: 2.1
 orbs:
   python: circleci/python@2.0.3
 
-jobs:
-  build:
-    executor: python/default
+commands:
+  starter:
+    docker:
+      - image: cimg/python:3.11
     steps:
-      - checkout # Récupération du code source
       - run:
-          name: Install dependencies
-          command: echo "Dependencies installed" # Installation manuelle des dépendances
-      - run:
-          name: Run linter
-          command: echo "Code linted" # Exécution de l'analyse statique du code
-      - run:
-          name: Clean and package
-          command: echo "Cleaning and packaging..." # Étape placeholder pour le packaging
+          name: "Starter job"
+          command: echo "Starter - branch correctly filtered"
 
-  tests:
-    executor: python/default
+  run-all-tests:
+    parameters:
+      app_path:
+        type: string
+      req_file:
+        type: string
     steps:
-      - checkout # Récupération du code source
+      - checkout
       - run:
           name: Install dependencies
-          command: echo "Dependencies installed" # Installation manuelle des dépendances
+          command: pip install -r <<parameters.req_file>>
       - run:
           name: Run unit tests
-          command: echo "Running unit tests..." # Exécution des tests unitaires en mode CI
+          command: pytest <<parameters.app_path>>/tests/unit/
       - run:
           name: Run integration tests
-          command: echo "Running integration tests..."
+          command: pytest <<parameters.app_path>>/tests/integration/
       - run:
           name: Run regression tests
-          command: echo "Running regression tests..."
+          command: pytest <<parameters.app_path>>/tests/regression/
       - run:
           name: Run performance tests
-          command: echo "Running performance tests..."
+          command: pytest <<parameters.app_path>>/tests/performance/
       - run:
           name: Run security tests
-          command: echo "Running security tests..."
+          command: pytest <<parameters.app_path>>/tests/security/
       - run:
           name: Run compatibility tests
-          command: echo "Running compatibility tests..."
+          command: pytest <<parameters.app_path>>/tests/compatibility/
       - run:
           name: Run accessibility tests
-          command: echo "Running accessibility tests..."
+          command: pytest <<parameters.app_path>>/tests/accessibility/
+
+  build-and-lint:
+    parameters:
+      app_path:
+        type: string
+      req_file:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: pip install -r <<parameters.req_file>>
+      - run:
+          name: Run linter
+          command: pylint <<parameters.app_path>>/
+
+jobs:
+  build-api:
+    executor: python/default
+    steps:
+      - build-and-lint:
+          app_path: apps/api
+          req_file: apps/api/requirements.txt
+
+  build-etl:
+    executor: python/default
+    steps:
+      - build-and-lint:
+          app_path: apps/etl
+          req_file: apps/etl/requirements.txt
+
+  build-seeder:
+    executor: python/default
+    steps:
+      - build-and-lint:
+          app_path: apps/seeder
+          req_file: apps/seeder/requirements.txt
+
+  tests-api:
+    executor: python/default
+    steps:
+      - run-all-tests:
+          app_path: apps/api
+          req_file: apps/api/requirements.tests.txt
+  tests-etl:
+    executor: python/default
+    steps:
+      - run-all-tests:
+          app_path: apps/etl
+          req_file: apps/etl/requirements.tests.txt
+  tests-seeder:
+    executor: python/default
+    steps:
+      - run-all-tests:
+          app_path: apps/seeder
+          req_file: apps/seeder/requirements.tests.txt
 
   deploy:
     parameters:
@@ -81,7 +135,7 @@ workflows:
 
   undefined: # Pour les branches créees ne respectant pas le pattern Gitflow, on effectue exactement le même traitement que pour les branches feature
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               ignore:
@@ -91,87 +145,195 @@ workflows:
                 - develop
                 - test
                 - main
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - tests-api:
+          requires:
+            - build-api
+      - tests-etl:
+          requires:
+            - build-etl
+      - tests-seeder:
+          requires:
+            - build-seeder
 
   feature: # Pas besoin de déploiement pour les branches feature
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only:
-                - /^feature\/.*/ # Déclenchement du build uniquement pour les branches feature
-      - tests:
+                - /^feature\/.*/ # Déclenchement du starter uniquement pour les branches feature
+      - build-api:
           requires:
-            - build # Exécution des tests après la compilation
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - tests-api:
+          requires:
+            - build-api
+      - tests-etl:
+          requires:
+            - build-etl
+      - tests-seeder:
+          requires:
+            - build-seeder
 
   bugfix: # Pas besoin de déploiement pour les branches bugfix
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only:
                 - /^bugfix\/.*/ # Déclenchement du build uniquement pour les branches bugfix
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - tests-api:
+          requires:
+            - build-api
+      - tests-etl:
+          requires:
+            - build-etl
+      - tests-seeder:
+          requires:
+            - build-seeder
 
   hotfix: # Pas besoin de déploiement pour les branches hotfix
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only:
                 - /^hotfix\/.*/ # Déclenchement du build uniquement pour les branches hotfix
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - tests-api:
+          requires:
+            - build-api
+      - tests-etl:
+          requires:
+            - build-etl
+      - tests-seeder:
+          requires:
+            - build-seeder
 
   develop: # Besoin d'un déploiement sur vercel pour la branche develop
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only: develop # Déclenchement du build uniquement sur la branche develop
-      - tests:
+      - build-api:
           requires:
-            - build
-          filters:
-            branches:
-              only: develop
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - tests-api:
+          requires:
+            - build-api
+      - tests-etl:
+          requires:
+            - build-etl
+      - tests-seeder:
+          requires:
+            - build-seeder
       - deploy:
           name: deploy_dev
           requires:
-            - tests # Déploiement en dev après la réussite des tests
-          environment: development
+            - tests-api
+            - tests-etl
+            - tests-seeder # Déploiement sur vercel après validation des tests
+          environment: develop
 
   test: # Besoin d'un déploiement pour la branche test
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only: test # Déclenchement du build uniquement sur la branche test
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - tests-api:
+          requires:
+            - build-api
+      - tests-etl:
+          requires:
+            - build-etl
+      - tests-seeder:
+          requires:
+            - build-seeder
       - deploy:
-          name: deploy_int
+          name: deploy_test
           requires:
-            - tests
-          environment: integration
+            - tests-api
+            - tests-etl
+            - tests-seeder # Déploiement sur vercel après validation des tests
+          environment: test
 
   production: # Besoin d'un déploiement pour la branche main
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only: main # Déclenchement du build uniquement sur la branche principale
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - tests-api:
+          requires:
+            - build-api
+      - tests-etl:
+          requires:
+            - build-etl
+      - tests-seeder:
+          requires:
+            - build-seeder
       - deploy:
           name: deploy_prod
           requires:
-            - tests # Déploiement en production après validation des tests
+            - tests-api
+            - tests-etl
+            - tests-seeder # Déploiement sur vercel après validation des tests
           environment: production
