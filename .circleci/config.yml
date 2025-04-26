@@ -34,25 +34,25 @@ commands:
           command: pip install -r <<parameters.req_file>>
       - run:
           name: Run unit tests
-          command: pytest <<parameters.app_path>>/tests/unit/
+          command: pytest <<parameters.app_path>>/src/tests/unit/
       - run:
           name: Run integration tests
-          command: pytest <<parameters.app_path>>/tests/integration/
+          command: pytest <<parameters.app_path>>/src/tests/integration/
       - run:
           name: Run regression tests
-          command: pytest <<parameters.app_path>>/tests/regression/
+          command: pytest <<parameters.app_path>>/src/tests/regression/
       - run:
           name: Run performance tests
-          command: pytest <<parameters.app_path>>/tests/performance/
+          command: pytest <<parameters.app_path>>/src/tests/performance/
       - run:
           name: Run security tests
-          command: pytest <<parameters.app_path>>/tests/security/
+          command: pytest <<parameters.app_path>>/src/tests/security/
       - run:
           name: Run compatibility tests
-          command: pytest <<parameters.app_path>>/tests/compatibility/
+          command: pytest <<parameters.app_path>>/src/tests/compatibility/
       - run:
           name: Run accessibility tests
-          command: pytest <<parameters.app_path>>/tests/accessibility/
+          command: pytest <<parameters.app_path>>/src/tests/accessibility/
 
 
 jobs:
@@ -65,45 +65,57 @@ jobs:
           command: echo "Starter - branch correctly filtered"
 
   build-api:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.11"
     steps:
       - build-and-lint:
-          app_path: apps/api/src
+          app_path: apps/api
           req_file: apps/api/requirements.txt
           note_min_linter: 5 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
 
   build-etl:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.11"
     steps:
       - build-and-lint:
-          app_path: apps/etl/src
+          app_path: apps/etl
           req_file: apps/etl/requirements.txt
           note_min_linter: 4 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
 
   build-seeder:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.11"
     steps:
       - build-and-lint:
-          app_path: apps/seeder/src
+          app_path: apps/seeder
           req_file: apps/seeder/requirements.txt
           note_min_linter: 6 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
 
   tests-api:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.11"
     steps:
       - run-all-tests:
           app_path: apps/api/src
           req_file: apps/api/requirements.tests.txt
 
   tests-etl:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.11"
     steps:
       - run-all-tests:
           app_path: apps/etl/src
           req_file: apps/etl/requirements.tests.txt
 
   tests-seeder:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.11"
     steps:
       - run-all-tests:
           app_path: apps/seeder/src
