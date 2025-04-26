@@ -4,14 +4,6 @@ orbs:
   python: circleci/python@2.0.3
 
 commands:
-  starter:
-    docker:
-      - image: cimg/python:3.11
-    steps:
-      - run:
-          name: "Starter job"
-          command: echo "Starter - branch correctly filtered"
-
   run-all-tests:
     parameters:
       app_path:
@@ -61,6 +53,14 @@ commands:
           command: pylint <<parameters.app_path>>/
 
 jobs:
+  starter:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - run:
+          name: "Starter job"
+          command: echo "Starter - branch correctly filtered"
+
   build-api:
     executor: python/default
     steps:
