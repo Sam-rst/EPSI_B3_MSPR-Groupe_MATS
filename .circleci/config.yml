@@ -64,6 +64,22 @@ jobs:
           name: "Starter job"
           command: echo "Starter - branch correctly filtered"
 
+  builds-ok:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - run:
+          name: "Build validated"
+          command: echo "Build validated - branch correctly filtered"
+
+  tests-ok:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - run:
+          name: "Tests validated"
+          command: echo "Tests validated - branch correctly filtered"
+
   build-api:
     executor:
       name: python/default
@@ -174,15 +190,25 @@ workflows:
       - build-seeder:
           requires:
             - starter
-      - tests-api:
+      - builds-ok:
           requires:
             - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
       - tests-etl:
           requires:
-            - build-etl
+            - builds-ok
       - tests-seeder:
           requires:
-            - build-seeder
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
   feature: # Pas besoin de déploiement pour les branches feature
     jobs:
@@ -200,15 +226,25 @@ workflows:
       - build-seeder:
           requires:
             - starter
-      - tests-api:
+      - builds-ok:
           requires:
             - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
       - tests-etl:
           requires:
-            - build-etl
+            - builds-ok
       - tests-seeder:
           requires:
-            - build-seeder
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
   bugfix: # Pas besoin de déploiement pour les branches bugfix
     jobs:
@@ -226,15 +262,25 @@ workflows:
       - build-seeder:
           requires:
             - starter
-      - tests-api:
+      - builds-ok:
           requires:
             - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
       - tests-etl:
           requires:
-            - build-etl
+            - builds-ok
       - tests-seeder:
           requires:
-            - build-seeder
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
   hotfix: # Pas besoin de déploiement pour les branches hotfix
     jobs:
@@ -252,15 +298,25 @@ workflows:
       - build-seeder:
           requires:
             - starter
-      - tests-api:
+      - builds-ok:
           requires:
             - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
       - tests-etl:
           requires:
-            - build-etl
+            - builds-ok
       - tests-seeder:
           requires:
-            - build-seeder
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
   develop: # Besoin d'un déploiement sur vercel pour la branche develop
     jobs:
@@ -277,21 +333,29 @@ workflows:
       - build-seeder:
           requires:
             - starter
-      - tests-api:
+      - builds-ok:
           requires:
             - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
       - tests-etl:
           requires:
-            - build-etl
+            - builds-ok
       - tests-seeder:
           requires:
-            - build-seeder
-      - deploy:
-          name: deploy_dev
+            - builds-ok
+      - tests-ok:
           requires:
             - tests-api
             - tests-etl
-            - tests-seeder # Déploiement sur vercel après validation des tests
+            - tests-seeder # Validation des tests
+      - deploy:
+          name: deploy_dev
+          requires:
+            - tests-ok # Déploiement sur vercel après validation des tests
           environment: develop
 
   test: # Besoin d'un déploiement pour la branche test
@@ -309,21 +373,29 @@ workflows:
       - build-seeder:
           requires:
             - starter
-      - tests-api:
+      - builds-ok:
           requires:
             - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
       - tests-etl:
           requires:
-            - build-etl
+            - builds-ok
       - tests-seeder:
           requires:
-            - build-seeder
-      - deploy:
-          name: deploy_test
+            - builds-ok
+      - tests-ok:
           requires:
             - tests-api
             - tests-etl
-            - tests-seeder # Déploiement sur vercel après validation des tests
+            - tests-seeder # Validation des tests
+      - deploy:
+          name: deploy_test
+          requires:
+            - tests-ok # Déploiement sur vercel après validation des tests
           environment: test
 
   production: # Besoin d'un déploiement pour la branche main
@@ -341,19 +413,27 @@ workflows:
       - build-seeder:
           requires:
             - starter
-      - tests-api:
+      - builds-ok:
           requires:
             - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
       - tests-etl:
           requires:
-            - build-etl
+            - builds-ok
       - tests-seeder:
           requires:
-            - build-seeder
-      - deploy:
-          name: deploy_prod
+            - builds-ok
+      - tests-ok:
           requires:
             - tests-api
             - tests-etl
-            - tests-seeder # Déploiement sur vercel après validation des tests
+            - tests-seeder # Validation des tests
+      - deploy:
+          name: deploy_prod
+          requires:
+            - tests-ok # Déploiement sur vercel après validation des tests
           environment: production
