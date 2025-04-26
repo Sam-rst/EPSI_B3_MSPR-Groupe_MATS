@@ -1,4 +1,5 @@
 name: EPSI_MSPR_B3-Groupe_MATS
+
 services:
   db:
     image: postgres:latest
@@ -61,6 +62,64 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
+
+  sonar-db:
+    image: postgres:13
+    container_name: MSPR-SONAR_DB
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonar_db_data:/var/lib/postgresql/data
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: MSPR-SONARQUBE
+    restart: unless-stopped
+    depends_on:
+      - sonar-db
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: ${SONAR_ES_BOOTSTRAP_CHECKS_DISABLE}
+      SONARQUBE_JDBC_USERNAME: ${SONARQUBE_JDBC_USERNAME}
+      SONARQUBE_JDBC_PASSWORD: ${SONARQUBE_JDBC_PASSWORD}
+      SONARQUBE_JDBC_URL: ${SONARQUBE_JDBC_URL}
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+  sonar-analyzer:
+    image: sonarsource/sonar-scanner-cli:latest
+    container_name: MSPR-SONAR_ANALYSER
+    depends_on:
+      - sonarqube
+    volumes:
+      - ./apps/api:/apps/api
+      - ./apps/etl:/apps/etl
+    # environment:
+      # SONAR_HOST_URL: "${SONAR_HOST_URL}"  # à définir dans .env, URL de SonarQube
+      # SONAR_LOGIN: "${SONAR_TOKEN}"  # à définir dans .env, généré dans SonarQube
+    command: >
+      bash -c "
+        sonar-scanner \
+          -Dsonar.projectKey=api \
+          -Dsonar.sources=/apps/api \
+          -Dsonar.host.url=${SONAR_HOST_URL} \
+          -Dsonar.login=${SONAR_TOKEN}
+
+        sonar-scanner \
+          -Dsonar.projectKey=etl \
+          -Dsonar.sources=/apps/etl \
+          -Dsonar.host.url=${SONAR_HOST_URL} \
+          -Dsonar.login=${SONAR_TOKEN}
+      "
+
 volumes:
   postgres_data:
   metabase_data:
+  sonar_db_data:
+  sonarqube_data:
+  sonarqube_extensions:
