@@ -1,0 +1,1367 @@
+[
+    {
+        "name": "Not defined",
+        "iso2": "N/A",
+        "iso3": "N/A",
+        "population": 0,
+        "continent_id": 1
+    },
+    {
+        "name": "Afghanistan",
+        "iso2": "AF",
+        "iso3": "AFG",
+        "population": 38928346,
+        "continent_id": 4
+    },
+    {
+        "name": "Albania",
+        "iso2": "AL",
+        "iso3": "ALB",
+        "population": 2877797,
+        "continent_id": 3
+    },
+    {
+        "name": "Algeria",
+        "iso2": "DZ",
+        "iso3": "DZA",
+        "population": 43851044,
+        "continent_id": 2
+    },
+    {
+        "name": "Andorra",
+        "iso2": "AD",
+        "iso3": "AND",
+        "population": 77265,
+        "continent_id": 3
+    },
+    {
+        "name": "Angola",
+        "iso2": "AO",
+        "iso3": "AGO",
+        "population": 32866272,
+        "continent_id": 2
+    },
+    {
+        "name": "Antigua and Barbuda",
+        "iso2": "AG",
+        "iso3": "ATG",
+        "population": 97929,
+        "continent_id": 5
+    },
+    {
+        "name": "Argentina",
+        "iso2": "AR",
+        "iso3": "ARG",
+        "population": 45195774,
+        "continent_id": 6
+    },
+    {
+        "name": "Armenia",
+        "iso2": "AM",
+        "iso3": "ARM",
+        "population": 2963243,
+        "continent_id": 4
+    },
+    {
+        "name": "Australia",
+        "iso2": "AU",
+        "iso3": "AUS",
+        "population": 25499884,
+        "continent_id": 7
+    },
+    {
+        "name": "Austria",
+        "iso2": "AT",
+        "iso3": "AUT",
+        "population": 9006398,
+        "continent_id": 3
+    },
+    {
+        "name": "Azerbaijan",
+        "iso2": "AZ",
+        "iso3": "AZE",
+        "population": 10139177,
+        "continent_id": 4
+    },
+    {
+        "name": "Bahamas",
+        "iso2": "BS",
+        "iso3": "BHS",
+        "population": 393244,
+        "continent_id": 5
+    },
+    {
+        "name": "Bahrain",
+        "iso2": "BH",
+        "iso3": "BHR",
+        "population": 1701575,
+        "continent_id": 4
+    },
+    {
+        "name": "Bangladesh",
+        "iso2": "BD",
+        "iso3": "BGD",
+        "population": 164689383,
+        "continent_id": 4
+    },
+    {
+        "name": "Barbados",
+        "iso2": "BB",
+        "iso3": "BRB",
+        "population": 287375,
+        "continent_id": 5
+    },
+    {
+        "name": "Belarus",
+        "iso2": "BY",
+        "iso3": "BLR",
+        "population": 9449323,
+        "continent_id": 3
+    },
+    {
+        "name": "Belgium",
+        "iso2": "BE",
+        "iso3": "BEL",
+        "population": 11589623,
+        "continent_id": 3
+    },
+    {
+        "name": "Belize",
+        "iso2": "BZ",
+        "iso3": "BLZ",
+        "population": 397628,
+        "continent_id": 5
+    },
+    {
+        "name": "Benin",
+        "iso2": "BJ",
+        "iso3": "BEN",
+        "population": 12123200,
+        "continent_id": 2
+    },
+    {
+        "name": "Bhutan",
+        "iso2": "BT",
+        "iso3": "BTN",
+        "population": 771608,
+        "continent_id": 4
+    },
+    {
+        "name": "Bolivia",
+        "iso2": "BO",
+        "iso3": "BOL",
+        "population": 11673021,
+        "continent_id": 6
+    },
+    {
+        "name": "Bosnia and Herzegovina",
+        "iso2": "BA",
+        "iso3": "BIH",
+        "population": 3280819,
+        "continent_id": 3
+    },
+    {
+        "name": "Botswana",
+        "iso2": "BW",
+        "iso3": "BWA",
+        "population": 2351627,
+        "continent_id": 2
+    },
+    {
+        "name": "Brazil",
+        "iso2": "BR",
+        "iso3": "BRA",
+        "population": 212559417,
+        "continent_id": 6
+    },
+    {
+        "name": "Brunei",
+        "iso2": "BN",
+        "iso3": "BRN",
+        "population": 437479,
+        "continent_id": 4
+    },
+    {
+        "name": "Bulgaria",
+        "iso2": "BG",
+        "iso3": "BGR",
+        "population": 6948445,
+        "continent_id": 3
+    },
+    {
+        "name": "Burkina Faso",
+        "iso2": "BF",
+        "iso3": "BFA",
+        "population": 20903273,
+        "continent_id": 2
+    },
+    {
+        "name": "Burundi",
+        "iso2": "BI",
+        "iso3": "BDI",
+        "population": 11890784,
+        "continent_id": 2
+    },
+    {
+        "name": "Cabo Verde",
+        "iso2": "CV",
+        "iso3": "CPV",
+        "population": 555987,
+        "continent_id": 2
+    },
+    {
+        "name": "Cambodia",
+        "iso2": "KH",
+        "iso3": "KHM",
+        "population": 16718965,
+        "continent_id": 4
+    },
+    {
+        "name": "Cameroon",
+        "iso2": "CM",
+        "iso3": "CMR",
+        "population": 26545863,
+        "continent_id": 2
+    },
+    {
+        "name": "Canada",
+        "iso2": "CA",
+        "iso3": "CAN",
+        "population": 37742154,
+        "continent_id": 5
+    },
+    {
+        "name": "Central African Republic",
+        "iso2": "CF",
+        "iso3": "CAF",
+        "population": 4829767,
+        "continent_id": 2
+    },
+    {
+        "name": "Chad",
+        "iso2": "TD",
+        "iso3": "TCD",
+        "population": 16425864,
+        "continent_id": 2
+    },
+    {
+        "name": "Chile",
+        "iso2": "CL",
+        "iso3": "CHL",
+        "population": 19116201,
+        "continent_id": 6
+    },
+    {
+        "name": "China",
+        "iso2": "CN",
+        "iso3": "CHN",
+        "population": 1439323776,
+        "continent_id": 4
+    },
+    {
+        "name": "Colombia",
+        "iso2": "CO",
+        "iso3": "COL",
+        "population": 50882891,
+        "continent_id": 6
+    },
+    {
+        "name": "Comoros",
+        "iso2": "KM",
+        "iso3": "COM",
+        "population": 869601,
+        "continent_id": 2
+    },
+    {
+        "name": "Congo",
+        "iso2": "CG",
+        "iso3": "COG",
+        "population": 5518087,
+        "continent_id": 2
+    },
+    {
+        "name": "Costa Rica",
+        "iso2": "CR",
+        "iso3": "CRI",
+        "population": 5094118,
+        "continent_id": 5
+    },
+    {
+        "name": "Croatia",
+        "iso2": "HR",
+        "iso3": "HRV",
+        "population": 4105267,
+        "continent_id": 3
+    },
+    {
+        "name": "Cuba",
+        "iso2": "CU",
+        "iso3": "CUB",
+        "population": 11326616,
+        "continent_id": 5
+    },
+    {
+        "name": "Cyprus",
+        "iso2": "CY",
+        "iso3": "CYP",
+        "population": 1207359,
+        "continent_id": 3
+    },
+    {
+        "name": "Czech Republic",
+        "iso2": "CZ",
+        "iso3": "CZE",
+        "population": 10708981,
+        "continent_id": 3
+    },
+    {
+        "name": "Denmark",
+        "iso2": "DK",
+        "iso3": "DNK",
+        "population": 5792202,
+        "continent_id": 3
+    },
+    {
+        "name": "Djibouti",
+        "iso2": "DJ",
+        "iso3": "DJI",
+        "population": 988000,
+        "continent_id": 2
+    },
+    {
+        "name": "Dominica",
+        "iso2": "DM",
+        "iso3": "DMA",
+        "population": 71986,
+        "continent_id": 5
+    },
+    {
+        "name": "Dominican Republic",
+        "iso2": "DO",
+        "iso3": "DOM",
+        "population": 10847910,
+        "continent_id": 5
+    },
+    {
+        "name": "Ecuador",
+        "iso2": "EC",
+        "iso3": "ECU",
+        "population": 17643054,
+        "continent_id": 6
+    },
+    {
+        "name": "Egypt",
+        "iso2": "EG",
+        "iso3": "EGY",
+        "population": 102334404,
+        "continent_id": 2
+    },
+    {
+        "name": "El Salvador",
+        "iso2": "SV",
+        "iso3": "SLV",
+        "population": 6486205,
+        "continent_id": 5
+    },
+    {
+        "name": "Equatorial Guinea",
+        "iso2": "GQ",
+        "iso3": "GNQ",
+        "population": 1402985,
+        "continent_id": 2
+    },
+    {
+        "name": "Eritrea",
+        "iso2": "ER",
+        "iso3": "ERI",
+        "population": 3546421,
+        "continent_id": 2
+    },
+    {
+        "name": "Estonia",
+        "iso2": "EE",
+        "iso3": "EST",
+        "population": 1326535,
+        "continent_id": 3
+    },
+    {
+        "name": "Eswatini",
+        "iso2": "SZ",
+        "iso3": "SWZ",
+        "population": 1160164,
+        "continent_id": 2
+    },
+    {
+        "name": "Ethiopia",
+        "iso2": "ET",
+        "iso3": "ETH",
+        "population": 114963588,
+        "continent_id": 2
+    },
+    {
+        "name": "Fiji",
+        "iso2": "FJ",
+        "iso3": "FJI",
+        "population": 896445,
+        "continent_id": 7
+    },
+    {
+        "name": "Finland",
+        "iso2": "FI",
+        "iso3": "FIN",
+        "population": 5540720,
+        "continent_id": 3
+    },
+    {
+        "name": "France",
+        "iso2": "FR",
+        "iso3": "FRA",
+        "population": 65273511,
+        "continent_id": 3
+    },
+    {
+        "name": "Gabon",
+        "iso2": "GA",
+        "iso3": "GAB",
+        "population": 2225734,
+        "continent_id": 2
+    },
+    {
+        "name": "Gambia",
+        "iso2": "GM",
+        "iso3": "GMB",
+        "population": 2416668,
+        "continent_id": 2
+    },
+    {
+        "name": "Georgia",
+        "iso2": "GE",
+        "iso3": "GEO",
+        "population": 3989167,
+        "continent_id": 4
+    },
+    {
+        "name": "Germany",
+        "iso2": "DE",
+        "iso3": "DEU",
+        "population": 83783942,
+        "continent_id": 3
+    },
+    {
+        "name": "Ghana",
+        "iso2": "GH",
+        "iso3": "GHA",
+        "population": 31072940,
+        "continent_id": 2
+    },
+    {
+        "name": "Greece",
+        "iso2": "GR",
+        "iso3": "GRC",
+        "population": 10423054,
+        "continent_id": 3
+    },
+    {
+        "name": "Grenada",
+        "iso2": "GD",
+        "iso3": "GRD",
+        "population": 112523,
+        "continent_id": 5
+    },
+    {
+        "name": "Guatemala",
+        "iso2": "GT",
+        "iso3": "GTM",
+        "population": 17915568,
+        "continent_id": 5
+    },
+    {
+        "name": "Guinea",
+        "iso2": "GN",
+        "iso3": "GIN",
+        "population": 13132795,
+        "continent_id": 2
+    },
+    {
+        "name": "Guinea-Bissau",
+        "iso2": "GW",
+        "iso3": "GNB",
+        "population": 1968001,
+        "continent_id": 2
+    },
+    {
+        "name": "Guyana",
+        "iso2": "GY",
+        "iso3": "GUY",
+        "population": 786552,
+        "continent_id": 6
+    },
+    {
+        "name": "Haiti",
+        "iso2": "HT",
+        "iso3": "HTI",
+        "population": 11402528,
+        "continent_id": 5
+    },
+    {
+        "name": "Honduras",
+        "iso2": "HN",
+        "iso3": "HND",
+        "population": 9904607,
+        "continent_id": 5
+    },
+    {
+        "name": "Hong Kong",
+        "iso2": "HK",
+        "iso3": "HKG",
+        "population": 7496981,
+        "continent_id": 4
+    },
+    {
+        "name": "Hungary",
+        "iso2": "HU",
+        "iso3": "HUN",
+        "population": 9660351,
+        "continent_id": 3
+    },
+    {
+        "name": "Iceland",
+        "iso2": "IS",
+        "iso3": "ISL",
+        "population": 341243,
+        "continent_id": 3
+    },
+    {
+        "name": "India",
+        "iso2": "IN",
+        "iso3": "IND",
+        "population": 1380004385,
+        "continent_id": 4
+    },
+    {
+        "name": "Indonesia",
+        "iso2": "ID",
+        "iso3": "IDN",
+        "population": 273523615,
+        "continent_id": 4
+    },
+    {
+        "name": "Iran",
+        "iso2": "IR",
+        "iso3": "IRN",
+        "population": 83992949,
+        "continent_id": 4
+    },
+    {
+        "name": "Iraq",
+        "iso2": "IQ",
+        "iso3": "IRQ",
+        "population": 40222493,
+        "continent_id": 4
+    },
+    {
+        "name": "Ireland",
+        "iso2": "IE",
+        "iso3": "IRL",
+        "population": 4937786,
+        "continent_id": 3
+    },
+    {
+        "name": "Israel",
+        "iso2": "IL",
+        "iso3": "ISR",
+        "population": 8655535,
+        "continent_id": 4
+    },
+    {
+        "name": "Italy",
+        "iso2": "IT",
+        "iso3": "ITA",
+        "population": 60461826,
+        "continent_id": 3
+    },
+    {
+        "name": "Jamaica",
+        "iso2": "JM",
+        "iso3": "JAM",
+        "population": 2961167,
+        "continent_id": 5
+    },
+    {
+        "name": "Japan",
+        "iso2": "JP",
+        "iso3": "JPN",
+        "population": 126476461,
+        "continent_id": 4
+    },
+    {
+        "name": "Jordan",
+        "iso2": "JO",
+        "iso3": "JOR",
+        "population": 10203134,
+        "continent_id": 4
+    },
+    {
+        "name": "Kazakhstan",
+        "iso2": "KZ",
+        "iso3": "KAZ",
+        "population": 18776707,
+        "continent_id": 4
+    },
+    {
+        "name": "Kenya",
+        "iso2": "KE",
+        "iso3": "KEN",
+        "population": 53771296,
+        "continent_id": 2
+    },
+    {
+        "name": "Kiribati",
+        "iso2": "KI",
+        "iso3": "KIR",
+        "population": 119449,
+        "continent_id": 7
+    },
+    {
+        "name": "Kuwait",
+        "iso2": "KW",
+        "iso3": "KWT",
+        "population": 4270571,
+        "continent_id": 4
+    },
+    {
+        "name": "Kyrgyzstan",
+        "iso2": "KG",
+        "iso3": "KGZ",
+        "population": 6524195,
+        "continent_id": 4
+    },
+    {
+        "name": "Laos",
+        "iso2": "LA",
+        "iso3": "LAO",
+        "population": 7275560,
+        "continent_id": 4
+    },
+    {
+        "name": "Latvia",
+        "iso2": "LV",
+        "iso3": "LVA",
+        "population": 1886198,
+        "continent_id": 3
+    },
+    {
+        "name": "Lebanon",
+        "iso2": "LB",
+        "iso3": "LBN",
+        "population": 6825445,
+        "continent_id": 4
+    },
+    {
+        "name": "Lesotho",
+        "iso2": "LS",
+        "iso3": "LSO",
+        "population": 2142249,
+        "continent_id": 2
+    },
+    {
+        "name": "Liberia",
+        "iso2": "LR",
+        "iso3": "LBR",
+        "population": 5057681,
+        "continent_id": 2
+    },
+    {
+        "name": "Libya",
+        "iso2": "LY",
+        "iso3": "LBY",
+        "population": 6871292,
+        "continent_id": 2
+    },
+    {
+        "name": "Liechtenstein",
+        "iso2": "LI",
+        "iso3": "LIE",
+        "population": 38128,
+        "continent_id": 3
+    },
+    {
+        "name": "Lithuania",
+        "iso2": "LT",
+        "iso3": "LTU",
+        "population": 2722289,
+        "continent_id": 3
+    },
+    {
+        "name": "Luxembourg",
+        "iso2": "LU",
+        "iso3": "LUX",
+        "population": 625978,
+        "continent_id": 3
+    },
+    {
+        "name": "Madagascar",
+        "iso2": "MG",
+        "iso3": "MDG",
+        "population": 27691018,
+        "continent_id": 2
+    },
+    {
+        "name": "Malawi",
+        "iso2": "MW",
+        "iso3": "MWI",
+        "population": 19129952,
+        "continent_id": 2
+    },
+    {
+        "name": "Malaysia",
+        "iso2": "MY",
+        "iso3": "MYS",
+        "population": 32365999,
+        "continent_id": 4
+    },
+    {
+        "name": "Maldives",
+        "iso2": "MV",
+        "iso3": "MDV",
+        "population": 540544,
+        "continent_id": 4
+    },
+    {
+        "name": "Mali",
+        "iso2": "ML",
+        "iso3": "MLI",
+        "population": 20250833,
+        "continent_id": 2
+    },
+    {
+        "name": "Malta",
+        "iso2": "MT",
+        "iso3": "MLT",
+        "population": 441543,
+        "continent_id": 3
+    },
+    {
+        "name": "Marshall Islands",
+        "iso2": "MH",
+        "iso3": "MHL",
+        "population": 59190,
+        "continent_id": 7
+    },
+    {
+        "name": "Mauritania",
+        "iso2": "MR",
+        "iso3": "MRT",
+        "population": 4649658,
+        "continent_id": 2
+    },
+    {
+        "name": "Mauritius",
+        "iso2": "MU",
+        "iso3": "MUS",
+        "population": 1271768,
+        "continent_id": 2
+    },
+    {
+        "name": "Mexico",
+        "iso2": "MX",
+        "iso3": "MEX",
+        "population": 128932753,
+        "continent_id": 5
+    },
+    {
+        "name": "Micronesia",
+        "iso2": "FM",
+        "iso3": "FSM",
+        "population": 548914,
+        "continent_id": 7
+    },
+    {
+        "name": "Moldova",
+        "iso2": "MD",
+        "iso3": "MDA",
+        "population": 4033963,
+        "continent_id": 3
+    },
+    {
+        "name": "Monaco",
+        "iso2": "MC",
+        "iso3": "MCO",
+        "population": 39242,
+        "continent_id": 3
+    },
+    {
+        "name": "Mongolia",
+        "iso2": "MN",
+        "iso3": "MNG",
+        "population": 3278290,
+        "continent_id": 4
+    },
+    {
+        "name": "Montenegro",
+        "iso2": "ME",
+        "iso3": "MNE",
+        "population": 628066,
+        "continent_id": 3
+    },
+    {
+        "name": "Morocco",
+        "iso2": "MA",
+        "iso3": "MAR",
+        "population": 36910560,
+        "continent_id": 2
+    },
+    {
+        "name": "Mozambique",
+        "iso2": "MZ",
+        "iso3": "MOZ",
+        "population": 31255435,
+        "continent_id": 2
+    },
+    {
+        "name": "Myanmar",
+        "iso2": "MM",
+        "iso3": "MMR",
+        "population": 54409800,
+        "continent_id": 4
+    },
+    {
+        "name": "Namibia",
+        "iso2": "NA",
+        "iso3": "NAM",
+        "population": 2540905,
+        "continent_id": 2
+    },
+    {
+        "name": "Nauru",
+        "iso2": "NR",
+        "iso3": "NRU",
+        "population": 10824,
+        "continent_id": 7
+    },
+    {
+        "name": "Nepal",
+        "iso2": "NP",
+        "iso3": "NPL",
+        "population": 29136808,
+        "continent_id": 4
+    },
+    {
+        "name": "Netherlands",
+        "iso2": "NL",
+        "iso3": "NLD",
+        "population": 17134872,
+        "continent_id": 3
+    },
+    {
+        "name": "New Zealand",
+        "iso2": "NZ",
+        "iso3": "NZL",
+        "population": 4822233,
+        "continent_id": 7
+    },
+    {
+        "name": "Nicaragua",
+        "iso2": "NI",
+        "iso3": "NIC",
+        "population": 6624554,
+        "continent_id": 5
+    },
+    {
+        "name": "Niger",
+        "iso2": "NE",
+        "iso3": "NER",
+        "population": 24206644,
+        "continent_id": 2
+    },
+    {
+        "name": "Nigeria",
+        "iso2": "NG",
+        "iso3": "NGA",
+        "population": 206139589,
+        "continent_id": 2
+    },
+    {
+        "name": "North Korea",
+        "iso2": "KP",
+        "iso3": "PRK",
+        "population": 25778816,
+        "continent_id": 4
+    },
+    {
+        "name": "North Macedonia",
+        "iso2": "MK",
+        "iso3": "MKD",
+        "population": 2083374,
+        "continent_id": 3
+    },
+    {
+        "name": "Norway",
+        "iso2": "NO",
+        "iso3": "NOR",
+        "population": 5421241,
+        "continent_id": 3
+    },
+    {
+        "name": "Oman",
+        "iso2": "OM",
+        "iso3": "OMN",
+        "population": 5106626,
+        "continent_id": 4
+    },
+    {
+        "name": "Pakistan",
+        "iso2": "PK",
+        "iso3": "PAK",
+        "population": 220892340,
+        "continent_id": 4
+    },
+    {
+        "name": "Palau",
+        "iso2": "PW",
+        "iso3": "PLW",
+        "population": 18094,
+        "continent_id": 7
+    },
+    {
+        "name": "Panama",
+        "iso2": "PA",
+        "iso3": "PAN",
+        "population": 4314767,
+        "continent_id": 5
+    },
+    {
+        "name": "Papua New Guinea",
+        "iso2": "PG",
+        "iso3": "PNG",
+        "population": 8947024,
+        "continent_id": 7
+    },
+    {
+        "name": "Paraguay",
+        "iso2": "PY",
+        "iso3": "PRY",
+        "population": 7132538,
+        "continent_id": 6
+    },
+    {
+        "name": "Peru",
+        "iso2": "PE",
+        "iso3": "PER",
+        "population": 32971854,
+        "continent_id": 6
+    },
+    {
+        "name": "Philippines",
+        "iso2": "PH",
+        "iso3": "PHL",
+        "population": 109581078,
+        "continent_id": 4
+    },
+    {
+        "name": "Poland",
+        "iso2": "PL",
+        "iso3": "POL",
+        "population": 37846611,
+        "continent_id": 3
+    },
+    {
+        "name": "Portugal",
+        "iso2": "PT",
+        "iso3": "PRT",
+        "population": 10196709,
+        "continent_id": 3
+    },
+    {
+        "name": "Qatar",
+        "iso2": "QA",
+        "iso3": "QAT",
+        "population": 2881053,
+        "continent_id": 4
+    },
+    {
+        "name": "Romania",
+        "iso2": "RO",
+        "iso3": "ROU",
+        "population": 19237691,
+        "continent_id": 3
+    },
+    {
+        "name": "Russia",
+        "iso2": "RU",
+        "iso3": "RUS",
+        "population": 145912025,
+        "continent_id": 3
+    },
+    {
+        "name": "Rwanda",
+        "iso2": "RW",
+        "iso3": "RWA",
+        "population": 12952218,
+        "continent_id": 2
+    },
+    {
+        "name": "Saint Kitts and Nevis",
+        "iso2": "KN",
+        "iso3": "KNA",
+        "population": 53199,
+        "continent_id": 5
+    },
+    {
+        "name": "Saint Lucia",
+        "iso2": "LC",
+        "iso3": "LCA",
+        "population": 183627,
+        "continent_id": 5
+    },
+    {
+        "name": "Saint Vincent and the Grenadines",
+        "iso2": "VC",
+        "iso3": "VCT",
+        "population": 110940,
+        "continent_id": 5
+    },
+    {
+        "name": "Samoa",
+        "iso2": "WS",
+        "iso3": "WSM",
+        "population": 198414,
+        "continent_id": 7
+    },
+    {
+        "name": "San Marino",
+        "iso2": "SM",
+        "iso3": "SMR",
+        "population": 33931,
+        "continent_id": 3
+    },
+    {
+        "name": "Sao Tome and Principe",
+        "iso2": "ST",
+        "iso3": "STP",
+        "population": 219159,
+        "continent_id": 2
+    },
+    {
+        "name": "Saudi Arabia",
+        "iso2": "SA",
+        "iso3": "SAU",
+        "population": 34813871,
+        "continent_id": 4
+    },
+    {
+        "name": "Senegal",
+        "iso2": "SN",
+        "iso3": "SEN",
+        "population": 16743927,
+        "continent_id": 2
+    },
+    {
+        "name": "Serbia",
+        "iso2": "RS",
+        "iso3": "SRB",
+        "population": 8737371,
+        "continent_id": 3
+    },
+    {
+        "name": "Seychelles",
+        "iso2": "SC",
+        "iso3": "SYC",
+        "population": 98347,
+        "continent_id": 2
+    },
+    {
+        "name": "Sierra Leone",
+        "iso2": "SL",
+        "iso3": "SLE",
+        "population": 7976983,
+        "continent_id": 2
+    },
+    {
+        "name": "Singapore",
+        "iso2": "SG",
+        "iso3": "SGP",
+        "population": 5850342,
+        "continent_id": 4
+    },
+    {
+        "name": "Slovakia",
+        "iso2": "SK",
+        "iso3": "SVK",
+        "population": 5459642,
+        "continent_id": 3
+    },
+    {
+        "name": "Slovenia",
+        "iso2": "SI",
+        "iso3": "SVN",
+        "population": 2078938,
+        "continent_id": 3
+    },
+    {
+        "name": "Solomon Islands",
+        "iso2": "SB",
+        "iso3": "SLB",
+        "population": 686884,
+        "continent_id": 7
+    },
+    {
+        "name": "Somalia",
+        "iso2": "SO",
+        "iso3": "SOM",
+        "population": 15893222,
+        "continent_id": 2
+    },
+    {
+        "name": "South Africa",
+        "iso2": "ZA",
+        "iso3": "ZAF",
+        "population": 59308690,
+        "continent_id": 2
+    },
+    {
+        "name": "South Korea",
+        "iso2": "KR",
+        "iso3": "KOR",
+        "population": 51269185,
+        "continent_id": 4
+    },
+    {
+        "name": "South Sudan",
+        "iso2": "SS",
+        "iso3": "SSD",
+        "population": 11193725,
+        "continent_id": 2
+    },
+    {
+        "name": "Spain",
+        "iso2": "ES",
+        "iso3": "ESP",
+        "population": 46754778,
+        "continent_id": 3
+    },
+    {
+        "name": "Sri Lanka",
+        "iso2": "LK",
+        "iso3": "LKA",
+        "population": 21413249,
+        "continent_id": 4
+    },
+    {
+        "name": "Sudan",
+        "iso2": "SD",
+        "iso3": "SDN",
+        "population": 43849260,
+        "continent_id": 2
+    },
+    {
+        "name": "Suriname",
+        "iso2": "SR",
+        "iso3": "SUR",
+        "population": 586632,
+        "continent_id": 6
+    },
+    {
+        "name": "Sweden",
+        "iso2": "SE",
+        "iso3": "SWE",
+        "population": 10099265,
+        "continent_id": 3
+    },
+    {
+        "name": "Switzerland",
+        "iso2": "CH",
+        "iso3": "CHE",
+        "population": 8654622,
+        "continent_id": 3
+    },
+    {
+        "name": "Syria",
+        "iso2": "SY",
+        "iso3": "SYR",
+        "population": 17500658,
+        "continent_id": 4
+    },
+    {
+        "name": "Taiwan",
+        "iso2": "TW",
+        "iso3": "TWN",
+        "population": 23816775,
+        "continent_id": 4
+    },
+    {
+        "name": "Tajikistan",
+        "iso2": "TJ",
+        "iso3": "TJK",
+        "population": 9537645,
+        "continent_id": 4
+    },
+    {
+        "name": "Tanzania",
+        "iso2": "TZ",
+        "iso3": "TZA",
+        "population": 59734218,
+        "continent_id": 2
+    },
+    {
+        "name": "Thailand",
+        "iso2": "TH",
+        "iso3": "THA",
+        "population": 69799978,
+        "continent_id": 4
+    },
+    {
+        "name": "Timor-Leste",
+        "iso2": "TL",
+        "iso3": "TLS",
+        "population": 1318445,
+        "continent_id": 4
+    },
+    {
+        "name": "Togo",
+        "iso2": "TG",
+        "iso3": "TGO",
+        "population": 8278724,
+        "continent_id": 2
+    },
+    {
+        "name": "Tonga",
+        "iso2": "TO",
+        "iso3": "TON",
+        "population": 105695,
+        "continent_id": 7
+    },
+    {
+        "name": "Trinidad and Tobago",
+        "iso2": "TT",
+        "iso3": "TTO",
+        "population": 1399488,
+        "continent_id": 5
+    },
+    {
+        "name": "Tunisia",
+        "iso2": "TN",
+        "iso3": "TUN",
+        "population": 11818619,
+        "continent_id": 2
+    },
+    {
+        "name": "Turkey",
+        "iso2": "TR",
+        "iso3": "TUR",
+        "population": 84339067,
+        "continent_id": 4
+    },
+    {
+        "name": "Turkmenistan",
+        "iso2": "TM",
+        "iso3": "TKM",
+        "population": 6031200,
+        "continent_id": 4
+    },
+    {
+        "name": "Tuvalu",
+        "iso2": "TV",
+        "iso3": "TUV",
+        "population": 11792,
+        "continent_id": 7
+    },
+    {
+        "name": "Uganda",
+        "iso2": "UG",
+        "iso3": "UGA",
+        "population": 45741007,
+        "continent_id": 2
+    },
+    {
+        "name": "Ukraine",
+        "iso2": "UA",
+        "iso3": "UKR",
+        "population": 43733762,
+        "continent_id": 3
+    },
+    {
+        "name": "United Arab Emirates",
+        "iso2": "AE",
+        "iso3": "ARE",
+        "population": 9890402,
+        "continent_id": 4
+    },
+    {
+        "name": "United Kingdom",
+        "iso2": "GB",
+        "iso3": "GBR",
+        "population": 67886011,
+        "continent_id": 3
+    },
+    {
+        "name": "United States",
+        "iso2": "US",
+        "iso3": "USA",
+        "population": 331002651,
+        "continent_id": 5
+    },
+    {
+        "name": "Uruguay",
+        "iso2": "UY",
+        "iso3": "URY",
+        "population": 3473730,
+        "continent_id": 6
+    },
+    {
+        "name": "Uzbekistan",
+        "iso2": "UZ",
+        "iso3": "UZB",
+        "population": 33469203,
+        "continent_id": 4
+    },
+    {
+        "name": "Vanuatu",
+        "iso2": "VU",
+        "iso3": "VUT",
+        "population": 307145,
+        "continent_id": 7
+    },
+    {
+        "name": "Vatican City",
+        "iso2": "VA",
+        "iso3": "VAT",
+        "population": 801,
+        "continent_id": 3
+    },
+    {
+        "name": "Venezuela",
+        "iso2": "VE",
+        "iso3": "VEN",
+        "population": 28435940,
+        "continent_id": 6
+    },
+    {
+        "name": "Vietnam",
+        "iso2": "VN",
+        "iso3": "VNM",
+        "population": 97338579,
+        "continent_id": 4
+    },
+    {
+        "name": "Yemen",
+        "iso2": "YE",
+        "iso3": "YEM",
+        "population": 29825964,
+        "continent_id": 4
+    },
+    {
+        "name": "Zambia",
+        "iso2": "ZM",
+        "iso3": "ZMB",
+        "population": 18383955,
+        "continent_id": 2
+    },
+    {
+        "name": "Zimbabwe",
+        "iso2": "ZW",
+        "iso3": "ZWE",
+        "population": 14862924,
+        "continent_id": 2
+    }
+]

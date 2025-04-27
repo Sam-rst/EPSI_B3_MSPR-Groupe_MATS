@@ -1,0 +1,22 @@
+[
+    {
+        "name": "ADMIN",
+        "description": "Administrator with full access"
+    },
+    {
+        "name": "MANAGER",
+        "description": "Project or team manager with extended rights"
+    },
+    {
+        "name": "ANALYST",
+        "description": "User with access to analytics and read-only reports"
+    },
+    {
+        "name": "USER",
+        "description": "Standard authenticated user"
+    },
+    {
+        "name": "GUEST",
+        "description": "Limited access for external or temporary users"
+    }
+]

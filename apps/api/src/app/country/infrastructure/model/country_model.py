@@ -13,8 +13,13 @@ class CountryModel(BaseModel):
     population = Column(BigInteger, nullable=True)
 
     continent_id = Column(BigInteger, ForeignKey("continent.id"))
-    continent = relationship("ContinentModel", back_populates="countries")
+    continents = relationship("ContinentModel", back_populates="countries")
 
-    statistics = relationship("StatisticModel", back_populates="country")
+    statistics = relationship("StatisticModel", back_populates="countries")
 
-    daylies = relationship("DailyWiseModel", back_populates="country")
+    daily_wises = relationship("DailyWiseModel", back_populates="countries")
+
+    users = relationship(
+        "UserModel",
+        back_populates="countries",
+    )

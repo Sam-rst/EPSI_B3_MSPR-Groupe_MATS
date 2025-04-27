@@ -1,0 +1,101 @@
+[
+    {
+        "name": "Not defined",
+        "laboratory": "Unknown",
+        "technology": null,
+        "dose": null,
+        "efficacy": null,
+        "storage_temperature": null,
+        "epidemic_id": 1
+    },
+    {
+        "name": "CanSino",
+        "laboratory": "CanSino Biologics",
+        "technology": "Viral vector (adenovirus type 5)",
+        "dose": "1 dose",
+        "efficacy": 65.28,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Covaxin",
+        "laboratory": "Bharat Biotech",
+        "technology": "Inactivated virus",
+        "dose": "2 doses, 4 weeks apart",
+        "efficacy": 77.8,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Johnson&Johnson",
+        "laboratory": "Johnson & Johnson",
+        "technology": "Viral vector (adenovirus type 26)",
+        "dose": "1 dose",
+        "efficacy": 66.9,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Moderna",
+        "laboratory": "Moderna",
+        "technology": "mRNA",
+        "dose": "2 doses, 4 weeks apart",
+        "efficacy": 94.1,
+        "storage_temperature": "-20°C (long terme), 2–8°C (30 jours)",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Novavax",
+        "laboratory": "Novavax",
+        "technology": "Protein subunit",
+        "dose": "2 doses, 3 weeks apart",
+        "efficacy": 89.7,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Oxford/AstraZeneca",
+        "laboratory": "AstraZeneca",
+        "technology": "Viral vector (adenovirus from chimpanzee)",
+        "dose": "2 doses, 4-12 weeks apart",
+        "efficacy": 76.0,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Pfizer/BioNTech",
+        "laboratory": "Pfizer/BioNTech",
+        "technology": "mRNA",
+        "dose": "2 doses, 3 weeks apart",
+        "efficacy": 95.0,
+        "storage_temperature": "-70°C (long terme), 2–8°C (5 jours)",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Sinopharm/Beijing",
+        "laboratory": "Sinopharm",
+        "technology": "Inactivated virus",
+        "dose": "2 doses, 3–4 weeks apart",
+        "efficacy": 79.0,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Sinovac",
+        "laboratory": "Sinovac Biotech",
+        "technology": "Inactivated virus",
+        "dose": "2 doses, 2–4 weeks apart",
+        "efficacy": 51.0,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    },
+    {
+        "name": "Sputnik V",
+        "laboratory": "Gamaleya Research Institute",
+        "technology": "Viral vector (adenovirus 26 and 5)",
+        "dose": "2 doses, 3 weeks apart",
+        "efficacy": 91.6,
+        "storage_temperature": "2–8°C",
+        "epidemic_id": 2
+    }
+]

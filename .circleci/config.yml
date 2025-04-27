@@ -2,86 +2,277 @@ version: 2.1
 
 orbs:
   python: circleci/python@2.0.3
+  docker: circleci/docker@2.4.0
 
-jobs:
-  build:
-    executor: python/default
+commands:
+  build-and-lint:
+    parameters:
+      app_path:
+        type: string
+      req_file:
+        type: string
+      note_min_linter:
+        type: integer
     steps:
-      - checkout # Récupération du code source
+      - checkout
       - run:
           name: Install dependencies
-          command: echo "Dependencies installed" # Installation manuelle des dépendances
+          command: pip install -r <<parameters.req_file>>
       - run:
           name: Run linter
-          command: echo "Code linted" # Exécution de l'analyse statique du code
-      - run:
-          name: Clean and package
-          command: echo "Cleaning and packaging..." # Étape placeholder pour le packaging
+          command: pylint <<parameters.app_path>>/ --fail-under=<<parameters.note_min_linter>>
 
-  tests:
-    executor: python/default
+  run-all-tests:
+    parameters:
+      app_path:
+        type: string
+      req_file:
+        type: string
     steps:
-      - checkout # Récupération du code source
+      - checkout
       - run:
           name: Install dependencies
-          command: echo "Dependencies installed" # Installation manuelle des dépendances
+          command: pip install -r <<parameters.req_file>>
       - run:
           name: Run unit tests
-          command: echo "Running unit tests..." # Exécution des tests unitaires en mode CI
+          command: pytest <<parameters.app_path>>/src/tests/unit/ || [[ $? == 5 ]]
       - run:
           name: Run integration tests
-          command: echo "Running integration tests..."
+          command: pytest <<parameters.app_path>>/src/tests/integration/ || [[ $? == 5 ]]
       - run:
           name: Run regression tests
-          command: echo "Running regression tests..."
+          command: pytest <<parameters.app_path>>/src/tests/regression/ || [[ $? == 5 ]]
       - run:
           name: Run performance tests
-          command: echo "Running performance tests..."
+          command: pytest <<parameters.app_path>>/src/tests/performance/ || [[ $? == 5 ]]
       - run:
           name: Run security tests
-          command: echo "Running security tests..."
+          command: pytest <<parameters.app_path>>/src/tests/security/ || [[ $? == 5 ]]
       - run:
           name: Run compatibility tests
-          command: echo "Running compatibility tests..."
+          command: pytest <<parameters.app_path>>/src/tests/compatibility/ || [[ $? == 5 ]]
       - run:
           name: Run accessibility tests
-          command: echo "Running accessibility tests..."
+          command: pytest <<parameters.app_path>>/src/tests/accessibility/ || [[ $? == 5 ]]
 
-  deploy:
+  ssh-deploy:
+    description: "SSH into VPS and redeploy selected services"
     parameters:
-      environment:
-        type: string # Définition de l'environnement cible du déploiement (dev, integration, prod...)
-    executor: python/default
+      country:
+        type: string
+      env:
+        type: string
+      services:
+        type: string
     steps:
-      - checkout # Récupération du code source
+      - add_ssh_keys
       - run:
-          name: Prepare Deployment Environment
-          command: echo "Preparing deployment for <<parameters.environment>>..."
+          name: Deploy on VPS
+          command: |
+            ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP "
+              cd /srv/analyseit/<<parameters.country>>/<<parameters.env>>;
+              docker compose down <<parameters.services>>;
+              docker compose pull <<parameters.services>>;
+              docker compose up --build -d <<parameters.services>>;
+            "
+
+jobs:
+  starter:
+    docker:
+      - image: cimg/python:3.11
+    steps:
       - run:
-          name: Deploy Application
-          command: echo "Deploying application to <<parameters.environment>> environment..."
+          name: "Starter job"
+          command: echo "Starter validated"
+
+  builds-ok:
+    docker:
+      - image: cimg/python:3.11
+    steps:
       - run:
-          name: Run Verification Tests
-          command: echo "Running verification tests..."
+          name: "Build validated"
+          command: echo "Build validated"
+
+  tests-ok:
+    docker:
+      - image: cimg/python:3.11
+    steps:
       - run:
-          name: Run Functional Validation Tests
-          command: echo "Running functional validation tests..."
+          name: "Tests validated"
+          command: echo "Tests validated"
+
+  deploy-ok:
+    docker:
+      - image: cimg/python:3.11
+    steps:
       - run:
-          name: Run Load Tests
-          command: echo "Running load tests..."
+          name: "Deploy successful"
+          command: echo "Deploy successful"
+
+    # ===== Jobs for build and lint ===== #
+  build-api:
+    executor:
+      name: python/default
+      tag: "3.11"
+    steps:
+      - build-and-lint:
+          app_path: apps/api
+          req_file: apps/api/requirements.txt
+          note_min_linter: 5 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
+
+  build-etl:
+    executor:
+      name: python/default
+      tag: "3.11"
+    steps:
+      - build-and-lint:
+          app_path: apps/etl
+          req_file: apps/etl/requirements.txt
+          note_min_linter: 4 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
+
+  build-seeder:
+    executor:
+      name: python/default
+      tag: "3.11"
+    steps:
+      - build-and-lint:
+          app_path: apps/seeder
+          req_file: apps/seeder/requirements.txt
+          note_min_linter: 6 # Note minimale pour le linter (0-10) : 0 = pas de linter, 10 = code parfait
+
+  # ===== Jobs for tests ===== #
+  tests-api:
+    executor:
+      name: python/default
+      tag: "3.11"
+    steps:
+      - run-all-tests:
+          app_path: apps/api
+          req_file: apps/api/requirements.tests.txt
+
+  tests-etl:
+    executor:
+      name: python/default
+      tag: "3.11"
+    steps:
+      - run-all-tests:
+          app_path: apps/etl
+          req_file: apps/etl/requirements.tests.txt
+
+  tests-seeder:
+    executor:
+      name: python/default
+      tag: "3.11"
+    steps:
+      - run-all-tests:
+          app_path: apps/seeder
+          req_file: apps/seeder/requirements.tests.txt
+
+  # ===== Jobs for building and pushing images to server ===== #
+  build-all-services:
+    parameters:
+      tag:
+        type: string
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
-          name: Final Deployment Step
-          command: echo "Finalizing deployment to <<parameters.environment>>..."
+          name: Login to DockerHub
+          command: |
+            echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
       - run:
-          name: Monitoring and Follow-up
-          command: echo "Starting monitoring and follow-up process..."
+          name: Build & Push All Services
+          command: |
+            TAG=${CIRCLE_BRANCH}
+            docker build apps/api -t docker.io/$REGISTRY_USER/api:<<parameters.tag>>
+            docker push docker.io/$REGISTRY_USER/api:<<parameters.tag>>
+            docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:<<parameters.tag>>
+            docker push docker.io/$REGISTRY_USER/seeder:<<parameters.tag>>
+
+  # ===== Jobs for deploying ===== #
+  # ➡️ Deploy Jobs US
+  deploy-us-dev:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: us
+          env: dev
+          services: "api seeder"
+
+  deploy-us-test:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: us
+          env: test
+          services: "api seeder"
+
+  deploy-us-prod:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: us
+          env: prod
+          services: "api seeder"
+
+  # ➡️ Deploy Jobs FR
+  deploy-fr-dev:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: fr
+          env: dev
+          services: "api seeder"
+
+  deploy-fr-test:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: fr
+          env: test
+          services: "api seeder"
+
+  deploy-fr-prod:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: fr
+          env: prod
+          services: "api seeder"
+
+  # ➡️ Deploy Jobs CH
+  deploy-ch-dev:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: ch
+          env: dev
+          services: "api seeder"
+
+  deploy-ch-test:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: ch
+          env: test
+          services: "api seeder"
+
+  deploy-ch-prod:
+    machine: true
+    steps:
+      - ssh-deploy:
+          country: ch
+          env: prod
+          services: "api seeder"
 
 workflows:
   version: 2
 
   undefined: # Pour les branches créees ne respectant pas le pattern Gitflow, on effectue exactement le même traitement que pour les branches feature
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               ignore:
@@ -91,87 +282,298 @@ workflows:
                 - develop
                 - test
                 - main
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
+      - tests-etl:
+          requires:
+            - builds-ok
+      - tests-seeder:
+          requires:
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
   feature: # Pas besoin de déploiement pour les branches feature
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only:
-                - /^feature\/.*/ # Déclenchement du build uniquement pour les branches feature
-      - tests:
+                - /^feature\/.*/ # Déclenchement du starter uniquement pour les branches feature
+      - build-api:
           requires:
-            - build # Exécution des tests après la compilation
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
+      - tests-etl:
+          requires:
+            - builds-ok
+      - tests-seeder:
+          requires:
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
   bugfix: # Pas besoin de déploiement pour les branches bugfix
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only:
                 - /^bugfix\/.*/ # Déclenchement du build uniquement pour les branches bugfix
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
+      - tests-etl:
+          requires:
+            - builds-ok
+      - tests-seeder:
+          requires:
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
   hotfix: # Pas besoin de déploiement pour les branches hotfix
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only:
                 - /^hotfix\/.*/ # Déclenchement du build uniquement pour les branches hotfix
-      - tests:
+      - build-api:
           requires:
-            - build
+            - starter
+      - build-etl:
+          requires:
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
+      - tests-etl:
+          requires:
+            - builds-ok
+      - tests-seeder:
+          requires:
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
 
-  develop: # Besoin d'un déploiement sur vercel pour la branche develop
+  develop: # Besoin d'un déploiement sur notre serveur pour la branche develop
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only: develop # Déclenchement du build uniquement sur la branche develop
-      - tests:
+      - build-api:
           requires:
-            - build
-          filters:
-            branches:
-              only: develop
-      - deploy:
-          name: deploy_dev
+            - starter
+      - build-etl:
           requires:
-            - tests # Déploiement en dev après la réussite des tests
-          environment: development
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
+      - tests-etl:
+          requires:
+            - builds-ok
+      - tests-seeder:
+          requires:
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
+      - build-all-services:
+          tag: dev
+          requires:
+            - tests-ok # Construction des images Docker après validation des tests
+      - deploy-us-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur US après construction des images
+      - deploy-fr-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur FR après construction des images
+      - deploy-ch-dev:
+          requires:
+            - build-all-services # Déploiement sur le serveur CH après construction des images
+      - deploy-ok:
+          requires:
+            - deploy-us-dev
+            - deploy-fr-dev
+            - deploy-ch-dev # Validation du déploiement sur les serveurs US, FR et CH
 
   test: # Besoin d'un déploiement pour la branche test
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only: test # Déclenchement du build uniquement sur la branche test
-      - tests:
+      - build-api:
           requires:
-            - build
-      - deploy:
-          name: deploy_int
+            - starter
+      - build-etl:
           requires:
-            - tests
-          environment: integration
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
+      - tests-etl:
+          requires:
+            - builds-ok
+      - tests-seeder:
+          requires:
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
+      - build-all-services:
+          tag: test
+          requires:
+            - tests-ok # Construction des images Docker après validation des tests
+      - deploy-us-test:
+          requires:
+            - build-all-services # Déploiement sur le serveur US après construction des images
+      - deploy-fr-test:
+          requires:
+            - build-all-services # Déploiement sur le serveur FR après construction des images
+      - deploy-ch-test:
+          requires:
+            - build-all-services # Déploiement sur le serveur CH après construction des images
+      - deploy-ok:
+          requires:
+            - deploy-us-test
+            - deploy-fr-test
+            - deploy-ch-test # Validation du déploiement sur les serveurs US, FR et CH
 
   production: # Besoin d'un déploiement pour la branche main
     jobs:
-      - build:
+      - starter:
           filters:
             branches:
               only: main # Déclenchement du build uniquement sur la branche principale
-      - tests:
+      - build-api:
           requires:
-            - build
-      - deploy:
-          name: deploy_prod
+            - starter
+      - build-etl:
           requires:
-            - tests # Déploiement en production après validation des tests
-          environment: production
+            - starter
+      - build-seeder:
+          requires:
+            - starter
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder # Validation des builds
+      - tests-api:
+          requires:
+            - builds-ok
+      - tests-etl:
+          requires:
+            - builds-ok
+      - tests-seeder:
+          requires:
+            - builds-ok
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder # Validation des tests
+      - build-all-services:
+          tag: prod
+          requires:
+            - tests-ok # Construction des images Docker après validation des tests
+      - deploy-us-prod:
+          requires:
+            - build-all-services # Déploiement sur le serveur US après construction des images
+      - deploy-fr-prod:
+          requires:
+            - build-all-services # Déploiement sur le serveur FR après construction des images
+      - deploy-ch-prod:
+          requires:
+            - build-all-services # Déploiement sur le serveur CH après construction des images
+      - deploy-ok:
+          requires:
+            - deploy-us-prod
+            - deploy-fr-prod
+            - deploy-ch-prod # Validation du déploiement sur les serveurs US, FR et CH

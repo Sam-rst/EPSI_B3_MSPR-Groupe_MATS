@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from src.config.config import Config
+from src.core.config import settings
 
 from src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory import (
     EpidemicRepositoryInMemory,
@@ -23,11 +23,13 @@ from src.app.epidemic.application.usecase.update_epidemic_usecase import (
 from src.app.epidemic.application.usecase.delete_epidemic_usecase import (
     DeleteEpidemicUseCase,
 )
+from src.app.epidemic.application.usecase.import_epidemics_usecase import (
+    ImportEpidemicsUseCase,
+)
 
 
 class EpidemicContainer(containers.DeclarativeContainer):
     modules = ["src.app.epidemic.presentation.router"]
-    config = providers.Singleton(Config)
 
     # Définir les repositories
     repository_in_memory = providers.Singleton(EpidemicRepositoryInMemory)
@@ -35,7 +37,7 @@ class EpidemicContainer(containers.DeclarativeContainer):
 
     # Sélectionner le repository en fonction de la configuration
     repository = providers.Selector(
-        config.provided.REPOSITORY_TYPE,
+        lambda: settings.REPOSITORY_TYPE.lower(),
         in_memory=repository_in_memory,
         in_postgres=repository_in_postgres,
     )
@@ -54,4 +56,7 @@ class EpidemicContainer(containers.DeclarativeContainer):
     )
     delete_epidemic_usecase = providers.Factory(
         DeleteEpidemicUseCase, repository=repository
+    )
+    import_epidemics_usecase = providers.Factory(
+        ImportEpidemicsUseCase, repository=repository
     )

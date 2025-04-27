@@ -12,11 +12,14 @@ class StatisticModel(BaseModel):
     published_at = Column(String, nullable=True)
     published_by = Column(String, nullable=True)
 
-    country_id = Column(BigInteger, ForeignKey("country.id"), nullable=False)
-    country = relationship("CountryModel", back_populates="statistics")
+    country_id = Column(BigInteger, ForeignKey("country.id"), nullable=True)
+    countries = relationship("CountryModel", back_populates="statistics")
 
-    epidemic_id = Column(BigInteger, ForeignKey("epidemic.id"), nullable=False)
-    epidemic = relationship("EpidemicModel", back_populates="statistics")
+    epidemic_id = Column(BigInteger, ForeignKey("epidemic.id"), nullable=True)
+    epidemics = relationship("EpidemicModel", back_populates="statistics")
 
-    daily_wise_id = Column(BigInteger, ForeignKey("daily_wise.id"), nullable=False)
-    daily_wise = relationship("DailyWiseModel", back_populates="statistics")
+    daily_wise_id = Column(BigInteger, ForeignKey("daily_wise.id"), nullable=True)
+    daily_wises = relationship("DailyWiseModel", back_populates="statistics")
+
+    vaccine_id = Column(BigInteger, ForeignKey("vaccine.id"), nullable=True)
+    vaccines = relationship("VaccineModel", back_populates="statistics")

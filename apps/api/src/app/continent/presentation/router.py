@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
+from src.core.middlewares.limiter import limiter
+from src.core.dependencies import get_current_user
 # =====Containers=====
 from src.app.continent.container import ContinentContainer
 
@@ -23,6 +25,9 @@ from src.app.continent.application.usecase.update_continent_usecase import (
 from src.app.continent.application.usecase.delete_continent_usecase import (
     DeleteContinentUseCase,
 )
+from src.app.continent.application.usecase.import_continents_usecase import (
+    ImportContinentsUseCase,
+)
 
 # =====Payloads=====
 from src.app.continent.presentation.model.payload.create_continent_payload import (
@@ -32,8 +37,13 @@ from src.app.continent.presentation.model.payload.update_continent_payload impor
     UpdateContinentPayload,
 )
 
+# =====DTOs=====
+from src.app.continent.presentation.model.dto.bulk_insert_continents_response_dto import (
+    BulkInsertContinentsResponseDTO,
+)
+
 continent_router = APIRouter(
-    tags=["Continents"],
+    dependencies=[Depends(get_current_user)],
     responses={
         status.HTTP_200_OK: {"description": "Requête réussie"},
         status.HTTP_201_CREATED: {"description": "Ressource créée avec succès"},
@@ -50,8 +60,10 @@ continent_router = APIRouter(
     "",
     summary="Récupérer tous les continents",
 )
+@limiter.limit("2/minute")
 @inject
 def endpoint_usecase_get_all_continents(
+    request: Request,
     usecase: FindAllContinentsUseCase = Depends(
         Provide[ContinentContainer.find_all_continents_usecase]
     ),
@@ -80,8 +92,10 @@ def endpoint_usecase_get_all_continents(
     "",
     summary="Créer un nouveau continent",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_add_continent(
+    request: Request,
     payload: CreateContinentPayload,
     usecase: AddContinentUseCase = Depends(
         Provide[ContinentContainer.add_continent_usecase]
@@ -116,8 +130,10 @@ def endpoint_usecase_add_continent(
     "/{id}",
     summary="Récupérer un continent par ID",
 )
+@limiter.limit("20/minute")
 @inject
 def endpoint_usecase_get_continent_by_id(
+    request: Request,
     id: int,
     usecase: FindContinentByIdUseCase = Depends(
         Provide[ContinentContainer.find_continent_by_id_usecase]
@@ -150,8 +166,10 @@ def endpoint_usecase_get_continent_by_id(
     "/{id}",
     summary="Mettre à jour un continent",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_patch_continent_by_id(
+    request: Request,
     id: int,
     payload: UpdateContinentPayload,
     usecase: UpdateContinentUseCase = Depends(
@@ -186,8 +204,10 @@ def endpoint_usecase_patch_continent_by_id(
     "/{id}",
     summary="Supprimer un continent",
 )
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_delete_continent_by_id(
+    request: Request,
     id: int,
     usecase: DeleteContinentUseCase = Depends(
         Provide[ContinentContainer.delete_continent_usecase]
@@ -206,6 +226,42 @@ def endpoint_usecase_delete_continent_by_id(
         continent = usecase.execute(id)
         content = {"message": f"Le continent '{continent.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
+
+
+@continent_router.post(
+    "/import",
+    summary="Importer plusieurs continents",
+)
+@limiter.limit("1/hour")
+@inject
+def endpoint_usecase_import_continents(
+    request: Request,
+    payload: list[CreateContinentPayload],
+    usecase: ImportContinentsUseCase = Depends(
+        Provide[ContinentContainer.import_continents_usecase]
+    ),
+):
+    """
+    Importe plusieurs continents à la fois.
+
+    Args:
+        <body> payload (list[CreateContinentPayload]): La liste des continents à importer.
+
+    Returns:
+        JSONResponse: Une réponse contenant le résultat de l'importation.
+    """
+    try:
+        result: BulkInsertContinentsResponseDTO = usecase.execute(payload)
+        content = jsonable_encoder(result)
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
