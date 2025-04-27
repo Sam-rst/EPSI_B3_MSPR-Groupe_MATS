@@ -190,7 +190,7 @@ class MainWindow:
         self.main_frame.destroy()
 
         # Importer et afficher la fenêtre de connexion
-        from ui.login_window import LoginWindow
+        from auth.login_window import LoginWindow
 
         def on_login_success(user):
             # Réinitialiser l'application
