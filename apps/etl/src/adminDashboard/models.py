@@ -94,10 +94,19 @@ class UserManager:
         users_data = self.api.get_users()
         users = []
 
+        if not users_data or not isinstance(users_data, list):
+            return []
+
         for user_data in users_data:
-            # Filtrer l'admin si nécessaire
-            if user_data.get("role") != "admin":
-                users.append(User.from_api_data(user_data))
+            try:
+                # Vérifier si les clés nécessaires sont présentes
+                if "id" in user_data and "username" in user_data and "role_id" in user_data:
+                    # Filtrer l'admin si nécessaire
+                    if user_data["role_id"] > 1:
+                        users.append(User.from_api_data(user_data))
+            except (TypeError, KeyError) as e:
+                print(f"Erreur lors du traitement des données utilisateur: {e}")
+                continue
 
         return users
 
