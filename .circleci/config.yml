@@ -169,6 +169,9 @@ jobs:
 
   # ===== Jobs for building and pushing images to server ===== #
   build-all-services:
+    parameters:
+      tag:
+        type: string
     docker:
       - image: cimg/python:3.11
     steps:
@@ -182,10 +185,10 @@ jobs:
           name: Build & Push All Services
           command: |
             TAG=${CIRCLE_BRANCH}
-            docker build apps/api -t docker.io/$REGISTRY_USER/api:${TAG}
-            docker push docker.io/$REGISTRY_USER/api:${TAG}
-            docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:${TAG}
-            docker push docker.io/$REGISTRY_USER/seeder:${TAG}
+            docker build apps/api -t docker.io/$REGISTRY_USER/api:<<parameters.env>>
+            docker push docker.io/$REGISTRY_USER/api:<<parameters.env>>
+            docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:<<parameters.env>>
+            docker push docker.io/$REGISTRY_USER/seeder:<<parameters.env>>
 
   # ===== Jobs for deploying ===== #
   # ➡️ Deploy Jobs US
@@ -450,6 +453,8 @@ workflows:
             - tests-etl
             - tests-seeder # Validation des tests
       - build-all-services:
+          parameters:
+            tag: dev
           requires:
             - tests-ok # Construction des images Docker après validation des tests
       - deploy-us-dev:
@@ -502,6 +507,8 @@ workflows:
             - tests-etl
             - tests-seeder # Validation des tests
       - build-all-services:
+          parameters:
+              tag: test
           requires:
             - tests-ok # Construction des images Docker après validation des tests
       - deploy-us-dev:
@@ -554,6 +561,8 @@ workflows:
             - tests-etl
             - tests-seeder # Validation des tests
       - build-all-services:
+          parameters:
+            tag: prod
           requires:
             - tests-ok # Construction des images Docker après validation des tests
       - deploy-us-prod:
