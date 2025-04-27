@@ -71,8 +71,9 @@ commands:
           command: |
             ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP "
               cd /srv/analyseit/<<parameters.country>>/<<parameters.env>>;
+              docker compose down;
               docker compose pull <<parameters.services>>;
-              docker compose up -d <<parameters.services>>;
+              docker compose up --build -d <<parameters.services>>;
             "
 
 jobs:
