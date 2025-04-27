@@ -4,6 +4,10 @@ orbs:
   python: circleci/python@2.0.3
   docker: circleci/docker@2.4.0
 
+
+
+
+
 commands:
   build-and-lint:
     parameters:
@@ -89,13 +93,16 @@ commands:
       - add_ssh_keys
       - run:
           name: Deploy on VPS
-          command: "
-            ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP <<-'EOSSH'
-              cd /srv/analyseit/<<parameters.country>>/<<parameters.env>>
-              docker compose pull <<parameters.services>>
-              docker compose up -d <<parameters.services>>
-            EOSSH
+          command: |
+            ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP "
+              cd /srv/analyseit/<<parameters.country>>/<<parameters.env>>;
+              docker compose pull <<parameters.services>>;
+              docker compose up -d <<parameters.services>>;
             "
+
+
+
+
 
 
 jobs:
