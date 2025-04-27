@@ -222,26 +222,78 @@ class AdminDashboardWindow(tk.Frame):
             )
             return
         
+        # Récupérer le login
         login = self.user_tree.item(selected_item[0], "values")[0]
+        
+        # Récupérer l'ID utilisateur
+        user_info = self.user_manager.get_user_info(login)
+        if not user_info:
+            messagebox.showwarning(
+                self.language_manager.get_text("warning"),
+                f"Impossible de trouver les informations de l'utilisateur {login}."
+            )
+            return
+            
+        user_id = user_info.get("id")
+        if not user_id:
+            messagebox.showwarning(
+                self.language_manager.get_text("warning"),
+                f"ID utilisateur non trouvé pour {login}."
+            )
+            return
         
         if messagebox.askyesno(
             self.language_manager.get_text("info"), 
             self.language_manager.get_text("confirm_delete", login=login)
         ):
-            # Récupérer l'ID utilisateur à partir du login
-            user_info = self.user_manager.get_user_info(login)
-            if user_info and self.user_manager.delete_user(user_info["id"]):
+            print(f"Suppression de l'utilisateur ID: {user_id}, login: {login}")
+            
+            if self.user_manager.delete_user(user_id):
                 messagebox.showinfo(
                     self.language_manager.get_text("success"), 
                     self.language_manager.get_text("user_deleted", login=login)
                 )
+                
+                # Supprimer immédiatement de l'interface pour un retour visuel immédiat
+                self.user_tree.delete(selected_item)
+                
+                # Et ensuite rafraîchir complètement la liste pour s'assurer de la cohérence
                 self._refresh_user_list()
-    
+            else:
+                messagebox.showwarning(
+                    self.language_manager.get_text("warning"),
+                    f"Échec de la suppression de l'utilisateur {login}."
+                )
+                
     def _refresh_user_list(self):
-        # Clear the tree
+        """
+        Rafraîchit la liste des utilisateurs.
+        """
+        print("Rafraîchissement de la liste des utilisateurs...")
+        
+        # Vider complètement le cache de l'API pour forcer une nouvelle requête
+        self.user_manager.api.token = None  # Réinitialiser le token pour forcer une nouvelle authentification
+        
+        # Se reconnecter avec le token actuel
+        if hasattr(self, 'current_user') and self.current_user and 'access_token' in self.current_user:
+            self.user_manager.api.token = self.current_user['access_token']
+        
+        # Effacer tous les éléments de l'arbre
         for item in self.user_tree.get_children():
             self.user_tree.delete(item)
         
-        # Add all users except admin
-        for user in self.user_manager.get_all_users():
-            self.user_tree.insert("", tk.END, values=(user.username, user.role, user.region))
+        # Récupérer à nouveau tous les utilisateurs
+        users = self.user_manager.get_all_users()
+        print(f"Nombre d'utilisateurs récupérés: {len(users)}")
+        
+        if not users:
+            self.user_tree.insert("", tk.END, values=("Aucun utilisateur trouvé", "", ""))
+        else:
+            for user in users:
+                print(f"Affichage de l'utilisateur: {user.username}, {user.role}, {user.region}")
+                item_id = self.user_tree.insert("", tk.END, values=(user.username, user.role, user.region))
+                # Stocker l'ID dans les tags
+                self.user_tree.item(item_id, tags=(str(user.id),))
+        
+        # Mettre à jour l'interface
+        self.update_idletasks()

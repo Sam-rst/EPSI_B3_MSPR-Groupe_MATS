@@ -54,19 +54,40 @@ class APIService:
         """
         Récupère la liste des utilisateurs via l'API.
         """
+        users = []
         try:
             headers = {}
             if self.token:
                 headers["Authorization"] = f"Bearer {self.token}"
-
-            response = requests.get(self.users_endpoint, headers=headers)
-            if response.status_code == 200:
-                return response.json()
-            return []
+            
+            # Initialiser la variable consecutive_not_found
+            consecutive_not_found = 0
+            
+            # Essayons de récupérer un certain nombre d'utilisateurs par ID
+            max_users = 100  # On limite à 100 utilisateurs
+            
+            for user_id in range(1, max_users):
+                try:
+                    response = requests.get(f"{self.users_endpoint}/id/{user_id}", headers=headers)
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        consecutive_not_found = 0  # Réinitialiser le compteur
+                        if "item" in data and data["item"]:
+                            users.append(data["item"])
+                    elif response.status_code == 404:
+                        consecutive_not_found += 1
+                        if consecutive_not_found >= 5:
+                            # Arrêter après 5 IDs consécutifs non trouvés
+                            break
+                except Exception as e:
+                    print(f"Erreur lors de la récupération de l'utilisateur {user_id}: {e}")
+            
+            return users
         except Exception as e:
-            print(f"Erreur lors de la récupération des utilisateurs: {e}")
+            print(f"Erreur générale lors de la récupération des utilisateurs: {e}")
             return []
-
+        
     def add_user(
         self, username: str, password: str, role_id: int, region_id: int
     ) -> bool:
@@ -104,11 +125,29 @@ class APIService:
             headers = {}
             if self.token:
                 headers["Authorization"] = f"Bearer {self.token}"
-
-            response = requests.delete(
-                f"{self.users_endpoint}/{user_id}", headers=headers
-            )
-            return response.status_code in [200, 204]
+                
+            print(f"Tentative de suppression de l'utilisateur ID {user_id}")
+            print(f"URL: {self.users_endpoint}/{user_id}")
+            print(f"Headers: {headers}")
+            
+            # Première tentative avec la méthode DELETE standard
+            response = requests.delete(f"{self.users_endpoint}/{user_id}", headers=headers)
+            
+            if response.status_code == 405:  # Method Not Allowed
+                print("DELETE non autorisé, essai avec d'autres méthodes...")
+                
+                # Essayons avec POST vers un endpoint spécifique à la suppression
+                response = requests.post(f"{self.auth_endpoint}/delete-user", 
+                                        json={"user_id": user_id}, 
+                                        headers=headers)
+                
+            # Afficher la réponse pour le débogage
+            print(f"Réponse API: {response.status_code} - {response.reason}")
+            if response.text:
+                print(f"Corps de la réponse: {response.text[:200]}...")  # Afficher les 200 premiers caractères
+                
+            # Vérifier si l'API considère la suppression comme réussie
+            return response.status_code in [200, 201, 202, 204]
         except Exception as e:
             print(f"Erreur lors de la suppression d'un utilisateur: {e}")
             return False

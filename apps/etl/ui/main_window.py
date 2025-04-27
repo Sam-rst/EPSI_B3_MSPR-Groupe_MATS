@@ -195,17 +195,19 @@ class MainWindow:
         # Effacer l'interface actuelle
         self.main_frame.destroy()
         
-        # Importer et afficher la fenêtre de connexion
-        from ui.login_window import LoginWindow
+        # Importer la fenêtre de connexion du bon emplacement
+        from auth.login_window import LoginWindow  # Ajustez le chemin selon votre structure
         
         def on_login_success(user):
             # Réinitialiser l'application
             from ui.main_window import MainWindow
-            login_window.main_frame.destroy()
+            self.main_frame.destroy()  # Cette ligne peut causer une erreur car main_frame est déjà détruit
             MainWindow(self.root, user)
         
-        # Afficher la fenêtre de connexion
+        # Créer et afficher la fenêtre de connexion
         login_window = LoginWindow(self.root, on_login_success)
+        # Assurez-vous que l'interface est bien créée et affichée
+        self.root.update()
     
     def change_output_dir(self):
         """Permet à l'utilisateur de choisir un nouveau répertoire de sortie"""

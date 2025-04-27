@@ -1,5 +1,6 @@
 import os
 import sys
+import requests
 from typing import Dict, List
 from tkinter import messagebox
 
@@ -22,12 +23,20 @@ class User:
         """
         Crée un objet User à partir des données de l'API.
         """
-        return cls(
-            id=data["id"],
-            username=data["username"],
-            role=data["role_id"],
-            region=data["region"]
-        )
+        try:
+            # Debug: afficher les clés disponibles
+            print(f"Clés disponibles dans les données: {data.keys()}")
+            
+            return cls(
+                id=data.get("id", 0),
+                username=data.get("username", ""),
+                role=data.get("role_id", ""),
+                region=data.get("region", "")
+            )
+        except Exception as e:
+            print(f"Erreur lors de la création d'un utilisateur: {e}")
+            # Retourner un utilisateur par défaut
+            return cls(0, "Erreur", "Inconnu", "Global")
 
 
 class UserManager:
@@ -46,13 +55,31 @@ class UserManager:
     
     def get_user_info(self, username: str) -> Dict:
         """
-        Récupère les informations d'un utilisateur.
+        Récupère les informations d'un utilisateur par son nom d'utilisateur.
         """
-        users = self.api.get_users()
-        for user in users:
-            if user["username"] == username:
-                return user
-        return None
+        try:
+            headers = {}
+            if self.api.token:
+                headers["Authorization"] = f"Bearer {self.api.token}"
+            
+            # Utiliser la route spécifique pour récupérer un utilisateur par son nom
+            response = requests.get(f"{self.api.users_endpoint}/username/{username}", headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "item" in data:
+                    return data["item"]
+            
+            # Si la route directe ne fonctionne pas, essayer de parcourir tous les utilisateurs
+            users = self.api.get_users()
+            for user in users:
+                if user.get("username") == username:
+                    return user
+                    
+            return None
+        except Exception as e:
+            print(f"Erreur lors de la récupération des informations de l'utilisateur {username}: {e}")
+            return None
     
     def add_user(self, username: str, password: str, role: str, region: str) -> bool:
         """
@@ -83,37 +110,42 @@ class UserManager:
         """
         Récupère tous les utilisateurs via l'API.
         """
-        users_data = self.api.get_users()
         users = []
+        users_data = self.api.get_users()
+        
+        print(f"Données brutes des utilisateurs: {users_data}")
         
         for user_data in users_data:
-            # Filtrer l'admin si nécessaire
-            if user_data.get("role") != "admin":
-                users.append(User.from_api_data(user_data))
+            if user_data.get("username") and user_data.get("role_id") != 0:  # Exclure l'admin
+                try:
+                    user = User.from_api_data(user_data)
+                    users.append(user)
+                except Exception as e:
+                    print(f"Erreur lors de la création d'un objet User: {e}")
         
         return users
-    
+        
     def delete_user(self, user_id: int) -> bool:
         """
         Supprime un utilisateur via l'API.
         """
         if user_id is None:
-            messagebox.showwarning("Attention", "ID utilisateur invalide.")
+            print("ID utilisateur invalide")
             return False
         
-        # Vérifier que ce n'est pas l'admin via l'API
-        user_info = self._get_user_by_id(user_id)
-        if user_info and user_info.get("role") == "admin":
-            messagebox.showwarning("Attention", "Opération non autorisée.")
+        try:
+            # Tenter la suppression via l'API
+            success = self.api.delete_user(user_id)
+            
+            if not success:
+                print(f"Échec de la suppression de l'utilisateur ID {user_id}")
+            else:
+                print(f"Utilisateur ID {user_id} supprimé avec succès")
+                
+            return success
+        except Exception as e:
+            print(f"Erreur lors de la suppression de l'utilisateur {user_id}: {e}")
             return False
-        
-        # Supprimer via l'API
-        success = self.api.delete_user(user_id)
-        
-        if not success:
-            messagebox.showwarning("Attention", f"Impossible de supprimer l'utilisateur avec ID {user_id}.")
-        
-        return success
     
     def _get_role_id(self, role_name: str) -> int:
         """
