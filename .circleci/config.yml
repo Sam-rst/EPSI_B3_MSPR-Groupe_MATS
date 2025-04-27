@@ -148,7 +148,8 @@ jobs:
           req_file: apps/seeder/requirements.tests.txt
 
   build-all-services:
-    machine: true
+    docker:
+      - image: cimg/python:3.11  #
     steps:
       - checkout
       - setup_remote_docker
@@ -170,6 +171,7 @@ jobs:
             docker push docker.io/$REGISTRY_USER/techapi:${TAG}
             docker build apps/dataviz -t docker.io/$REGISTRY_USER/dataviz:${TAG}
             docker push docker.io/$REGISTRY_USER/dataviz:${TAG}
+
 
   deploy-us-dev:
     machine: true
