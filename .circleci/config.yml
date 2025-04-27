@@ -197,6 +197,94 @@ jobs:
 
 workflows:
   version: 2
+
+  feature:
+    jobs:
+      - starter:
+          filters:
+            branches:
+              only: /^feature\/.*/
+      - build-api:
+          requires: [starter]
+      - build-etl:
+          requires: [starter]
+      - build-seeder:
+          requires: [starter]
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder
+      - tests-api:
+          requires: [builds-ok]
+      - tests-etl:
+          requires: [builds-ok]
+      - tests-seeder:
+          requires: [builds-ok]
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder
+
+  bugfix:
+    jobs:
+      - starter:
+          filters:
+            branches:
+              only: /^bugfix\/.*/
+      - build-api:
+          requires: [starter]
+      - build-etl:
+          requires: [starter]
+      - build-seeder:
+          requires: [starter]
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder
+      - tests-api:
+          requires: [builds-ok]
+      - tests-etl:
+          requires: [builds-ok]
+      - tests-seeder:
+          requires: [builds-ok]
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder
+
+  hotfix:
+    jobs:
+      - starter:
+          filters:
+            branches:
+              only: /^hotfix\/.*/
+      - build-api:
+          requires: [starter]
+      - build-etl:
+          requires: [starter]
+      - build-seeder:
+          requires: [starter]
+      - builds-ok:
+          requires:
+            - build-api
+            - build-etl
+            - build-seeder
+      - tests-api:
+          requires: [builds-ok]
+      - tests-etl:
+          requires: [builds-ok]
+      - tests-seeder:
+          requires: [builds-ok]
+      - tests-ok:
+          requires:
+            - tests-api
+            - tests-etl
+            - tests-seeder
+
   develop:
     jobs:
       - starter:
