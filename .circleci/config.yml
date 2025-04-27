@@ -510,20 +510,20 @@ workflows:
           tag: test
           requires:
             - tests-ok # Construction des images Docker après validation des tests
-      - deploy-us-dev:
+      - deploy-us-test:
           requires:
             - build-all-services # Déploiement sur le serveur US après construction des images
-      - deploy-fr-dev:
+      - deploy-fr-test:
           requires:
             - build-all-services # Déploiement sur le serveur FR après construction des images
-      - deploy-ch-dev:
+      - deploy-ch-test:
           requires:
             - build-all-services # Déploiement sur le serveur CH après construction des images
       - deploy-ok:
           requires:
-            - deploy-us-dev
-            - deploy-fr-dev
-            - deploy-ch-dev # Validation du déploiement sur les serveurs US, FR et CH
+            - deploy-us-test
+            - deploy-fr-test
+            - deploy-ch-test # Validation du déploiement sur les serveurs US, FR et CH
 
   production: # Besoin d'un déploiement pour la branche main
     jobs:
