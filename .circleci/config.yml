@@ -184,14 +184,8 @@ jobs:
             TAG=${CIRCLE_BRANCH}
             docker build apps/api -t docker.io/$REGISTRY_USER/api:${TAG}
             docker push docker.io/$REGISTRY_USER/api:${TAG}
-            docker build apps/etl -t docker.io/$REGISTRY_USER/etl:${TAG}
-            docker push docker.io/$REGISTRY_USER/etl:${TAG}
             docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:${TAG}
             docker push docker.io/$REGISTRY_USER/seeder:${TAG}
-            docker build apps/techapi -t docker.io/$REGISTRY_USER/techapi:${TAG}
-            docker push docker.io/$REGISTRY_USER/techapi:${TAG}
-            docker build apps/dataviz -t docker.io/$REGISTRY_USER/dataviz:${TAG}
-            docker push docker.io/$REGISTRY_USER/dataviz:${TAG}
 
   # ===== Jobs for deploying ===== #
   # ➡️ Deploy Jobs US
