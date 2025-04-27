@@ -185,10 +185,10 @@ jobs:
           name: Build & Push All Services
           command: |
             TAG=${CIRCLE_BRANCH}
-            docker build apps/api -t docker.io/$REGISTRY_USER/api:<<parameters.env>>
-            docker push docker.io/$REGISTRY_USER/api:<<parameters.env>>
-            docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:<<parameters.env>>
-            docker push docker.io/$REGISTRY_USER/seeder:<<parameters.env>>
+            docker build apps/api -t docker.io/$REGISTRY_USER/api:<<parameters.tag>>
+            docker push docker.io/$REGISTRY_USER/api:<<parameters.tag>>
+            docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:<<parameters.tag>>
+            docker push docker.io/$REGISTRY_USER/seeder:<<parameters.tag>>
 
   # ===== Jobs for deploying ===== #
   # ➡️ Deploy Jobs US
