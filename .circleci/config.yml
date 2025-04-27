@@ -195,7 +195,7 @@ jobs:
       - ssh-deploy:
           country: us
           env: dev
-          services: "api etl seeder techapi dataviz"
+          services: "api seeder"
 
   deploy-us-test:
     machine: true
@@ -203,7 +203,7 @@ jobs:
       - ssh-deploy:
           country: us
           env: test
-          services: "api etl seeder techapi dataviz"
+          services: "api seeder"
 
   deploy-us-prod:
     machine: true
@@ -211,7 +211,7 @@ jobs:
       - ssh-deploy:
           country: us
           env: prod
-          services: "api etl seeder techapi dataviz"
+          services: "api seeder"
 
   # ➡️ Deploy Jobs FR
   deploy-fr-dev:
@@ -220,7 +220,7 @@ jobs:
       - ssh-deploy:
           country: fr
           env: dev
-          services: "api etl seeder dataviz"
+          services: "api seeder"
 
   deploy-fr-test:
     machine: true
@@ -228,7 +228,7 @@ jobs:
       - ssh-deploy:
           country: fr
           env: test
-          services: "api etl seeder dataviz"
+          services: "api seeder"
 
   deploy-fr-prod:
     machine: true
@@ -236,7 +236,7 @@ jobs:
       - ssh-deploy:
           country: fr
           env: prod
-          services: "api etl seeder dataviz"
+          services: "api seeder"
 
   # ➡️ Deploy Jobs CH
   deploy-ch-dev:
@@ -245,7 +245,7 @@ jobs:
       - ssh-deploy:
           country: ch
           env: dev
-          services: "api etl seeder"
+          services: "api seeder"
 
   deploy-ch-test:
     machine: true
@@ -253,7 +253,7 @@ jobs:
       - ssh-deploy:
           country: ch
           env: test
-          services: "api etl seeder"
+          services: "api seeder"
 
   deploy-ch-prod:
     machine: true
@@ -261,7 +261,7 @@ jobs:
       - ssh-deploy:
           country: ch
           env: prod
-          services: "api etl seeder"
+          services: "api seeder"
 
 workflows:
   version: 2
