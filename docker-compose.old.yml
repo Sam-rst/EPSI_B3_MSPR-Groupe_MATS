@@ -1,0 +1,125 @@
+name: EPSI_MSPR_B3-Groupe_MATS
+
+services:
+  db:
+    image: postgres:latest
+    container_name: MSPR-POSTGRES
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: ./apps/api
+    container_name: MSPR-API
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./apps/api:/app
+
+  seeder:
+    build: ./apps/seeder
+    container_name: MSPR-SEEDER
+    depends_on:
+      - api
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: MSPR-METABASE
+    restart: unless-stopped
+    hostname: metabase
+    depends_on:
+      - db
+    volumes:
+      - metabase_data:/dev/random:ro
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${MB_DB_DBNAME}
+      MB_DB_PORT: ${MB_DB_PORT}
+      MB_DB_USER: ${MB_DB_USER}
+      MB_DB_PASS: ${MB_DB_PASS}
+      MB_DB_HOST: ${MB_DB_HOST}
+    healthcheck:
+      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  sonar-db:
+    image: postgres:13
+    container_name: MSPR-SONAR_DB
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonar_db_data:/var/lib/postgresql/data
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: MSPR-SONARQUBE
+    restart: unless-stopped
+    depends_on:
+      - sonar-db
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: ${SONAR_ES_BOOTSTRAP_CHECKS_DISABLE}
+      SONARQUBE_JDBC_USERNAME: ${SONARQUBE_JDBC_USERNAME}
+      SONARQUBE_JDBC_PASSWORD: ${SONARQUBE_JDBC_PASSWORD}
+      SONARQUBE_JDBC_URL: ${SONARQUBE_JDBC_URL}
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+  sonar-analyzer:
+    image: sonarsource/sonar-scanner-cli:latest
+    container_name: MSPR-SONAR_ANALYSER
+    depends_on:
+      - sonarqube
+    volumes:
+      - ./apps/api:/apps/api
+      - ./apps/etl:/apps/etl
+    # environment:
+      # SONAR_HOST_URL: "${SONAR_HOST_URL}"  # à définir dans .env, URL de SonarQube
+      # SONAR_LOGIN: "${SONAR_TOKEN}"  # à définir dans .env, généré dans SonarQube
+    command: >
+      bash -c "
+        sonar-scanner \
+          -Dsonar.projectKey=api \
+          -Dsonar.sources=/apps/api \
+          -Dsonar.host.url=${SONAR_HOST_URL} \
+          -Dsonar.login=${SONAR_TOKEN}
+
+        sonar-scanner \
+          -Dsonar.projectKey=etl \
+          -Dsonar.sources=/apps/etl \
+          -Dsonar.host.url=${SONAR_HOST_URL} \
+          -Dsonar.login=${SONAR_TOKEN}
+      "
+
+volumes:
+  postgres_data:
+  metabase_data:
+  sonar_db_data:
+  sonarqube_data:
+  sonarqube_extensions:

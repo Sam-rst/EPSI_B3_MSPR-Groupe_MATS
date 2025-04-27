@@ -1,8 +1,11 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+
+from src.core.middlewares.limiter import limiter
+from src.core.dependencies import get_current_user
 
 # =====Containers=====
 from src.app.vaccine.container import VaccineContainer
@@ -21,6 +24,9 @@ from src.app.vaccine.application.usecase.update_vaccine_usecase import (
 from src.app.vaccine.application.usecase.delete_vaccine_usecase import (
     DeleteVaccineUseCase,
 )
+from src.app.vaccine.application.usecase.import_vaccines_usecase import (
+    ImportVaccinesUseCase,
+)
 
 # =====Payloads=====
 from src.app.vaccine.presentation.model.payload.create_vaccine_payload import (
@@ -30,8 +36,13 @@ from src.app.vaccine.presentation.model.payload.update_vaccine_payload import (
     UpdateVaccinePayload,
 )
 
+# =====DTOs=====
+from src.app.vaccine.presentation.model.dto.bulk_insert_vaccines_response_dto import (
+    BulkInsertVaccinesResponseDTO,
+)
+
 vaccine_router = APIRouter(
-    tags=["vaccines"],
+    dependencies=[Depends(get_current_user)],
     responses={
         status.HTTP_200_OK: {"description": "Ok"},
         status.HTTP_201_CREATED: {"description": "Created"},
@@ -46,8 +57,10 @@ vaccine_router = APIRouter(
 
 
 @vaccine_router.get("")
+@limiter.limit("2/minute")
 @inject
 def endpoint_usecase_get_all_vaccines(
+    request: Request,
     usecase: FindAllVaccinesUseCase = Depends(
         Provide[VaccineContainer.find_all_vaccines_usecase]
     ),
@@ -73,8 +86,10 @@ def endpoint_usecase_get_all_vaccines(
 
 
 @vaccine_router.post("")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_add_vaccine(
+    request: Request,
     payload: CreateVaccinePayload,
     usecase: AddVaccineUseCase = Depends(Provide[VaccineContainer.add_vaccine_usecase]),
 ):
@@ -104,8 +119,10 @@ def endpoint_usecase_add_vaccine(
 
 
 @vaccine_router.get("/{id}")
+@limiter.limit("20/minute")
 @inject
 def endpoint_usecase_get_vaccine_by_id(
+    request: Request,
     id: int,
     usecase: FindVaccineByIdUseCase = Depends(
         Provide[VaccineContainer.find_vaccine_by_id_usecase]
@@ -135,8 +152,10 @@ def endpoint_usecase_get_vaccine_by_id(
 
 
 @vaccine_router.patch("/{id}")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_patch_vaccine_by_id(
+    request: Request,
     id: int,
     payload: UpdateVaccinePayload,
     usecase: UpdateVaccineUseCase = Depends(
@@ -168,8 +187,10 @@ def endpoint_usecase_patch_vaccine_by_id(
 
 
 @vaccine_router.delete("/{id}")
+@limiter.limit("5/minute")
 @inject
 def endpoint_usecase_delete_vaccine_by_id(
+    request: Request,
     id: int,
     usecase: DeleteVaccineUseCase = Depends(
         Provide[VaccineContainer.delete_vaccine_usecase]
@@ -188,6 +209,42 @@ def endpoint_usecase_delete_vaccine_by_id(
         vaccine = usecase.execute(id)
         content = {"message": f"Le vaccin '{vaccine.name}' a bien été supprimé."}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
+
+
+@vaccine_router.post(
+    "/import",
+    summary="Importer plusieurs vaccins",
+)
+@limiter.limit("1/hour")
+@inject
+def endpoint_usecase_import_continents(
+    request: Request,
+    payload: list[CreateVaccinePayload],
+    usecase: ImportVaccinesUseCase = Depends(
+        Provide[VaccineContainer.import_vaccines_usecase]
+    ),
+):
+    """
+    Importe plusieurs vaccines à la fois.
+
+    Args:
+        <body> payload (list[CreateVaccinePayload]): La liste des vaccines à importer.
+
+    Returns:
+        JSONResponse: Une réponse contenant le résultat de l'importation.
+    """
+    try:
+        result: BulkInsertVaccinesResponseDTO = usecase.execute(payload)
+        content = jsonable_encoder(result)
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}

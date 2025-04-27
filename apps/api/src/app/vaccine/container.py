@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from src.config.config import Config
+from src.core.config import settings
 
 from src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory import (
     VaccineRepositoryInMemory,
@@ -23,6 +23,9 @@ from src.app.vaccine.application.usecase.update_vaccine_usecase import (
 from src.app.vaccine.application.usecase.delete_vaccine_usecase import (
     DeleteVaccineUseCase,
 )
+from src.app.vaccine.application.usecase.import_vaccines_usecase import (
+    ImportVaccinesUseCase,
+)
 from src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory import (
     EpidemicRepositoryInMemory,
 )
@@ -33,7 +36,6 @@ from src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres import
 
 class VaccineContainer(containers.DeclarativeContainer):
     modules = ["src.app.vaccine.presentation.router"]
-    config = providers.Singleton(Config)
 
     # Définir les repositories
     repository_in_memory = providers.Singleton(VaccineRepositoryInMemory)
@@ -45,12 +47,12 @@ class VaccineContainer(containers.DeclarativeContainer):
 
     # Sélectionner le repository en fonction de la configuration
     repository = providers.Selector(
-        config.provided.REPOSITORY_TYPE,
+        lambda: settings.REPOSITORY_TYPE.lower(),
         in_memory=repository_in_memory,
         in_postgres=repository_in_postgres,
     )
     epidemic_repository = providers.Selector(
-        config.provided.REPOSITORY_TYPE,
+        lambda: settings.REPOSITORY_TYPE.lower(),
         in_memory=epidemic_repository_in_memory,
         in_postgres=epidemic_repository_in_postgres,
     )
@@ -74,4 +76,9 @@ class VaccineContainer(containers.DeclarativeContainer):
     )
     delete_vaccine_usecase = providers.Factory(
         DeleteVaccineUseCase, repository=repository
+    )
+    import_vaccines_usecase = providers.Factory(
+        ImportVaccinesUseCase,
+        repository=repository,
+        epidemic_repository=epidemic_repository,
     )

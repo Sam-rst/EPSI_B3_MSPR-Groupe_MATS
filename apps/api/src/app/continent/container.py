@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from src.config.config import Config
+from src.core.config import settings
 
 from src.app.continent.infrastructure.repository.continent_repo_in_memory import (
     ContinentRepositoryInMemory,
@@ -18,15 +18,18 @@ from src.app.continent.application.usecase.find_continent_by_id_usecase import (
     FindContinentByIdUseCase,
 )
 from src.app.continent.application.usecase.update_continent_usecase import (
-    UpdateContinentUseCase
+    UpdateContinentUseCase,
 )
 from src.app.continent.application.usecase.delete_continent_usecase import (
-    DeleteContinentUseCase
+    DeleteContinentUseCase,
 )
+from src.app.continent.application.usecase.import_continents_usecase import (
+    ImportContinentsUseCase,
+)
+
 
 class ContinentContainer(containers.DeclarativeContainer):
     modules = ["src.app.continent.presentation.router"]
-    config = providers.Singleton(Config)
 
     # Définir les repositories
     repository_in_memory = providers.Singleton(ContinentRepositoryInMemory)
@@ -34,7 +37,7 @@ class ContinentContainer(containers.DeclarativeContainer):
 
     # Sélectionner le repository en fonction de la configuration
     repository = providers.Selector(
-        config.provided.REPOSITORY_TYPE,
+        lambda: settings.REPOSITORY_TYPE.lower(),
         in_memory=repository_in_memory,
         in_postgres=repository_in_postgres,
     )
@@ -48,10 +51,13 @@ class ContinentContainer(containers.DeclarativeContainer):
     )
     find_continent_by_id_usecase = providers.Factory(
         FindContinentByIdUseCase, repository=repository
-    ) 
+    )
     update_continent_usecase = providers.Factory(
         UpdateContinentUseCase, repository=repository
     )
     delete_continent_usecase = providers.Factory(
         DeleteContinentUseCase, repository=repository
+    )
+    import_continents_usecase = providers.Factory(
+        ImportContinentsUseCase, repository=repository
     )

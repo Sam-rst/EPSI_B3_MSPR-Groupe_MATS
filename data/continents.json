@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Not defined",
+        "code": "N/A",
+        "population": 0
+    },
+    {
+        "name": "Africa",
+        "code": "AF",
+        "population": 1400000000
+    },
+    {
+        "name": "Europe",
+        "code": "EU",
+        "population": 750000000
+    },
+    {
+        "name": "Asia",
+        "code": "AS",
+        "population": 4600000000
+    },
+    {
+        "name": "North America",
+        "code": "NA",
+        "population": 600000000
+    },
+    {
+        "name": "South America",
+        "code": "SA",
+        "population": 430000000
+    },
+    {
+        "name": "Oceania",
+        "code": "OC",
+        "population": 43000000
+    },
+    {
+        "name": "Antarctica",
+        "code": "AN",
+        "population": 1100
+    }
+]

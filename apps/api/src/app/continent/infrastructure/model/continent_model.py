@@ -11,4 +11,4 @@ class ContinentModel(BaseModel):
     code = Column(String, nullable=False)
     population = Column(BigInteger, nullable=False)
 
-    countries = relationship("CountryModel", back_populates="continent")
+    countries = relationship("CountryModel", back_populates="continents")
