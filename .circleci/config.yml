@@ -185,10 +185,10 @@ jobs:
           name: Build & Push All Services
           command: |
             TAG=${CIRCLE_BRANCH}
-            docker build apps/api -t docker.io/$REGISTRY_USER/api:<<parameters.tag>>
-            docker push docker.io/$REGISTRY_USER/api:<<parameters.tag>>
-            docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:<<parameters.tag>>
-            docker push docker.io/$REGISTRY_USER/seeder:<<parameters.tag>>
+            docker build apps/api -t docker.io/$REGISTRY_USER/api:<<parameters.env>>
+            docker push docker.io/$REGISTRY_USER/api:<<parameters.env>>
+            docker build apps/seeder -t docker.io/$REGISTRY_USER/seeder:<<parameters.env>>
+            docker push docker.io/$REGISTRY_USER/seeder:<<parameters.env>>
 
   # ===== Jobs for deploying ===== #
   # ➡️ Deploy Jobs US
@@ -453,8 +453,7 @@ workflows:
             - tests-etl
             - tests-seeder # Validation des tests
       - build-all-services:
-          parameters:
-            tag: dev
+          tag: dev
           requires:
             - tests-ok # Construction des images Docker après validation des tests
       - deploy-us-dev:
@@ -507,8 +506,7 @@ workflows:
             - tests-etl
             - tests-seeder # Validation des tests
       - build-all-services:
-          parameters:
-              tag: test
+          tag: test
           requires:
             - tests-ok # Construction des images Docker après validation des tests
       - deploy-us-dev:
@@ -561,8 +559,7 @@ workflows:
             - tests-etl
             - tests-seeder # Validation des tests
       - build-all-services:
-          parameters:
-            tag: prod
+          tag: prod
           requires:
             - tests-ok # Construction des images Docker après validation des tests
       - deploy-us-prod:
