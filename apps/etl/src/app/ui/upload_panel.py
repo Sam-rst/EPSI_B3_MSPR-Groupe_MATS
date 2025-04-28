@@ -3,7 +3,7 @@ from tkinter import filedialog
 import os
 from datetime import datetime
 
-from ui.styles import (
+from app.ui.styles import (
     MAIN_BG_COLOR,
     TITLE_FONT,
     BUTTON_FONT,
@@ -14,8 +14,8 @@ from ui.styles import (
     BORDER_THICKNESS,
     configure_button_style,
 )
-from ui.file_list import FileListPanel
-from models.file_info import FileInfo
+from app.ui.file_list import FileListPanel
+from app.pipelines.extract import FileInfo
 
 # Import pour le drag & drop
 try:

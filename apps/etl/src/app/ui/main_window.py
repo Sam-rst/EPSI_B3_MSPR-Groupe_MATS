@@ -2,15 +2,14 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import os
 import sys
-
-sys.path.append("..")
 from tkinter import ttk
 
-from pipelines.extract import FileListPanel
-from pipelines.pipeline import ETLPipeline
+sys.path.append("..")
+
+from app.pipelines.extract import FileListPanel
+from app.pipelines.pipeline import ETLPipeline
 from configapp import DEFAULT_OUTPUT_DIR
-from ui.styles import configure_button_style
-from ui.styles import (
+from app.ui.styles import (
     MAIN_BG_COLOR,
     ACCENT_COLOR,
     LIGHT_BG_COLOR,
@@ -190,11 +189,11 @@ class MainWindow:
         self.main_frame.destroy()
 
         # Importer et afficher la fenêtre de connexion
-        from auth.login_window import LoginWindow
+        from app.auth.login_window import LoginWindow
 
         def on_login_success(user):
             # Réinitialiser l'application
-            from ui.main_window import MainWindow
+            from app.ui.main_window import MainWindow
 
             login_window.main_frame.destroy()
             MainWindow(self.root, user)
@@ -393,7 +392,7 @@ class MainWindow:
         # Fonction pour tester la connexion
         def test_connection():
             try:
-                from pipelines.load import PostgresConnector
+                from app.pipelines.load import PostgresConnector
 
                 db = PostgresConnector(
                     host=host_var.get(),
@@ -417,7 +416,7 @@ class MainWindow:
         # Fonction pour charger les données
         def load_data():
             try:
-                from pipelines.load import PostgresConnector
+                from app.pipelines.load import PostgresConnector
 
                 # Récupérer le chemin du premier fichier transformé
                 if not self.pipeline.transformed_datasets:
@@ -453,7 +452,7 @@ class MainWindow:
                 ]
 
                 if db.execute_etl_process(
-                    mappings_path="pipelines/mappings.yaml",
+                    mappings_path="../pipelines/mappings.yaml",
                     base_folder=self.output_dir,
                     specific_files=transformed_files,
                 ):

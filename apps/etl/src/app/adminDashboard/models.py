@@ -5,7 +5,7 @@ from tkinter import messagebox
 
 # Ajouter le répertoire parent au path pour l'importation
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from auth.api_service import api_service
+from app.auth.api_service import api_service
 
 
 class User:
@@ -27,8 +27,8 @@ class User:
         return cls(
             id=data["id"],
             username=data["username"],
-            role=data["role_id"],
-            region=data["region"],
+            role_id=data["role_id"],
+            country_id=data["country_id"],
         )
 
 

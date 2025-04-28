@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 
-from ui.styles import (
+from app.ui.styles import (
     MAIN_BG_COLOR,
     LIGHT_BG_COLOR,
     ACCENT_COLOR,
@@ -10,8 +10,8 @@ from ui.styles import (
     BUTTON_FONT,
     LABEL_FONT,
 )
-from ui.styles import configure_button_style
-from auth.api_service import api_service
+from app.ui.styles import configure_button_style
+from app.auth.api_service import api_service
 
 
 class LoginWindow:
@@ -109,9 +109,9 @@ class LoginWindow:
             self.root.unbind("<Return>")
             # Sauvegarde de l'utilisateur connecté
             self.current_user = {
-                "login": username,
-                "role": user_data["role_id"],
-                "region": user_data["region"],
+                "username": username,
+                "role_id": user_data["role_id"],
+                "country_id": user_data["country_id"],
             }
             # Appel du callback de connexion réussie
             self.on_login_success(self.current_user)

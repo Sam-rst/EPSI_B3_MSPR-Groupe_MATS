@@ -1,6 +1,6 @@
-from pipelines.export import Export
-from pipelines.transform import DataTransformer
 import os
+from app.pipelines.export import Export
+from app.pipelines.transform import DataTransformer
 from configapp import DEFAULT_OUTPUT_DIR
 
 

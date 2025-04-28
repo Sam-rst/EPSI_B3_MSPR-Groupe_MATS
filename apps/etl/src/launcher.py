@@ -3,12 +3,13 @@ import os
 import sys
 import importlib.util
 from tkinter import messagebox
-from configapp import APP_TITLE, DEFAULT_SIZE, MIN_WIDTH, MIN_HEIGHT
 
 # Ajouter le répertoire courant au path pour l'importation
+from configapp import APP_TITLE, DEFAULT_SIZE, MIN_WIDTH, MIN_HEIGHT
+from app.auth.db_connector import PostgresConnector
+from app.auth.api_service import api_service
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from auth.db_connector import PostgresConnector
-from auth.api_service import api_service
 
 # Gestion du drag & drop pour l'ETL si nécessaire
 try:
@@ -245,18 +246,19 @@ class LauncherApp:
         """Lance l'application ETL"""
         try:
             # Importer dynamiquement les modules ETL
-            spec = importlib.util.spec_from_file_location(
-                "main_window", os.path.join(CURRENT_DIR, "ui", "main_window.py")
-            )
-            main_window_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(main_window_module)
+            # spec = importlib.util.spec_from_file_location(
+            #     "main_window", os.path.join("app", CURRENT_DIR, "ui", "main_window.py")
+            # )
+            # main_window_module = importlib.util.module_from_spec(spec)
+            # spec.loader.exec_module(main_window_module)
 
             # Nettoyer l'écran actuel
             for widget in self.root.winfo_children():
                 widget.destroy()
 
             # Lancer l'ETL avec l'utilisateur connecté
-            main_window_module.MainWindow(self.root, self.current_user)
+            from app.ui.main_window import MainWindow
+            main_window_etl = MainWindow(self.root, self.current_user)
 
             print(
                 f"Application ETL lancée pour l'utilisateur {self.current_user['username']}"
@@ -278,7 +280,7 @@ class LauncherApp:
                 sys.path.append(ADMIN_DASHBOARD_DIR)
 
             # Importer la classe AdminDashboardApp du module admin_dashboard_main
-            from adminDashboard.admin_dashboard_main import AdminDashboardApp
+            from app.adminDashboard.admin_dashboard_main import AdminDashboardApp
 
             # Nettoyer l'écran actuel
             for widget in self.root.winfo_children():
