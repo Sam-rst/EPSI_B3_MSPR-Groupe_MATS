@@ -1,0 +1,163 @@
+@startuml ETL Application Architecture
+
+package "Interface Utilisateur" {
+  class MainWindow {
+    -root: tk.Tk
+    -user: Dict
+    -output_dir: str
+    -pipeline: ETLPipeline
+    +create_widgets()
+    +add_files()
+    +on_drop(event)
+    +run_pipeline()
+    +connect_to_database()
+    +logout()
+  }
+  
+  class LoginWindow {
+    -root: tk.Tk
+    -on_login_success: function
+    -api: APIService
+    +create_widgets()
+    -_login()
+  }
+  
+  class AdminDashboardWindow {
+    -master: tk.Tk
+    -language_manager: LanguageManager
+    -available_roles: List
+    -available_regions: List
+    +_language_changed(event)
+    +_create_widgets()
+    +_update_text()
+    +_add_user()
+    +_delete_user()
+    +_refresh_user_list()
+  }
+  
+  class FileListPanel {
+    -master: tk.Frame
+    -file_list: List[FileInfo]
+    -on_remove: function
+    -on_selection_change: function
+    +add_files(file_paths)
+    +get_selected_files()
+    -create_widgets()
+    -update_list()
+    -toggle_selection(index)
+    -remove_file(index)
+  }
+}
+
+package "ETL Core" {
+  class ETLPipeline {
+    -output_dir: str
+    -transformed_datasets: Dict
+    +run(file_paths, on_progress)
+    -extract(file_paths)
+    -transform(datasets)
+    -load(datasets)
+  }
+  
+  class ExtractModule {
+    +read_csv(file_path)
+    +validate_data(data)
+  }
+  
+  class TransformModule {
+    +clean_data(dataset)
+    +normalize_data(dataset)
+    +validate_transformation(dataset)
+  }
+  
+  class LoadModule {
+    +save_to_csv(dataset, output_path)
+    +load_to_database(dataset, connection)
+  }
+}
+
+package "Authentication" {
+  class APIService {
+    -base_url: str
+    -users_endpoint: str
+    -auth_endpoint: str
+    -token: str
+    +authenticate(username, password)
+    +verify_token(token)
+    +get_users()
+    +add_user(username, password, role_id, region_id)
+    +delete_user(user_id)
+  }
+  
+  class AuthManager {
+    -current_user: Dict
+    -api_service: APIService
+    +authenticate(username, password)
+    +get_current_user()
+    +logout()
+    +is_authenticated()
+    +has_permission(required_role)
+  }
+  
+  class UserManager {
+    -api: APIService
+    +authenticate(username, password)
+    +get_user_info(username)
+    +add_user(username, password, role, region)
+    +get_all_users()
+    +delete_user(user_id)
+  }
+  
+  class User {
+    +id: int
+    +username: str
+    +role: str
+    +region: str
+    +from_api_data(data)
+  }
+}
+
+package "Internationalization" {
+  class LanguageManager {
+    -current_language: str
+    -translations: Dict
+    +get_text(key, **kwargs)
+    +set_language(language_code)
+    +get_available_languages()
+  }
+}
+
+package "Database" {
+  class PostgresConnector {
+    -connection_params: Dict
+    -connection: Connection
+    -cursor: Cursor
+    +connect()
+    +disconnect()
+    +execute_query(query, params)
+    +fetch_one(query, params)
+    +fetch_all(query, params)
+    +initialize_users_table()
+    +execute_etl_process(mappings_path, base_folder, specific_files)
+  }
+}
+
+' Relations
+MainWindow --> ETLPipeline : utilise
+MainWindow --> FileListPanel : contient
+MainWindow --> LoginWindow : se déconnecte vers
+LoginWindow --> APIService : utilise
+AdminDashboardWindow --> LanguageManager : utilise
+AdminDashboardWindow --> UserManager : utilise
+UserManager --> APIService : utilise
+UserManager --> User : gère
+UserManager ..> User : crée
+AuthManager --> APIService : utilise
+ETLPipeline --> PostgresConnector : utilise pour charger
+ETLPipeline --> ExtractModule : utilise
+ETLPipeline --> TransformModule : utilise
+ETLPipeline --> LoadModule : utilise
+PostgresConnector <-- LoadModule : utilise
+UserManager --> PostgresConnector : utilise potentiellement
+
+@enduml
