@@ -1,6 +1,6 @@
 import hashlib
 import os
-from auth.api_service import api_service
+from app.auth.api_service import api_service
 
 
 class AuthManager:

@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from ui.styles import (
+from app.ui.styles import (
     LIGHT_BG_COLOR,
     BORDER_COLOR,
     BORDER_THICKNESS,

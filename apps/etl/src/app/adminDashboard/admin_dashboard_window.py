@@ -3,8 +3,7 @@ from tkinter import ttk, messagebox
 import os
 
 # Importer les modules du dashboard
-from models import UserManager
-from translations import LanguageManager
+from app.adminDashboard.models import UserManager
 
 
 class AdminDashboardWindow(tk.Frame):

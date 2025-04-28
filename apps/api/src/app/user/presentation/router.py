@@ -16,6 +16,7 @@ from src.app.user.application.usecase.find_user_by_username_usecase import (
     FindUserByUsernameUseCase,
 )
 from src.app.user.application.usecase.delete_user_usecase import DeleteUserUseCase
+from src.app.user.application.usecase.find_all_users_usecase import FindAllUsersUseCase
 
 
 user_router = APIRouter(
@@ -31,6 +32,37 @@ user_router = APIRouter(
         status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Internal server error"},
     },
 )
+
+
+@user_router.get("")
+@limiter.limit("5/minute")
+@inject
+def endpoint_usecase_get_all_users(
+    request: Request,
+    usecase: FindAllUsersUseCase = Depends(
+        Provide[UserContainer.find_all_users_usecase]
+    ),
+):
+    """
+    Récupère les détails des utilisateurs spécifiques.
+
+    Args:
+
+    Returns:
+        JSONResponse: Une réponse contenant les détails des utilisateurs.
+    """
+    try:
+        users = usecase.execute()
+        content = {"count": len(users), "items": jsonable_encoder(users)}
+        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+    except HTTPException as http_exc:
+        return JSONResponse(
+            status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, content={"message": str(e)}
+        )
 
 
 @user_router.get("/id/{id}")
