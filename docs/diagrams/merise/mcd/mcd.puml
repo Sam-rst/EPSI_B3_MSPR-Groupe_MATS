@@ -138,6 +138,6 @@ Statistic "0..1" -- "0..n" Country : has >
 Statistic "0..1" -- "0..n" Vaccine : has >
 Statistic "0..1" -- "0..n" Epidemic : correlate_to >
 Vaccine "1..1" -- "0..n" Epidemic : used_for >
-User "0..n" -- "0..n" Role : group >
+User "1..1" -- "0..n" Role : grants >
 
 @enduml
