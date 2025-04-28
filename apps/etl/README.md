@@ -92,7 +92,7 @@ Une fois les données chargées dans PostgreSQL, vous pouvez utiliser Metabase p
 3. Exploitez la structure standardisée pour créer des visualisations pertinentes
 ## Architecture
 
-![Schéma ](docs/architecture/img/ArchitectureETL.svg)
+![Schéma ](docs/architecture/img/ArchitectureETL_V2.svg)
 
 ## Documentation Technique
 
