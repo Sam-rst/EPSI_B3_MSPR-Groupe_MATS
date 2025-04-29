@@ -138,19 +138,6 @@ table(statistic) {
   is_deleted
 }
 
-table(user_role) {
-  {static} id
-  {static} //#user_id//
-  {static} //#role_id//
-  created_at
-  created_by
-  updated_at
-  updated_by
-  deleted_at
-  deleted_by
-  is_deleted
-}
-
 ' Définition des relations
 country --> continent
 daily_wise --> country
@@ -159,6 +146,5 @@ statistic --> country
 statistic --> epidemic
 statistic --> vaccine
 vaccine --> epidemic
-user_role --> user
-user_role --> role
+user --> role
 @enduml

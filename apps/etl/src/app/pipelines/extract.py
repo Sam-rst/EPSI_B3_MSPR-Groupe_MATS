@@ -3,7 +3,7 @@ from tkinter import ttk
 import os
 from datetime import datetime
 
-from ui.styles import (
+from app.ui.styles import (
     LIGHT_BG_COLOR,
     BORDER_COLOR,
     BORDER_THICKNESS,

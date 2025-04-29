@@ -147,7 +147,7 @@ def process_file(cur, file_path, config):
 
 # === MAIN ===
 if __name__ == "__main__":
-    with open("mappings.yaml", "r", encoding="utf-8") as f:
+    with open("./mappings.yaml", "r", encoding="utf-8") as f:
         mappings = yaml.safe_load(f)
 
     conn = psycopg2.connect(**DB_CONFIG)

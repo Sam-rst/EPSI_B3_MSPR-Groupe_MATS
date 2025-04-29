@@ -84,14 +84,9 @@ class APIService:
         }
 
         try:
-            headers = {}
-            if self.verify_token(self.token):
-                headers["Authorization"] = f"Bearer {self.token}"
-                response = requests.post(
-                    f"{self.auth_endpoint}/register", json=payload, headers=headers
-                )
-                return response.status_code in [200, 201, 204]
-            return False
+            response = requests.post(
+                f"{self.auth_endpoint}/register", json=payload)
+            return response.status_code in [200, 201, 204]
         except Exception as e:
             print(f"Erreur lors de l'ajout d'un utilisateur: {e}")
             return False

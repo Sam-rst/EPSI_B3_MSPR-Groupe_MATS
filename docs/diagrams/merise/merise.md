@@ -24,7 +24,7 @@ Le **Modèle Conceptuel de Données (MCD)** représente les entités, leurs attr
 
 Voici le diagramme MCD du projet :
 
-![Modèle Conceptuel de Données](mcd/img/MCD_V3.svg)
+![Modèle Conceptuel de Données](mcd/img/MCD_V4.svg)
 
 ---
 
@@ -36,7 +36,7 @@ Le **Modèle Logique de Données (MLD)** est une traduction du MCD en un modèle
 
 Voici le diagramme MLD du projet :
 
-![Modèle Logique de Données](mld/img/MLD_V3.svg)
+![Modèle Logique de Données](mld/img/MLD_V4.svg)
 
 ---
 
@@ -48,7 +48,7 @@ Le **Modèle Physique de Données (MPD)** détaille la structure physique de la 
 
 Voici le diagramme MPD du projet :
 
-![Modèle Physique de Données](mpd/img/MPD_V2.svg)
+![Modèle Physique de Données](mpd/img/MPD_V3.svg)
 
 ---
 

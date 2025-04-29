@@ -7,8 +7,8 @@ import tkinter as tk
 import os
 from tkinter import messagebox
 
-from translations import LanguageManager
-from admin_dashboard_window import AdminDashboardWindow
+from app.adminDashboard.translations import LanguageManager
+from app.adminDashboard.admin_dashboard_window import AdminDashboardWindow
 
 
 class AdminDashboardApp:
