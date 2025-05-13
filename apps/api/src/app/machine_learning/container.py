@@ -2,40 +2,11 @@ from dependency_injector import containers, providers
 
 from src.core.config import settings
 
-from src.app.vaccine.infrastructure.repository.vaccine_repo_in_memory import (
-    VaccineRepositoryInMemory,
-)
-from src.app.vaccine.infrastructure.repository.vaccine_repo_in_postgres import (
-    VaccineRepositoryInPostgres,
-)
-from src.app.vaccine.application.usecase.add_vaccine_usecase import (
-    AddVaccineUseCase,
-)
-from src.app.vaccine.application.usecase.find_all_vaccines_usecase import (
-    FindAllVaccinesUseCase,
-)
-from src.app.vaccine.application.usecase.find_vaccine_by_id_usecase import (
-    FindVaccineByIdUseCase,
-)
-from src.app.vaccine.application.usecase.update_vaccine_usecase import (
-    UpdateVaccineUseCase,
-)
-from src.app.vaccine.application.usecase.delete_vaccine_usecase import (
-    DeleteVaccineUseCase,
-)
-from src.app.vaccine.application.usecase.import_vaccines_usecase import (
-    ImportVaccinesUseCase,
-)
-from src.app.epidemic.infrastructure.repository.epidemic_repo_in_memory import (
-    EpidemicRepositoryInMemory,
-)
-from src.app.epidemic.infrastructure.repository.epidemic_repo_in_postgres import (
-    EpidemicRepositoryInPostgres,
-)
 
 
-class VaccineContainer(containers.DeclarativeContainer):
-    modules = ["src.app.vaccine.presentation.router"]
+
+class MachineLearningContainer(containers.DeclarativeContainer):
+    modules = ["src.app.machine_learning.presentation.router"]
 
     # Définir les repositories
     repository_in_memory = providers.Singleton(VaccineRepositoryInMemory)
