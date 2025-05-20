@@ -1,3 +1,7 @@
+from src.app.machine_learning.application.usecase.ask_prediction_to_machine_learning_usecase import AskPredictionToMachineLearningUseCase
+from src.app.machine_learning.application.usecase.export_data_for_machine_learning_usecase import ExportDataForMachineLearningUseCase
+from src.app.machine_learning.infrastructure.repository.machine_learning_repo_in_memory import MachineLearningRepositoryInMemory
+from src.app.machine_learning.infrastructure.repository.machine_learning_repo_in_postgres import MachineLearningRepositoryInPostgres
 from dependency_injector import containers, providers
 
 from src.core.config import settings
@@ -9,12 +13,9 @@ class MachineLearningContainer(containers.DeclarativeContainer):
     modules = ["src.app.machine_learning.presentation.router"]
 
     # Définir les repositories
-    repository_in_memory = providers.Singleton(VaccineRepositoryInMemory)
-    repository_in_postgres = providers.Singleton(VaccineRepositoryInPostgres)
+    repository_in_memory = providers.Singleton(MachineLearningRepositoryInMemory)
+    repository_in_postgres = providers.Singleton(MachineLearningRepositoryInPostgres)
 
-    # Définir les repositories pour les epidemics
-    epidemic_repository_in_memory = providers.Singleton(EpidemicRepositoryInMemory)
-    epidemic_repository_in_postgres = providers.Singleton(EpidemicRepositoryInPostgres)
 
     # Sélectionner le repository en fonction de la configuration
     repository = providers.Selector(
@@ -22,34 +23,13 @@ class MachineLearningContainer(containers.DeclarativeContainer):
         in_memory=repository_in_memory,
         in_postgres=repository_in_postgres,
     )
-    epidemic_repository = providers.Selector(
-        lambda: settings.REPOSITORY_TYPE.lower(),
-        in_memory=epidemic_repository_in_memory,
-        in_postgres=epidemic_repository_in_postgres,
-    )
 
     # Définir les usecases
-    add_vaccine_usecase = providers.Factory(
-        AddVaccineUseCase,
-        repository=repository,
-        epidemic_repository=epidemic_repository,
+    ask_prediction_to_machine_learning_usecase = providers.Factory(
+        AskPredictionToMachineLearningUseCase,
+        repository=repository
     )
-    find_all_vaccines_usecase = providers.Factory(
-        FindAllVaccinesUseCase, repository=repository
-    )
-    find_vaccine_by_id_usecase = providers.Factory(
-        FindVaccineByIdUseCase, repository=repository
-    )
-    update_vaccine_usecase = providers.Factory(
-        UpdateVaccineUseCase,
-        repository=repository,
-        epidemic_repository=epidemic_repository,
-    )
-    delete_vaccine_usecase = providers.Factory(
-        DeleteVaccineUseCase, repository=repository
-    )
-    import_vaccines_usecase = providers.Factory(
-        ImportVaccinesUseCase,
-        repository=repository,
-        epidemic_repository=epidemic_repository,
+    export_data_for_machine_learning_usecase = providers.Factory(
+        ExportDataForMachineLearningUseCase,
+        repository=repository
     )
