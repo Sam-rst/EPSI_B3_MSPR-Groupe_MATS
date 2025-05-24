@@ -63,6 +63,19 @@ services:
       timeout: 5s
       retries: 5
 
+  frontend:
+    build: ./apps/frontend
+    container_name: MSPR-FRONTEND
+    restart: always
+    depends_on:
+      - api
+    env_file:
+      - .env
+    volumes:
+      - ./apps/frontend:/app
+    ports:
+      - "8080:80"
+
 volumes:
   postgres_data:
   metabase_data:
