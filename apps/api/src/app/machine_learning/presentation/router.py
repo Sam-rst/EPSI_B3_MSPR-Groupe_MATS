@@ -3,6 +3,7 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.encoders import jsonable_encoder
+from datetime import datetime
 
 from src.core.middlewares.limiter import limiter
 from src.core.dependencies import get_current_user
@@ -84,7 +85,7 @@ def endpoint_export_data_for_machine_learning(
             iter([csv_content]),
             media_type="text/csv",
             headers={
-                "Content-Disposition": "attachment; filename=export_data.csv"
+                "Content-Disposition": f"attachment; filename=export_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )
     except HTTPException as http_exc:

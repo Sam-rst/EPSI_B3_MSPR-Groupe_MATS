@@ -14,5 +14,9 @@ class MachineLearningRepository(ABC):
         pass
 
     @abstractmethod
+    def check_value_in_model_from_column(self, column: str, value: str, model: str) -> bool:
+        pass
+
+    @abstractmethod
     def get_data(self, payload: FilterRequest) -> List[dict]:
         pass

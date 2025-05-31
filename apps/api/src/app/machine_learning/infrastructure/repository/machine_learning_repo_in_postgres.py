@@ -45,12 +45,29 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
             self.session.rollback()
             raise e
 
+    def check_value_in_model_from_column(
+        self, column: str, value: str, model: str
+    ) -> bool:
+        try:
+            Model = MODEL_REGISTRY.get(model)
+            if Model:
+                column = getattr(Model, column, None)
+                if column:
+                    return (
+                        self.session.query(column).filter(column == value).first()
+                        is not None
+                    )
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
     def get_data(self, payload: FilterRequest) -> List[dict]:
         """
         Récupère toutes les données nécessaires pour l'export CSV.
         À adapter selon votre modèle de données.
         """
         try:
+
             def get_filter_query(f, column, query):
                 if f.operator == "in":
                     query = query.filter(column.in_(f.value))
@@ -69,13 +86,15 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
                     query = query.filter(ops[f.operator])
                 return query
 
+            columns_selected = []
+            for c in payload.columns:
+                Model = MODEL_REGISTRY.get(c.model)
+                if Model:
+                    column = getattr(Model, c.column, None)
+                    if column:
+                        columns_selected.append(column.label(c.label))
             query = (
-                self.session.query(
-                    StatisticModel.label.label('label'),
-                    StatisticModel.value.label('value'),
-                    CountryModel.id.label('country_id'),
-                    ContinentModel.id.label('continent_id'),
-                )
+                self.session.query(*columns_selected)
                 .join(DailyWiseModel, StatisticModel.daily_wise_id == DailyWiseModel.id)
                 .join(CountryModel, DailyWiseModel.country_id == CountryModel.id)
                 .join(ContinentModel, CountryModel.continent_id == ContinentModel.id)
@@ -91,7 +110,7 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
                     # Filtre sur le label
                     query = query.filter(StatisticModel.label == f.label)
                     # Filtre sur la valeur si spécifié
-                    if hasattr(f, 'value') and f.value is not None:
+                    if hasattr(f, "value") and f.value is not None:
                         query = get_filter_query(f, StatisticModel.value, query)
                 else:
                     # Filtre sur d'autres modèles
@@ -103,16 +122,28 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
 
             # Appliquer le tri
             if payload.sort:
-                if payload.sort.column == 'value':
-                    order = asc(StatisticModel.value) if payload.sort.direction == "asc" else desc(StatisticModel.value)
-                elif payload.sort.column == 'label':
-                    order = asc(StatisticModel.label) if payload.sort.direction == "asc" else desc(StatisticModel.label)
+                if payload.sort.column == "value":
+                    order = (
+                        asc(StatisticModel.value)
+                        if payload.sort.direction == "asc"
+                        else desc(StatisticModel.value)
+                    )
+                elif payload.sort.column == "label":
+                    order = (
+                        asc(StatisticModel.label)
+                        if payload.sort.direction == "asc"
+                        else desc(StatisticModel.label)
+                    )
                 else:
                     Model = MODEL_REGISTRY.get(payload.sort.model)
                     if Model:
                         column = getattr(Model, payload.sort.column, None)
                         if column:
-                            order = asc(column) if payload.sort.direction == "asc" else desc(column)
+                            order = (
+                                asc(column)
+                                if payload.sort.direction == "asc"
+                                else desc(column)
+                            )
                             query = query.order_by(order)
                 query = query.order_by(order)
 
