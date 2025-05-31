@@ -1,6 +1,9 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from sqlalchemy import asc, desc, between
+from sqlalchemy import asc, desc, between, func
+from sqlalchemy.types import String, Text, DateTime, Date
+import hashlib
+from datetime import datetime
 
 from src.config.database import db
 from src.config.models import MODEL_REGISTRY
@@ -67,7 +70,6 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
         À adapter selon votre modèle de données.
         """
         try:
-
             def get_filter_query(f, column, query):
                 if f.operator == "in":
                     query = query.filter(column.in_(f.value))
@@ -86,13 +88,32 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
                     query = query.filter(ops[f.operator])
                 return query
 
+            # Fonction pour hasher une valeur en entier
+            def hash_to_int(value):
+                if value is None:
+                    return 0
+                # Utiliser MD5 pour générer un hash, puis le convertir en entier
+                hash_object = hashlib.md5(str(value).encode())
+                # Prendre les 8 premiers caractères du hash et les convertir en entier
+                return int(hash_object.hexdigest()[:8], 16)
+
+            # Date de référence (1er janvier 1970)
+            reference_date = datetime(1970, 1, 1)
+
             columns_selected = []
             for c in payload.columns:
                 Model = MODEL_REGISTRY.get(c.model)
                 if Model:
                     column = getattr(Model, c.column, None)
                     if column:
+                        # Appliquer le hash pour les colonnes de type texte
+                        if isinstance(column.type, (String, Text)):
+                            column = func.abs(hash_to_int(column))
+                        # Convertir les dates en nombre de jours depuis la date de référence
+                        elif isinstance(column.type, (DateTime, Date)):
+                            column = func.extract('epoch', column) / 86400  # Conversion en jours
                         columns_selected.append(column.label(c.label))
+
             query = (
                 self.session.query(*columns_selected)
                 .join(DailyWiseModel, StatisticModel.daily_wise_id == DailyWiseModel.id)
