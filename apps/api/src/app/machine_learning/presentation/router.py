@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.encoders import jsonable_encoder
 
 from src.core.middlewares.limiter import limiter
@@ -15,6 +15,7 @@ from src.app.machine_learning.application.usecase.export_data_for_machine_learni
 from src.app.machine_learning.application.usecase.ask_prediction_to_machine_learning_usecase import AskPredictionToMachineLearningUseCase
 
 # =====Payloads=====
+from src.app.base.presentation.model.payload.base_payload import FilterRequest
 
 # =====DTOs=====
 
@@ -66,6 +67,7 @@ def endpoint_ask_prediction_to_machine_learning(
 @inject
 def endpoint_export_data_for_machine_learning(
     request: Request,
+    payload: FilterRequest,
     usecase: ExportDataForMachineLearningUseCase = Depends(
         Provide[MachineLearningContainer.export_data_for_machine_learning_usecase]
     ),
@@ -74,11 +76,17 @@ def endpoint_export_data_for_machine_learning(
     Export de donnée pour le modèle de machine learning.
 
     Returns:
-        JSONResponse: TODO : Décrire la réponse
+        StreamingResponse: Fichier CSV contenant les données exportées
     """
     try:
-        content = usecase.execute()
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+        csv_content = usecase.execute(payload)
+        return StreamingResponse(
+            iter([csv_content]),
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": "attachment; filename=export_data.csv"
+            }
+        )
     except HTTPException as http_exc:
         return JSONResponse(
             status_code=http_exc.status_code, content={"message": str(http_exc.detail)}
