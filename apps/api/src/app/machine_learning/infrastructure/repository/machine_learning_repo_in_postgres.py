@@ -70,6 +70,7 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
         À adapter selon votre modèle de données.
         """
         try:
+
             def get_filter_query(f, column, query):
                 if f.operator == "in":
                     query = query.filter(column.in_(f.value))
@@ -111,7 +112,9 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
                             column = func.abs(hash_to_int(column))
                         # Convertir les dates en nombre de jours depuis la date de référence
                         elif isinstance(column.type, (DateTime, Date)):
-                            column = func.extract('epoch', column) / 86400  # Conversion en jours
+                            column = (
+                                func.extract("epoch", column) / 86400
+                            )  # Conversion en jours
                         columns_selected.append(column.label(c.label))
 
             query = (

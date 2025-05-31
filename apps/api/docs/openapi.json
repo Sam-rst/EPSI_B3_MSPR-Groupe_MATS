@@ -2337,7 +2337,8 @@
           "label",
           "model"
         ],
-        "title": "Column"
+        "title": "Column",
+        "description": "Définition d'une colonne à inclure dans les résultats.\n\nAttributes:\n    column (str): Nom de la colonne à sélectionner\n    label (str): Nom d'affichage de la colonne dans les résultats\n    model (str): Nom du modèle contenant la colonne\n\nExamples:\n    ```json\n    {\n        \"column\": \"value\",\n        \"label\": \"total_vaccinations\",\n        \"model\": \"Statistic\"\n    }\n    ```"
       },
       "CreateContinentPayload": {
         "properties": {
@@ -2619,7 +2620,8 @@
           "value",
           "model"
         ],
-        "title": "FilterItem"
+        "title": "FilterItem",
+        "description": "Représente un filtre à appliquer sur les données.\n\nAttributes:\n    column (str): Nom de la colonne sur laquelle appliquer le filtre\n    label (Optional[str]): Label spécifique pour les statistiques\n    operator (Operator): Opérateur de comparaison à utiliser\n    value (Union[str, int, float, List[Any]]): Valeur(s) à comparer\n    model (str): Nom du modèle sur lequel appliquer le filtre\n\nExamples:\n    ```json\n    {\n        \"column\": \"value\",\n        \"label\": \"totalVaccination\",\n        \"operator\": \">\",\n        \"value\": 1000,\n        \"model\": \"Statistic\"\n    }\n    ```"
       },
       "FilterRequest": {
         "properties": {
@@ -2698,7 +2700,8 @@
           }
         },
         "type": "object",
-        "title": "FilterRequest"
+        "title": "FilterRequest",
+        "description": "Payload principal pour les requêtes de filtrage et d'export de données.\n\nCe payload permet de :\n1. Filtrer les données avec des conditions complexes\n2. Trier les résultats\n3. Paginer les résultats\n4. Sélectionner les colonnes spécifiques à exporter\n\nAttributes:\n    filters (Optional[List[FilterItem]]): Liste des filtres à appliquer\n    sort (Optional[SortOption]): Options de tri\n    pagination (Optional[Pagination]): Options de pagination\n    columns (Optional[List[Column]]): Liste des colonnes à sélectionner\n\nExamples:\n    ```json\n    {\n        \"filters\": [\n            {\n                \"column\": \"value\",\n                \"label\": \"totalVaccination\",\n                \"operator\": \">\",\n                \"value\": 1000,\n                \"model\": \"Statistic\"\n            }\n        ],\n        \"sort\": {\n            \"column\": \"value\",\n            \"model\": \"Statistic\",\n            \"direction\": \"desc\"\n        },\n        \"pagination\": {\n            \"page\": 1,\n            \"per_page\": 20\n        },\n        \"columns\": [\n            {\n                \"column\": \"value\",\n                \"label\": \"total_vaccinations\",\n                \"model\": \"Statistic\"\n            },\n            {\n                \"column\": \"date\",\n                \"label\": \"date\",\n                \"model\": \"DailyWise\"\n            }\n        ]\n    }\n    ```\n\nNotes:\n    - Les dates sont automatiquement converties en nombre de jours depuis le 1er janvier 1970\n    - Les valeurs textuelles sont converties en entiers via un hash MD5\n    - Les valeurs numériques sont conservées telles quelles\n    - Les valeurs NULL sont converties en 0"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2792,7 +2795,8 @@
           "in",
           "between"
         ],
-        "title": "Operator"
+        "title": "Operator",
+        "description": "Opérateurs de comparaison disponibles pour les filtres.\n\nAttributes:\n    eq: Égal à (=)\n    ne: Différent de (!=)\n    lt: Inférieur à (<)\n    lte: Inférieur ou égal à (<=)\n    gt: Supérieur à (>)\n    gte: Supérieur ou égal à (>=)\n    like: Contient (LIKE en SQL)\n    in_: Dans une liste de valeurs (IN en SQL)\n    between: Entre deux valeurs (BETWEEN en SQL)"
       },
       "Pagination": {
         "properties": {
@@ -2808,7 +2812,8 @@
           }
         },
         "type": "object",
-        "title": "Pagination"
+        "title": "Pagination",
+        "description": "Options de pagination pour les résultats.\n\nAttributes:\n    page (int): Numéro de la page (commence à 1)\n    per_page (int): Nombre d'éléments par page\n\nExamples:\n    ```json\n    {\n        \"page\": 1,\n        \"per_page\": 20\n    }\n    ```"
       },
       "RegisterPayload": {
         "properties": {
@@ -2902,7 +2907,8 @@
           "column",
           "model"
         ],
-        "title": "SortOption"
+        "title": "SortOption",
+        "description": "Options de tri pour les données.\n\nAttributes:\n    column (str): Nom de la colonne sur laquelle trier\n    model (str): Nom du modèle contenant la colonne\n    direction (str): Direction du tri (\"asc\" ou \"desc\")\n\nExamples:\n    ```json\n    {\n        \"column\": \"value\",\n        \"model\": \"Statistic\",\n        \"direction\": \"desc\"\n    }\n    ```"
       },
       "UpdateContinentPayload": {
         "properties": {

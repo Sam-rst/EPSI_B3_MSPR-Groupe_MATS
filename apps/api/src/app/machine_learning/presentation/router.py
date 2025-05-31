@@ -12,8 +12,12 @@ from src.core.dependencies import get_current_user
 from src.app.machine_learning.container import MachineLearningContainer
 
 # =====Usecases=====
-from src.app.machine_learning.application.usecase.export_data_for_machine_learning_usecase import ExportDataForMachineLearningUseCase
-from src.app.machine_learning.application.usecase.ask_prediction_to_machine_learning_usecase import AskPredictionToMachineLearningUseCase
+from src.app.machine_learning.application.usecase.export_data_for_machine_learning_usecase import (
+    ExportDataForMachineLearningUseCase,
+)
+from src.app.machine_learning.application.usecase.ask_prediction_to_machine_learning_usecase import (
+    AskPredictionToMachineLearningUseCase,
+)
 
 # =====Payloads=====
 from src.app.base.presentation.model.payload.base_payload import FilterRequest
@@ -86,7 +90,7 @@ def endpoint_export_data_for_machine_learning(
             media_type="text/csv",
             headers={
                 "Content-Disposition": f"attachment; filename=export_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            }
+            },
         )
     except HTTPException as http_exc:
         return JSONResponse(

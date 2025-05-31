@@ -7,7 +7,7 @@ from enum import Enum
 class Operator(str, Enum):
     """
     Opérateurs de comparaison disponibles pour les filtres.
-    
+
     Attributes:
         eq: Égal à (=)
         ne: Différent de (!=)
@@ -19,6 +19,7 @@ class Operator(str, Enum):
         in_: Dans une liste de valeurs (IN en SQL)
         between: Entre deux valeurs (BETWEEN en SQL)
     """
+
     eq = "="
     ne = "!="
     lt = "<"
@@ -33,7 +34,7 @@ class Operator(str, Enum):
 class FilterItem(BaseModel):
     """
     Représente un filtre à appliquer sur les données.
-    
+
     Attributes:
         column (str): Nom de la colonne sur laquelle appliquer le filtre
         label (Optional[str]): Label spécifique pour les statistiques
@@ -52,6 +53,7 @@ class FilterItem(BaseModel):
         }
         ```
     """
+
     column: str
     label: Optional[str] = None
     operator: Operator
@@ -62,7 +64,7 @@ class FilterItem(BaseModel):
 class SortOption(BaseModel):
     """
     Options de tri pour les données.
-    
+
     Attributes:
         column (str): Nom de la colonne sur laquelle trier
         model (str): Nom du modèle contenant la colonne
@@ -77,6 +79,7 @@ class SortOption(BaseModel):
         }
         ```
     """
+
     column: str
     model: str
     direction: str = "asc"  # ou "desc"
@@ -85,7 +88,7 @@ class SortOption(BaseModel):
 class Pagination(BaseModel):
     """
     Options de pagination pour les résultats.
-    
+
     Attributes:
         page (int): Numéro de la page (commence à 1)
         per_page (int): Nombre d'éléments par page
@@ -98,6 +101,7 @@ class Pagination(BaseModel):
         }
         ```
     """
+
     page: int = 1
     per_page: int = 20
 
@@ -105,7 +109,7 @@ class Pagination(BaseModel):
 class Column(BaseModel):
     """
     Définition d'une colonne à inclure dans les résultats.
-    
+
     Attributes:
         column (str): Nom de la colonne à sélectionner
         label (str): Nom d'affichage de la colonne dans les résultats
@@ -120,6 +124,7 @@ class Column(BaseModel):
         }
         ```
     """
+
     column: str
     label: str
     model: str
@@ -128,7 +133,7 @@ class Column(BaseModel):
 class FilterRequest(BaseModel):
     """
     Payload principal pour les requêtes de filtrage et d'export de données.
-    
+
     Ce payload permet de :
     1. Filtrer les données avec des conditions complexes
     2. Trier les résultats
@@ -183,6 +188,7 @@ class FilterRequest(BaseModel):
         - Les valeurs numériques sont conservées telles quelles
         - Les valeurs NULL sont converties en 0
     """
+
     filters: Optional[List[FilterItem]] = [
         FilterItem(column="", label="", operator="=", value="", model="")
     ]
