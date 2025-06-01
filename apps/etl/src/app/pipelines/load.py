@@ -202,8 +202,8 @@ class PostgresConnector:
             """Insère une entrée dans daily_wise"""
             cur.execute(
                 """
-                INSERT INTO daily_wise (date, province, latitude, longitude, country_id, id, is_deleted)
-                VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
+                INSERT INTO daily_wise (date, province, latitude, longitude, country_id)
+                VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             """,
                 (report_date, province, lat, lon, country_id),
@@ -246,7 +246,7 @@ class PostgresConnector:
             for _, row in tqdm(df.iterrows(), total=len(df), desc=file_path):
                 try:
                     # Rechercher l'ID du continent si spécifié
-                    continent_id = None
+                    continent_id = 1  # ID par défaut
                     if "continent" in mapping:
                         continent_col = mapping.get("continent")
                         continent = (
@@ -266,6 +266,7 @@ class PostgresConnector:
                             country_id = find_country_id(cur, country)
 
                     # Rechercher l'ID du vaccin si spécifié
+                    vaccine_id = 1  # ID par défaut
                     if "vaccine" in mapping:
                         vaccine_col = mapping["vaccine"]
                         vaccine_name = (

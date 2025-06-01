@@ -16,7 +16,7 @@ DB_CONFIG = {
 
 
 # === UTILITAIRES BASE ===
-def get_or_create_continent(cur, continent_name):
+def get_continent(cur, continent_name):
     if not continent_name:
         return None
     cur.execute(
@@ -26,19 +26,30 @@ def get_or_create_continent(cur, continent_name):
     result = cur.fetchone()
     if result:
         return result[0]
-    else:
-        cur.execute(
-            """
-            INSERT INTO continent (name, code, population, id, is_deleted)
-            VALUES (%s, %s, %s, DEFAULT, FALSE)
-            RETURNING id
-        """,
-            (continent_name, "N/A", 0),
-        )
-        return cur.fetchone()[0]
+    return None
 
 
-def get_or_create_country(cur, country_name, continent_id=None):
+def get_vaccine(cur, vaccine_name):
+    if not vaccine_name:
+        return None
+    cur.execute(
+        "SELECT id FROM vaccine WHERE name = %s AND is_deleted IS NOT TRUE",
+        (vaccine_name,),
+    )
+
+
+def get_epidemic(cur, epidemic_name):
+    if not epidemic_name:
+        return None
+    cur.execute(
+        "SELECT id FROM epidemic WHERE name = %s AND is_deleted IS NOT TRUE",
+        (epidemic_name,),
+    )
+
+
+def get_country(cur, country_name, continent_id=None):
+    if not country_name:
+        return None
     cur.execute(
         "SELECT id FROM country WHERE name = %s AND is_deleted IS NOT TRUE",
         (country_name,),
@@ -46,23 +57,14 @@ def get_or_create_country(cur, country_name, continent_id=None):
     result = cur.fetchone()
     if result:
         return result[0]
-    else:
-        cur.execute(
-            """
-            INSERT INTO country (name, iso2, iso3, population, continent_id, id, is_deleted)
-            VALUES (%s, NULL, NULL, NULL, %s, DEFAULT, FALSE)
-            RETURNING id
-        """,
-            (country_name, continent_id),
-        )
-        return cur.fetchone()[0]
+    return None
 
 
 def insert_daily_wise(cur, report_date, country_id, province=None, lat=None, lon=None):
     cur.execute(
         """
-        INSERT INTO daily_wise (date, province, latitude, longitude, country_id, id, is_deleted)
-        VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
+        INSERT INTO daily_wise (date, province, latitude, longitude, country_id)
+        VALUES (%s, %s, %s, %s, %s)
         RETURNING id
     """,
         (report_date, province, lat, lon, country_id),
@@ -70,16 +72,18 @@ def insert_daily_wise(cur, report_date, country_id, province=None, lat=None, lon
     return cur.fetchone()[0]
 
 
-def insert_statistic(cur, label, value, country_id, epidemic_id, daily_wise_id):
+def insert_statistic(
+    cur, label, value, country_id, epidemic_id, daily_wise_id, vaccine_id
+):
     if pd.isna(value):
         return
     cur.execute(
         """
         INSERT INTO statistic (
-            label, value, country_id, epidemic_id, dayly_wise_id, id, is_deleted
-        ) VALUES (%s, %s, %s, %s, %s, DEFAULT, FALSE)
+            label, value, country_id, epidemic_id, daily_wise_id, vaccine_id
+        ) VALUES (%s, %s, %s, %s, %s, %s)
     """,
-        (label, float(value), country_id, epidemic_id, daily_wise_id),
+        (label, float(value), country_id, epidemic_id, daily_wise_id, vaccine_id),
     )
 
 
@@ -97,11 +101,21 @@ def process_file(cur, file_path, config):
             continent_id = None
             if "continent" in mapping:
                 continent = row.get(mapping["continent"])
-                continent_id = get_or_create_continent(cur, continent)
+                continent_id = get_continent(cur, continent)
 
             country_name = mapping.get("country", "World")
             country = row.get(country_name) if country_name != "World" else "World"
-            country_id = get_or_create_country(cur, country, continent_id)
+            country_id = get_country(cur, country, continent_id)
+
+            epidemic_id = None
+            if "epidemic" in mapping:
+                epidemic = row.get(mapping["epidemic"])
+                epidemic_id = get_epidemic(cur, epidemic)
+
+            vaccine_id = None
+            if "vaccine" in mapping:
+                vaccine = row.get(mapping["vaccine"])
+                vaccine_id = get_vaccine(cur, vaccine)
 
             if "population" in mapping:
                 population = row.get(mapping["population"])
@@ -134,8 +148,15 @@ def process_file(cur, file_path, config):
             for stat in mapping.get("statistics", []):
                 label = stat["label"]
                 value = row.get(stat["column"])
-                insert_statistic(cur, label, value, country_id, 1, daily_wise_id)
-
+                insert_statistic(
+                    cur=cur,
+                    label=label,
+                    value=value,
+                    country_id=country_id,
+                    epidemic_id=epidemic_id,
+                    vaccine_id=vaccine_id,
+                    daily_wise_id=daily_wise_id,
+                )
             conn.commit()
             print(f"[OK] [{os.path.basename(file_path)}] {country} - {report_date}")
 

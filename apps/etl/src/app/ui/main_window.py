@@ -452,7 +452,6 @@ class MainWindow:
                 ]
 
                 if db.execute_etl_process(
-                    mappings_path="../pipelines/mappings.yaml",
                     base_folder=self.output_dir,
                     specific_files=transformed_files,
                 ):
