@@ -1,4 +1,6 @@
 from typing import List, Optional
+
+import pandas as pd
 from sqlalchemy.orm import Session
 from sqlalchemy import asc, desc, between, func
 from sqlalchemy.types import String, Text, DateTime, Date
@@ -178,6 +180,29 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
 
             # Convertir les résultats en liste de dictionnaires
             return [dict(row._mapping) for row in results]
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def get_predictions(self, data: pd.DataFrame) -> dict:
+        """
+        Obtenir les prédictions à partir des données fournies.
+
+        Args:
+            data (pd.DataFrame): Les données pour lesquelles obtenir des prédictions.
+
+        Returns:
+            dict: Les prédictions au format JSON.
+        """
+        try:
+            # Ici, vous devez implémenter la logique pour obtenir les prédictions
+            # en utilisant le modèle de machine learning approprié.
+            # Pour l'instant, nous renvoyons un exemple de structure de données.
+            predictions = {
+                "predictions": data.to_dict(orient="records"),
+                "message": "Prédictions générées avec succès."
+            }
+            return predictions
         except Exception as e:
             self.session.rollback()
             raise e
