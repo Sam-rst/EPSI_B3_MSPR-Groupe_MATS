@@ -5,52 +5,52 @@ import Link from 'next/link';
 
 // Données importées
 const countriesData = [
-  {"name":"China","iso2":"CN","iso3":"CHN","population":1439323776,"continent_id":4},
-  {"name":"India","iso2":"IN","iso3":"IND","population":1380004385,"continent_id":4},
-  {"name":"United States","iso2":"US","iso3":"USA","population":331002651,"continent_id":5},
-  {"name":"Indonesia","iso2":"ID","iso3":"IDN","population":273523615,"continent_id":4},
-  {"name":"Pakistan","iso2":"PK","iso3":"PAK","population":220892340,"continent_id":4},
-  {"name":"Brazil","iso2":"BR","iso3":"BRA","population":212559417,"continent_id":6},
-  {"name":"Nigeria","iso2":"NG","iso3":"NGA","population":206139589,"continent_id":2},
-  {"name":"Bangladesh","iso2":"BD","iso3":"BGD","population":164689383,"continent_id":4},
-  {"name":"Russia","iso2":"RU","iso3":"RUS","population":145912025,"continent_id":3},
-  {"name":"Japan","iso2":"JP","iso3":"JPN","population":126476461,"continent_id":4}
+  { "name": "China", "iso2": "CN", "iso3": "CHN", "population": 1439323776, "continent_id": 4 },
+  { "name": "India", "iso2": "IN", "iso3": "IND", "population": 1380004385, "continent_id": 4 },
+  { "name": "United States", "iso2": "US", "iso3": "USA", "population": 331002651, "continent_id": 5 },
+  { "name": "Indonesia", "iso2": "ID", "iso3": "IDN", "population": 273523615, "continent_id": 4 },
+  { "name": "Pakistan", "iso2": "PK", "iso3": "PAK", "population": 220892340, "continent_id": 4 },
+  { "name": "Brazil", "iso2": "BR", "iso3": "BRA", "population": 212559417, "continent_id": 6 },
+  { "name": "Nigeria", "iso2": "NG", "iso3": "NGA", "population": 206139589, "continent_id": 2 },
+  { "name": "Bangladesh", "iso2": "BD", "iso3": "BGD", "population": 164689383, "continent_id": 4 },
+  { "name": "Russia", "iso2": "RU", "iso3": "RUS", "population": 145912025, "continent_id": 3 },
+  { "name": "Japan", "iso2": "JP", "iso3": "JPN", "population": 126476461, "continent_id": 4 }
 ];
 
 const epidemicsData = [
-  {"name":"COVID-19","start_date":"2019-12-01","end_date":"2023-05-05","type":"virus","pathogen_name":"SARS-CoV-2","reproduction_rate":2.5},
-  {"name":"Ebola Outbreak West Africa","start_date":"2013-12-01","end_date":"2016-06-09","type":"virus","pathogen_name":"Ebola virus","reproduction_rate":1.8},
-  {"name":"H1N1 Influenza Pandemic","start_date":"2009-04-01","end_date":"2010-08-10","type":"virus","pathogen_name":"H1N1 Influenza Virus","reproduction_rate":1.5},
-  {"name":"Cholera Outbreak Haiti","start_date":"2010-10-01","end_date":"2019-01-01","type":"bacteria","pathogen_name":"Vibrio cholerae","reproduction_rate":1.4},
-  {"name":"Plague of Madagascar","start_date":"2017-08-01","end_date":"2018-03-01","type":"bacteria","pathogen_name":"Yersinia pestis","reproduction_rate":1.3},
-  {"name":"Sleeping Sickness Epidemic","start_date":"1970-01-01","end_date":"1990-01-01","type":"parasite","pathogen_name":"Trypanosoma brucei","reproduction_rate":1.2},
-  {"name":"Malaria Epidemic Ethiopia","start_date":"2003-01-01","end_date":"2004-12-31","type":"parasite","pathogen_name":"Plasmodium falciparum","reproduction_rate":1.4},
-  {"name":"Kuru Epidemic Papua New Guinea","start_date":"1957-01-01","end_date":"1980-01-01","type":"prion","pathogen_name":"Prion protein","reproduction_rate":1.1},
-  {"name":"Candidiasis Outbreak Hospitals","start_date":"2015-01-01","end_date":"2020-01-01","type":"fungus","pathogen_name":"Candida auris","reproduction_rate":1.2}
+  { "name": "COVID-19", "start_date": "2019-12-01", "end_date": "2023-05-05", "type": "virus", "pathogen_name": "SARS-CoV-2", "reproduction_rate": 2.5 },
+  { "name": "Ebola Outbreak West Africa", "start_date": "2013-12-01", "end_date": "2016-06-09", "type": "virus", "pathogen_name": "Ebola virus", "reproduction_rate": 1.8 },
+  { "name": "H1N1 Influenza Pandemic", "start_date": "2009-04-01", "end_date": "2010-08-10", "type": "virus", "pathogen_name": "H1N1 Influenza Virus", "reproduction_rate": 1.5 },
+  { "name": "Cholera Outbreak Haiti", "start_date": "2010-10-01", "end_date": "2019-01-01", "type": "bacteria", "pathogen_name": "Vibrio cholerae", "reproduction_rate": 1.4 },
+  { "name": "Plague of Madagascar", "start_date": "2017-08-01", "end_date": "2018-03-01", "type": "bacteria", "pathogen_name": "Yersinia pestis", "reproduction_rate": 1.3 },
+  { "name": "Sleeping Sickness Epidemic", "start_date": "1970-01-01", "end_date": "1990-01-01", "type": "parasite", "pathogen_name": "Trypanosoma brucei", "reproduction_rate": 1.2 },
+  { "name": "Malaria Epidemic Ethiopia", "start_date": "2003-01-01", "end_date": "2004-12-31", "type": "parasite", "pathogen_name": "Plasmodium falciparum", "reproduction_rate": 1.4 },
+  { "name": "Kuru Epidemic Papua New Guinea", "start_date": "1957-01-01", "end_date": "1980-01-01", "type": "prion", "pathogen_name": "Prion protein", "reproduction_rate": 1.1 },
+  { "name": "Candidiasis Outbreak Hospitals", "start_date": "2015-01-01", "end_date": "2020-01-01", "type": "fungus", "pathogen_name": "Candida auris", "reproduction_rate": 1.2 }
 ];
 
 const vaccinesData = [
-  {"name":"Pfizer/BioNTech","laboratory":"Pfizer/BioNTech","technology":"mRNA","dose":"2 doses, 3 weeks apart","efficacy":95.0,"storage_temperature":"-70°C (long terme), 2–8°C (5 jours)"},
-  {"name":"Moderna","laboratory":"Moderna","technology":"mRNA","dose":"2 doses, 4 weeks apart","efficacy":94.1,"storage_temperature":"-20°C (long terme), 2–8°C (30 jours)"},
-  {"name":"Sputnik V","laboratory":"Gamaleya Research Institute","technology":"Viral vector (adenovirus 26 and 5)","dose":"2 doses, 3 weeks apart","efficacy":91.6,"storage_temperature":"2–8°C"},
-  {"name":"Novavax","laboratory":"Novavax","technology":"Protein subunit","dose":"2 doses, 3 weeks apart","efficacy":89.7,"storage_temperature":"2–8°C"},
-  {"name":"Covaxin","laboratory":"Bharat Biotech","technology":"Inactivated virus","dose":"2 doses, 4 weeks apart","efficacy":77.8,"storage_temperature":"2–8°C"},
-  {"name":"Sinopharm/Beijing","laboratory":"Sinopharm","technology":"Inactivated virus","dose":"2 doses, 3–4 weeks apart","efficacy":79.0,"storage_temperature":"2–8°C"},
-  {"name":"Oxford/AstraZeneca","laboratory":"AstraZeneca","technology":"Viral vector (adenovirus from chimpanzee)","dose":"2 doses, 4-12 weeks apart","efficacy":76.0,"storage_temperature":"2–8°C"},
-  {"name":"Johnson&Johnson","laboratory":"Johnson & Johnson","technology":"Viral vector (adenovirus type 26)","dose":"1 dose","efficacy":66.9,"storage_temperature":"2–8°C"},
-  {"name":"CanSino","laboratory":"CanSino Biologics","technology":"Viral vector (adenovirus type 5)","dose":"1 dose","efficacy":65.28,"storage_temperature":"2–8°C"},
-  {"name":"Sinovac","laboratory":"Sinovac Biotech","technology":"Inactivated virus","dose":"2 doses, 2–4 weeks apart","efficacy":51.0,"storage_temperature":"2–8°C"}
+  { "name": "Pfizer/BioNTech", "laboratory": "Pfizer/BioNTech", "technology": "mRNA", "dose": "2 doses, 3 weeks apart", "efficacy": 95.0, "storage_temperature": "-70°C (long terme), 2–8°C (5 jours)" },
+  { "name": "Moderna", "laboratory": "Moderna", "technology": "mRNA", "dose": "2 doses, 4 weeks apart", "efficacy": 94.1, "storage_temperature": "-20°C (long terme), 2–8°C (30 jours)" },
+  { "name": "Sputnik V", "laboratory": "Gamaleya Research Institute", "technology": "Viral vector (adenovirus 26 and 5)", "dose": "2 doses, 3 weeks apart", "efficacy": 91.6, "storage_temperature": "2–8°C" },
+  { "name": "Novavax", "laboratory": "Novavax", "technology": "Protein subunit", "dose": "2 doses, 3 weeks apart", "efficacy": 89.7, "storage_temperature": "2–8°C" },
+  { "name": "Covaxin", "laboratory": "Bharat Biotech", "technology": "Inactivated virus", "dose": "2 doses, 4 weeks apart", "efficacy": 77.8, "storage_temperature": "2–8°C" },
+  { "name": "Sinopharm/Beijing", "laboratory": "Sinopharm", "technology": "Inactivated virus", "dose": "2 doses, 3–4 weeks apart", "efficacy": 79.0, "storage_temperature": "2–8°C" },
+  { "name": "Oxford/AstraZeneca", "laboratory": "AstraZeneca", "technology": "Viral vector (adenovirus from chimpanzee)", "dose": "2 doses, 4-12 weeks apart", "efficacy": 76.0, "storage_temperature": "2–8°C" },
+  { "name": "Johnson&Johnson", "laboratory": "Johnson & Johnson", "technology": "Viral vector (adenovirus type 26)", "dose": "1 dose", "efficacy": 66.9, "storage_temperature": "2–8°C" },
+  { "name": "CanSino", "laboratory": "CanSino Biologics", "technology": "Viral vector (adenovirus type 5)", "dose": "1 dose", "efficacy": 65.28, "storage_temperature": "2–8°C" },
+  { "name": "Sinovac", "laboratory": "Sinovac Biotech", "technology": "Inactivated virus", "dose": "2 doses, 2–4 weeks apart", "efficacy": 51.0, "storage_temperature": "2–8°C" }
 ];
 
 const continentsData = [
-  {"name":"Not defined","code":"N/A","population":0,"id":1},
-  {"name":"Africa","code":"AF","population":1400000000,"id":2},
-  {"name":"Europe","code":"EU","population":750000000,"id":3},
-  {"name":"Asia","code":"AS","population":4600000000,"id":4},
-  {"name":"North America","code":"NA","population":600000000,"id":5},
-  {"name":"South America","code":"SA","population":430000000,"id":6},
-  {"name":"Oceania","code":"OC","population":43000000,"id":7},
-  {"name":"Antarctica","code":"AN","population":1100,"id":8}
+  { "name": "Not defined", "code": "N/A", "population": 0, "id": 1 },
+  { "name": "Africa", "code": "AF", "population": 1400000000, "id": 2 },
+  { "name": "Europe", "code": "EU", "population": 750000000, "id": 3 },
+  { "name": "Asia", "code": "AS", "population": 4600000000, "id": 4 },
+  { "name": "North America", "code": "NA", "population": 600000000, "id": 5 },
+  { "name": "South America", "code": "SA", "population": 430000000, "id": 6 },
+  { "name": "Oceania", "code": "OC", "population": 43000000, "id": 7 },
+  { "name": "Antarctica", "code": "AN", "population": 1100, "id": 8 }
 ];
 
 // Préparer les données avec les noms de continents
@@ -65,7 +65,7 @@ const countriesWithContinents = countriesData.map(country => {
 export default function AnalysePage() {
   const [activeTab, setActiveTab] = useState('countries');
   const [filterValue, setFilterValue] = useState('');
-  
+
   // Références pour les graphiques Plotly
   const populationChartRef = useRef(null);
   const continentPieChartRef = useRef(null);
@@ -77,22 +77,22 @@ export default function AnalysePage() {
   // Fonction pour filtrer les données selon l'onglet actif
   const getFilteredData = () => {
     const filter = filterValue.toLowerCase();
-    
+
     switch (activeTab) {
       case 'countries':
-        return countriesWithContinents.filter(country => 
-          country.name.toLowerCase().includes(filter) || 
+        return countriesWithContinents.filter(country =>
+          country.name.toLowerCase().includes(filter) ||
           country.continent.toLowerCase().includes(filter)
         );
       case 'epidemics':
-        return epidemicsData.filter(epidemic => 
-          epidemic.name.toLowerCase().includes(filter) || 
+        return epidemicsData.filter(epidemic =>
+          epidemic.name.toLowerCase().includes(filter) ||
           epidemic.type.toLowerCase().includes(filter) ||
           epidemic.pathogen_name.toLowerCase().includes(filter)
         );
       case 'vaccines':
-        return vaccinesData.filter(vaccine => 
-          vaccine.name.toLowerCase().includes(filter) || 
+        return vaccinesData.filter(vaccine =>
+          vaccine.name.toLowerCase().includes(filter) ||
           vaccine.laboratory.toLowerCase().includes(filter) ||
           vaccine.technology.toLowerCase().includes(filter)
         );
@@ -109,20 +109,20 @@ export default function AnalysePage() {
           const script = document.createElement('script');
           script.src = 'https://cdn.plot.ly/plotly-2.24.1.min.js';
           script.async = true;
-          
+
           script.onload = () => {
             createCharts();
           };
-          
+
           document.head.appendChild(script);
         } else {
           createCharts();
         }
       }
     };
-    
+
     loadPlotly();
-    
+
     return () => {
       if (typeof window !== 'undefined') {
         const script = document.querySelector('script[src="https://cdn.plot.ly/plotly-2.24.1.min.js"]');
@@ -136,9 +136,9 @@ export default function AnalysePage() {
   // Fonction pour créer les graphiques
   const createCharts = () => {
     if (typeof window === 'undefined' || !window.Plotly) return;
-    
+
     const filteredData = getFilteredData();
-    
+
     if (activeTab === 'countries') {
       if (populationChartRef.current && continentPieChartRef.current) {
         createCountryCharts(filteredData);
@@ -159,7 +159,7 @@ export default function AnalysePage() {
     // Graphique à barres des populations
     const sortedData = [...data].sort((a, b) => b.population - a.population);
     const top10 = sortedData.slice(0, 10);
-    
+
     const populationBarChart = {
       x: top10.map(country => country.name),
       y: top10.map(country => country.population),
@@ -168,14 +168,14 @@ export default function AnalysePage() {
         color: 'rgb(59, 130, 246)'
       }
     };
-    
+
     window.Plotly.newPlot(populationChartRef.current, [populationBarChart], {
       title: 'Top 10 des pays par population',
       xaxis: { title: 'Pays' },
       yaxis: { title: 'Population' },
       margin: { t: 50, r: 50, b: 100, l: 80 }
     }, { responsive: true });
-    
+
     // Graphique circulaire par continent
     const populationByContinent = {};
     data.forEach(country => {
@@ -184,7 +184,7 @@ export default function AnalysePage() {
       }
       populationByContinent[country.continent] += country.population;
     });
-    
+
     const continentPieChart = {
       labels: Object.keys(populationByContinent),
       values: Object.values(populationByContinent),
@@ -193,7 +193,7 @@ export default function AnalysePage() {
         colors: ['rgb(59, 130, 246)', 'rgb(139, 92, 246)', 'rgb(236, 72, 153)', 'rgb(245, 158, 11)', 'rgb(16, 185, 129)', 'rgb(99, 102, 241)', 'rgb(239, 68, 68)']
       }
     };
-    
+
     window.Plotly.newPlot(continentPieChartRef.current, [continentPieChart], {
       title: 'Population par continent',
       margin: { t: 50, r: 50, b: 50, l: 50 }
@@ -211,14 +211,14 @@ export default function AnalysePage() {
         color: 'rgb(139, 92, 246)'
       }
     };
-    
+
     window.Plotly.newPlot(epidemicChartRef.current, [epidemicBarChart], {
       title: 'Taux de reproduction (R0) des épidémies',
       xaxis: { title: 'Épidémie' },
       yaxis: { title: 'Taux R0' },
       margin: { t: 50, r: 50, b: 100, l: 80 }
     }, { responsive: true });
-    
+
     // Graphique circulaire par type
     const epidemicsByType = {};
     data.forEach(epidemic => {
@@ -227,7 +227,7 @@ export default function AnalysePage() {
       }
       epidemicsByType[epidemic.type]++;
     });
-    
+
     const epidemicPieChart = {
       labels: Object.keys(epidemicsByType),
       values: Object.values(epidemicsByType),
@@ -236,7 +236,7 @@ export default function AnalysePage() {
         colors: ['rgb(139, 92, 246)', 'rgb(236, 72, 153)', 'rgb(245, 158, 11)', 'rgb(16, 185, 129)']
       }
     };
-    
+
     window.Plotly.newPlot(epidemicTypeChartRef.current, [epidemicPieChart], {
       title: 'Épidémies par type',
       margin: { t: 50, r: 50, b: 50, l: 50 }
@@ -247,7 +247,7 @@ export default function AnalysePage() {
   const createVaccineCharts = (data) => {
     // Graphique à barres de l'efficacité
     const sortedByEfficacy = [...data].sort((a, b) => b.efficacy - a.efficacy);
-    
+
     const vaccineBarChart = {
       x: sortedByEfficacy.map(vaccine => vaccine.name),
       y: sortedByEfficacy.map(vaccine => vaccine.efficacy),
@@ -256,14 +256,14 @@ export default function AnalysePage() {
         color: 'rgb(16, 185, 129)'
       }
     };
-    
+
     window.Plotly.newPlot(vaccineChartRef.current, [vaccineBarChart], {
       title: 'Efficacité des vaccins COVID-19 (%)',
       xaxis: { title: 'Vaccin' },
       yaxis: { title: 'Efficacité (%)' },
       margin: { t: 50, r: 50, b: 100, l: 80 }
     }, { responsive: true });
-    
+
     // Graphique circulaire par technologie
     const vaccinesByTech = {};
     data.forEach(vaccine => {
@@ -274,7 +274,7 @@ export default function AnalysePage() {
       }
       vaccinesByTech[tech]++;
     });
-    
+
     const vaccinePieChart = {
       labels: Object.keys(vaccinesByTech),
       values: Object.values(vaccinesByTech),
@@ -283,13 +283,13 @@ export default function AnalysePage() {
         colors: ['rgb(16, 185, 129)', 'rgb(59, 130, 246)', 'rgb(245, 158, 11)', 'rgb(239, 68, 68)']
       }
     };
-    
+
     window.Plotly.newPlot(vaccineTechChartRef.current, [vaccinePieChart], {
       title: 'Vaccins par technologie',
       margin: { t: 50, r: 50, b: 50, l: 50 }
     }, { responsive: true });
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* En-tête */}
@@ -297,7 +297,7 @@ export default function AnalysePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <Link 
+              <Link
                 href="/"
                 className="mr-2 p-2 rounded-md text-gray-700 hover:text-blue-600 focus:outline-none"
                 aria-label="Retour à l'accueil"
@@ -321,40 +321,37 @@ export default function AnalysePage() {
               Explorez les statistiques sur les pays, les épidémies et les vaccins
             </p>
           </div>
-          
+
           {/* Onglets */}
           <div className="mb-6">
             <div className="border-b border-gray-200">
               <nav className="-mb-px flex space-x-8">
                 <button
                   onClick={() => setActiveTab('countries')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === 'countries'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'countries'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
                   aria-label="Voir les données des pays"
                 >
                   Pays
                 </button>
                 <button
                   onClick={() => setActiveTab('epidemics')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === 'epidemics'
-                      ? 'border-purple-500 text-purple-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'epidemics'
+                    ? 'border-purple-500 text-purple-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
                   aria-label="Voir les données des épidémies"
                 >
                   Épidémies
                 </button>
                 <button
                   onClick={() => setActiveTab('vaccines')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === 'vaccines'
-                      ? 'border-green-500 text-green-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'vaccines'
+                    ? 'border-green-500 text-green-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
                   aria-label="Voir les données des vaccins"
                 >
                   Vaccins
@@ -362,7 +359,7 @@ export default function AnalysePage() {
               </nav>
             </div>
           </div>
-          
+
           {/* Barre de recherche */}
           <div className="mb-6">
             <label htmlFor="data-search" className="sr-only">Filtrer les données</label>
@@ -384,7 +381,7 @@ export default function AnalysePage() {
               />
             </div>
           </div>
-          
+
           {/* Contenu des onglets */}
           {activeTab === 'countries' && (
             <div>
@@ -398,7 +395,7 @@ export default function AnalysePage() {
                   <div ref={continentPieChartRef} className="h-80"></div>
                 </div>
               </div>
-              
+
               <div className="bg-white p-4 rounded-lg shadow">
                 <h2 className="text-lg font-semibold mb-4 text-gray-900">Liste des pays</h2>
                 <div className="overflow-x-auto">
@@ -426,7 +423,7 @@ export default function AnalysePage() {
               </div>
             </div>
           )}
-          
+
           {activeTab === 'epidemics' && (
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -439,7 +436,7 @@ export default function AnalysePage() {
                   <div ref={epidemicTypeChartRef} className="h-80"></div>
                 </div>
               </div>
-              
+
               <div className="bg-white p-4 rounded-lg shadow">
                 <h2 className="text-lg font-semibold mb-4 text-gray-900">Liste des épidémies</h2>
                 <div className="overflow-x-auto">
@@ -469,7 +466,7 @@ export default function AnalysePage() {
               </div>
             </div>
           )}
-          
+
           {activeTab === 'vaccines' && (
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -482,7 +479,7 @@ export default function AnalysePage() {
                   <div ref={vaccineTechChartRef} className="h-80"></div>
                 </div>
               </div>
-              
+
               <div className="bg-white p-4 rounded-lg shadow">
                 <h2 className="text-lg font-semibold mb-4 text-gray-900">Liste des vaccins</h2>
                 <div className="overflow-x-auto">

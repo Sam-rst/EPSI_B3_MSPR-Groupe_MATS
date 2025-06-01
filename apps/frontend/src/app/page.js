@@ -19,7 +19,7 @@ export default function HomePage() {
                 <span className="ml-2 text-xl font-bold text-gray-900">AnalyzeIT</span>
               </a>
             </div>
-            
+
             {/* Navigation - Desktop */}
             <nav className="hidden md:flex space-x-8">
               <a href="#" className="text-gray-900 hover:text-blue-600 px-3 py-2 font-medium">
@@ -32,10 +32,10 @@ export default function HomePage() {
                 À propos
               </a>
             </nav>
-            
+
             {/* Menu mobile */}
             <div className="md:hidden flex items-center">
-              <button 
+              <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 focus:outline-none"
                 aria-expanded={menuOpen}
@@ -54,7 +54,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        
+
         {/* Menu mobile ouvert */}
         {menuOpen && (
           <div className="md:hidden">
@@ -87,15 +87,15 @@ export default function HomePage() {
                   Solutions de pointe pour analyser les données de santé mondiale et prédire les tendances épidémiologiques
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <a 
-                    href="#services" 
+                  <a
+                    href="#services"
                     className="inline-block bg-white text-blue-700 font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-700 transition-colors"
                     aria-label="Découvrir nos services"
                   >
                     Découvrir nos services
                   </a>
-                  <a 
-                    href="#about" 
+                  <a
+                    href="#about"
                     className="inline-block bg-transparent border-2 border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-white transition-colors"
                     aria-label="En savoir plus"
                   >
@@ -119,7 +119,7 @@ export default function HomePage() {
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Nos Services</h2>
               <p className="mt-4 text-lg text-gray-600">Accédez à nos outils d'analyse et de traitement des données</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* ETL */}
               <div className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
@@ -129,8 +129,8 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Accès ETL</h3>
                   <p className="text-gray-600 text-center mb-6">Extraction, transformation et chargement de données de santé mondiale</p>
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="inline-block bg-blue-600 text-white font-medium py-2 px-6 rounded hover:bg-blue-700 transition-colors"
                     aria-label="Accéder à l'ETL"
                   >
@@ -138,7 +138,7 @@ export default function HomePage() {
                   </a>
                 </div>
               </div>
-              
+
               {/* IA */}
               <div className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
                 <div className="p-8 flex flex-col items-center">
@@ -148,7 +148,7 @@ export default function HomePage() {
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Accès IA</h3>
                   <p className="text-gray-600 text-center mb-6">Modèles prédictifs et analyses avancées par intelligence artificielle</p>
                   <Link
-                    href="/analyse" 
+                    href="/analyse"
                     className="inline-block bg-purple-600 text-white font-medium py-2 px-6 rounded hover:bg-purple-700 transition-colors"
                     aria-label="Accéder à l'IA"
                   >
@@ -156,7 +156,7 @@ export default function HomePage() {
                   </Link>
                 </div>
               </div>
-              
+
               {/* Metabase */}
               <div className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
                 <div className="p-8 flex flex-col items-center">
@@ -165,8 +165,8 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Accès Metabase</h3>
                   <p className="text-gray-600 text-center mb-6">Tableaux de bord interactifs et visualisation de données en temps réel</p>
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="inline-block bg-green-600 text-white font-medium py-2 px-6 rounded hover:bg-green-700 transition-colors"
                     aria-label="Accéder à Metabase"
                   >
