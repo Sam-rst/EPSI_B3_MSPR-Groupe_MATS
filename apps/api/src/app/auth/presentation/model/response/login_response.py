@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -7,6 +9,6 @@ class LoginResponse(BaseModel):
     lastname: str
     username: str
     email: str
-    role_id: int
-    country_id: int
+    role_id: Optional[int] = None
+    country_id: Optional[int] = None
     access_token: str
