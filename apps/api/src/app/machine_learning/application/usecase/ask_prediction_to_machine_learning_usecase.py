@@ -44,7 +44,7 @@ class AskPredictionToMachineLearningUseCase(BaseUseCase):
                 )
 
             # Obtenir les prédictions via le repository
-            predictions = self.repository.get_predictions(df)
+            predictions = self.repository.get_predictions(file.file)
 
             # Convertir les prédictions en JSON
             try:

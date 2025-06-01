@@ -42,10 +42,16 @@ class DataManager:
 
         return df
 
-    def load_all(self) -> pd.DataFrame:
+    def load_all(self, pivot_file: str = None) -> pd.DataFrame:
         # Fichier pivot
-        pivot = os.path.join(self.cleaned_dir,
-                            "covid_19_clean_complete_cleaned.csv")
+        if pivot_file is None:
+            pivot = os.path.join(self.cleaned_dir, "covid_19_clean_complete_cleaned.csv")
+        else:
+            pivot = pivot_file
+
+        if not os.path.exists(pivot):
+            raise FileNotFoundError(f"Le fichier pivot {pivot} n'existe pas")
+
         main = pd.read_csv(pivot)
         main = self._harmonise(main)
 
