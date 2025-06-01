@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Dict, List
+
+import pandas as pd
 
 from src.app.base.presentation.model.payload.base_payload import FilterRequest
 
@@ -21,4 +23,8 @@ class MachineLearningRepository(ABC):
 
     @abstractmethod
     def get_data(self, payload: FilterRequest) -> List[dict]:
+        pass
+
+    @abstractmethod
+    def get_predictions(self, data: pd.DataFrame) -> Dict:
         pass
