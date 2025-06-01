@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import BinaryIO, List, Optional
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -23,6 +23,7 @@ from src.app.vaccine.infrastructure.model.vaccine_model import VaccineModel
 from src.app.user.infrastructure.model.user_model import UserModel
 from src.app.role.infrastructure.model.role_model import RoleModel
 
+from src.app.machine_learning.infrastructure.scripts.data_manager import DataManager
 
 class MachineLearningRepositoryInPostgres(MachineLearningRepository):
     def __init__(self):
@@ -184,7 +185,7 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
             self.session.rollback()
             raise e
 
-    def get_predictions(self, data: pd.DataFrame) -> dict:
+    def get_predictions(self, file: BinaryIO) -> dict:
         """
         Obtenir les prédictions à partir des données fournies.
 
@@ -195,11 +196,9 @@ class MachineLearningRepositoryInPostgres(MachineLearningRepository):
             dict: Les prédictions au format JSON.
         """
         try:
-            # Ici, vous devez implémenter la logique pour obtenir les prédictions
-            # en utilisant le modèle de machine learning approprié.
-            # Pour l'instant, nous renvoyons un exemple de structure de données.
+            df = DataManager.load_all(file)
             predictions = {
-                "predictions": data.to_dict(orient="records"),
+                "predictions": df.to_dict(orient="records"),
                 "message": "Prédictions générées avec succès."
             }
             return predictions
