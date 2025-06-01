@@ -42,16 +42,16 @@ class DataManager:
 
         return df
 
-    def load_all(self, pivot_path: str = None) -> pd.DataFrame:
-        # Détermination du pivot
-        if pivot_path is None:
-            pivot_path = os.path.join(self.cleaned_dir, "covid_19_clean_complete_cleaned.csv")
-        main = pd.read_csv(pivot_path)
+    def load_all(self) -> pd.DataFrame:
+        # Fichier pivot
+        pivot = os.path.join(self.cleaned_dir,
+                            "covid_19_clean_complete_cleaned.csv")
+        main = pd.read_csv(pivot)
         main = self._harmonise(main)
 
         # Parcours des autres CSV et fusion
         for path in glob.glob(os.path.join(self.cleaned_dir, "*.csv")):
-            if path == pivot_path:
+            if path == pivot:
                 continue
 
             extra = pd.read_csv(path)
