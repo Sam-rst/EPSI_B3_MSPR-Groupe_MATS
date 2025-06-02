@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List
 
-import pandas as pd
+from fastapi import UploadFile
 
 from src.app.base.presentation.model.payload.base_payload import FilterRequest
 
@@ -26,5 +26,5 @@ class MachineLearningRepository(ABC):
         pass
 
     @abstractmethod
-    def get_predictions(self, data: pd.DataFrame) -> Dict:
+    def get_predictions(self, file: UploadFile) -> Dict:
         pass

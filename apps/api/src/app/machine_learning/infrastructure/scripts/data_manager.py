@@ -1,4 +1,5 @@
 import os, glob, pandas as pd
+from typing import BinaryIO
 
 
 COUNTRY_ALIASES = {
@@ -42,22 +43,15 @@ class DataManager:
 
         return df
 
-    def load_all(self, pivot_file: str = None) -> pd.DataFrame:
-        # Fichier pivot
-        if pivot_file is None:
-            pivot = os.path.join(self.cleaned_dir, "covid_19_clean_complete_cleaned.csv")
-        else:
-            pivot = pivot_file
+    def load_all(self, pivot_file: BinaryIO) -> pd.DataFrame:
+        print(pivot_file)
 
-        if not os.path.exists(pivot):
-            raise FileNotFoundError(f"Le fichier pivot {pivot} n'existe pas")
-
-        main = pd.read_csv(pivot)
+        main = pd.read_csv(pivot_file)
         main = self._harmonise(main)
 
         # Parcours des autres CSV et fusion
         for path in glob.glob(os.path.join(self.cleaned_dir, "*.csv")):
-            if path == pivot:
+            if path == pivot_file.name:
                 continue
 
             extra = pd.read_csv(path)

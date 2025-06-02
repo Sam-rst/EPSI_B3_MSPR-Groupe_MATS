@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, HTTPException, Request
+from fastapi import APIRouter, File, UploadFile, status, HTTPException, Request
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -42,8 +42,9 @@ machine_learning_router = APIRouter(
 @machine_learning_router.post("/ask")
 @limiter.limit("5/minute")
 @inject
-def endpoint_ask_prediction_to_machine_learning(
+async def endpoint_ask_prediction_to_machine_learning(
     request: Request,
+    file: UploadFile = File(...),
     usecase: AskPredictionToMachineLearningUseCase = Depends(
         Provide[MachineLearningContainer.ask_prediction_to_machine_learning_usecase]
     ),
@@ -55,7 +56,7 @@ def endpoint_ask_prediction_to_machine_learning(
         JSONResponse: TODO : Décrire la réponse
     """
     try:
-        content = usecase.execute()
+        content = await usecase.execute(file)
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(

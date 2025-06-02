@@ -13,7 +13,7 @@ class AskPredictionToMachineLearningUseCase(BaseUseCase):
     def __init__(self, repository: MachineLearningRepository):
         super().__init__(repository)
 
-    def execute(self, file: UploadFile) -> Dict:
+    async def execute(self, file: UploadFile) -> Dict:
         """
         Demande des prédictions à partir d'un fichier CSV.
 
@@ -34,17 +34,14 @@ class AskPredictionToMachineLearningUseCase(BaseUseCase):
                     detail="Le fichier doit être au format CSV",
                 )
 
-            # Lire le fichier CSV avec pandas
+            # Obtenir les prédictions via le repository
             try:
-                df = pd.read_csv(file.file)
+              predictions = self.repository.get_predictions(file.file)
             except Exception as e:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Erreur lors de la lecture du CSV: {str(e)}",
                 )
-
-            # Obtenir les prédictions via le repository
-            predictions = self.repository.get_predictions(file.file)
 
             # Convertir les prédictions en JSON
             try:
