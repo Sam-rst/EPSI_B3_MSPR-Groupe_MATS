@@ -37,6 +37,13 @@ services:
     volumes:
       - ./data:/data
 
+  frontend:
+    build: ./apps/frontend
+    container_name: MSPR-FRONTEND
+    restart: always
+    ports:
+      - "3030:3030"
+
   metabase:
     image: metabase/metabase:latest
     container_name: MSPR-METABASE
@@ -58,7 +65,7 @@ services:
       MB_DB_PASS: ${MB_DB_PASS}
       MB_DB_HOST: ${MB_DB_HOST}
     healthcheck:
-      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      test: curl --fail -I http://localhost:3030/api/health || exit 1
       interval: 15s
       timeout: 5s
       retries: 5

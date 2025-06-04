@@ -1,3 +1,4 @@
+
 from dependency_injector import containers
 from fastapi import APIRouter
 
@@ -15,7 +16,8 @@ from src.app.role.container import RoleContainer
 from src.app.role.presentation.router import role_router
 from src.app.auth.container import AuthContainer
 from src.app.auth.presentation.router import auth_router
-
+from src.app.machine_learning.container import MachineLearningContainer
+from src.app.machine_learning.presentation.router import machine_learning_router
 
 class Container(containers.DeclarativeContainer):
     containers = [
@@ -26,6 +28,7 @@ class Container(containers.DeclarativeContainer):
         UserContainer,
         RoleContainer,
         AuthContainer,
+        MachineLearningContainer,
     ]  # A ajouter les autres containers si il y en a d'autres
     [container().wire(modules=container.modules) for container in containers]
 
@@ -47,3 +50,4 @@ class Container(containers.DeclarativeContainer):
     router.include_router(user_router, prefix="/users", tags=["Users"])
     router.include_router(role_router, prefix="/roles", tags=["Roles"])
     router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+    router.include_router(machine_learning_router, prefix="/machine-learning", tags=["Machine Learning"])

@@ -14,7 +14,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           }
@@ -30,7 +30,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           }
@@ -50,7 +50,7 @@
             "description": "Requête réussie",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -66,7 +66,12 @@
           "500": {
             "description": "Erreur interne du serveur"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -90,7 +95,7 @@
             "description": "Requête réussie",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -116,7 +121,12 @@
           "500": {
             "description": "Erreur interne du serveur"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/continents/{id}": {
@@ -127,6 +137,11 @@
         "summary": "Récupérer un continent par ID",
         "description": "Récupère les détails d'un continent spécifique.\n\nArgs:\n    <header> id (int): L'ID du continent à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails du continent.",
         "operationId": "endpoint_usecase_get_continent_by_id_continents__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -143,7 +158,7 @@
             "description": "Requête réussie",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -178,6 +193,11 @@
         "summary": "Mettre à jour un continent",
         "description": "Met à jour les informations d'un continent existant.\n\nArgs:\n    <header> id (int): L'ID du continent à mettre à jour.\n    <body> payload (UpdateContinentPayload): Les nouvelles données pour le continent.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_patch_continent_by_id_continents__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -204,7 +224,7 @@
             "description": "Requête réussie",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -239,6 +259,11 @@
         "summary": "Supprimer un continent",
         "description": "Supprime un continent existant.\n\nArgs:\n    <header> id (int): L'ID du continent à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_delete_continent_by_id_continents__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -255,7 +280,7 @@
             "description": "Requête réussie",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -284,10 +309,71 @@
         }
       }
     },
+    "/continents/import": {
+      "post": {
+        "tags": [
+          "Continents"
+        ],
+        "summary": "Importer plusieurs continents",
+        "description": "Importe plusieurs continents à la fois.\n\nArgs:\n    <body> payload (list[CreateContinentPayload]): La liste des continents à importer.\n\nReturns:\n    JSONResponse: Une réponse contenant le résultat de l'importation.",
+        "operationId": "endpoint_usecase_import_continents_continents_import_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/CreateContinentPayload"
+                },
+                "type": "array",
+                "title": "Payload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Requête réussie",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Ressource créée avec succès"
+          },
+          "400": {
+            "description": "Requête invalide"
+          },
+          "404": {
+            "description": "Ressource non trouvée"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur interne du serveur"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/countries": {
       "get": {
         "tags": [
-          "countries"
+          "Countries"
         ],
         "summary": "Endpoint Usecase Get All Countries",
         "description": "Récupère tous les pays disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des pays et leur nombre.",
@@ -297,7 +383,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -322,11 +408,16 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
-          "countries"
+          "Countries"
         ],
         "summary": "Endpoint Usecase Add Country",
         "description": "Crée un nouveau pays.\n\nArgs:\n    <body> payload (CreateCountryPayload): Les données nécessaires pour créer un pays.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID du pays créé.",
@@ -346,7 +437,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -371,17 +462,27 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/countries/{id}": {
       "get": {
         "tags": [
-          "countries"
+          "Countries"
         ],
         "summary": "Endpoint Usecase Get Country By Id",
         "description": "Récupère les détails d'un pays spécifique.\n\nArgs:\n    <header> id (int): L'ID du pays à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails du pays.",
         "operationId": "endpoint_usecase_get_country_by_id_countries__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -398,7 +499,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -427,11 +528,16 @@
       },
       "patch": {
         "tags": [
-          "countries"
+          "Countries"
         ],
         "summary": "Endpoint Usecase Patch Country By Id",
         "description": "Met à jour les informations d'un pays existant.\n\nArgs:\n    <header> id (int): L'ID du pays à mettre à jour.\n    <body> payload (UpdateCountryPayload): Les nouvelles données pour le pays.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_patch_country_by_id_countries__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -458,7 +564,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -487,11 +593,16 @@
       },
       "delete": {
         "tags": [
-          "countries"
+          "Countries"
         ],
         "summary": "Endpoint Usecase Delete Country By Id",
         "description": "Supprime un pays existant.\n\nArgs:\n    <header> id (int): L'ID du pays à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_delete_country_by_id_countries__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -508,7 +619,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -536,20 +647,34 @@
         }
       }
     },
-    "/vaccines": {
-      "get": {
+    "/countries/import": {
+      "post": {
         "tags": [
-          "vaccines"
+          "Countries"
         ],
-        "summary": "Endpoint Usecase Get All Vaccines",
-        "description": "Récupère tous les vaccins disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des vaccins et leur nombre.",
-        "operationId": "endpoint_usecase_get_all_vaccines_vaccines_get",
+        "summary": "Importer plusieurs pays",
+        "description": "Importe plusieurs pays à la fois.\n\nArgs:\n    <body> payload (list[CreateCountryPayload]): La liste des pays à importer.\n\nReturns:\n    JSONResponse: Une réponse contenant le résultat de l'importation.",
+        "operationId": "endpoint_usecase_import_continents_countries_import_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/CreateCountryPayload"
+                },
+                "type": "array",
+                "title": "Payload"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -574,11 +699,62 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/vaccines": {
+      "get": {
+        "tags": [
+          "Vaccines"
+        ],
+        "summary": "Endpoint Usecase Get All Vaccines",
+        "description": "Récupère tous les vaccins disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des vaccins et leur nombre.",
+        "operationId": "endpoint_usecase_get_all_vaccines_vaccines_get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
-          "vaccines"
+          "Vaccines"
         ],
         "summary": "Endpoint Usecase Add Vaccine",
         "description": "Crée un nouveau vaccin.\n\nArgs:\n    <body> payload (CreateVaccinePayload): Les données nécessaires pour créer un vaccin.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID du vaccin créé.",
@@ -598,7 +774,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -623,17 +799,27 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/vaccines/{id}": {
       "get": {
         "tags": [
-          "vaccines"
+          "Vaccines"
         ],
         "summary": "Endpoint Usecase Get Vaccine By Id",
         "description": "Récupère les détails d'un vaccin spécifique.\n\nArgs:\n    <header> id (int): L'ID du vaccin à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails du vaccin.",
         "operationId": "endpoint_usecase_get_vaccine_by_id_vaccines__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -650,7 +836,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -679,11 +865,16 @@
       },
       "patch": {
         "tags": [
-          "vaccines"
+          "Vaccines"
         ],
         "summary": "Endpoint Usecase Patch Vaccine By Id",
         "description": "Met à jour les informations d'un vaccin existant.\n\nArgs:\n    <header> id (int): L'ID du vaccin à mettre à jour.\n    <body> payload (UpdateVaccinePayload): Les nouvelles données pour le vaccin.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_patch_vaccine_by_id_vaccines__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -710,7 +901,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -739,11 +930,16 @@
       },
       "delete": {
         "tags": [
-          "vaccines"
+          "Vaccines"
         ],
         "summary": "Endpoint Usecase Delete Vaccine By Id",
         "description": "Supprime un vaccin existant.\n\nArgs:\n    <header> id (int): L'ID du vaccin à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_delete_vaccine_by_id_vaccines__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -760,7 +956,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -788,20 +984,34 @@
         }
       }
     },
-    "/epidemics": {
-      "get": {
+    "/vaccines/import": {
+      "post": {
         "tags": [
-          "epidemics"
+          "Vaccines"
         ],
-        "summary": "Endpoint Usecase Get All Epidemics",
-        "description": "Récupère toutes les épidémies disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des épidémies et leur nombre.",
-        "operationId": "endpoint_usecase_get_all_epidemics_epidemics_get",
+        "summary": "Importer plusieurs vaccins",
+        "description": "Importe plusieurs vaccines à la fois.\n\nArgs:\n    <body> payload (list[CreateVaccinePayload]): La liste des vaccines à importer.\n\nReturns:\n    JSONResponse: Une réponse contenant le résultat de l'importation.",
+        "operationId": "endpoint_usecase_import_continents_vaccines_import_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/CreateVaccinePayload"
+                },
+                "type": "array",
+                "title": "Payload"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -826,11 +1036,62 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/epidemics": {
+      "get": {
+        "tags": [
+          "Epidemics"
+        ],
+        "summary": "Endpoint Usecase Get All Epidemics",
+        "description": "Récupère toutes les épidémies disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des épidémies et leur nombre.",
+        "operationId": "endpoint_usecase_get_all_epidemics_epidemics_get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
-          "epidemics"
+          "Epidemics"
         ],
         "summary": "Endpoint Usecase Add Epidemic",
         "description": "Crée une nouvelle épidémie.\n\nArgs:\n    <body> payload (CreateEpidemicPayload): Les données nécessaires pour créer une épidémie.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID de l'épidémie créée.",
@@ -850,7 +1111,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -875,17 +1136,27 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/epidemics/{id}": {
       "get": {
         "tags": [
-          "epidemics"
+          "Epidemics"
         ],
         "summary": "Endpoint Usecase Get Epidemic By Id",
         "description": "Récupère les détails d'une épidémie spécifique.\n\nArgs:\n    <header> id (int): L'ID de l'épidémie à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails de l'épidémie.",
         "operationId": "endpoint_usecase_get_epidemic_by_id_epidemics__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -902,7 +1173,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -931,11 +1202,16 @@
       },
       "patch": {
         "tags": [
-          "epidemics"
+          "Epidemics"
         ],
         "summary": "Endpoint Usecase Patch Epidemic By Id",
         "description": "Met à jour les informations d'une épidémie existante.\n\nArgs:\n    <header> id (int): L'ID de l'épidémie à mettre à jour.\n    <body> payload (UpdateEpidemicPayload): Les nouvelles données pour l'épidémie.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_patch_epidemic_by_id_epidemics__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -962,7 +1238,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -991,11 +1267,16 @@
       },
       "delete": {
         "tags": [
-          "epidemics"
+          "Epidemics"
         ],
         "summary": "Endpoint Usecase Delete Epidemic By Id",
         "description": "Supprime une épidémie existante.\n\nArgs:\n    <header> id (int): L'ID de l'épidémie à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
         "operationId": "endpoint_usecase_delete_epidemic_by_id_epidemics__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -1012,7 +1293,7 @@
             "description": "Ok",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -1039,10 +1320,1026 @@
           }
         }
       }
+    },
+    "/epidemics/import": {
+      "post": {
+        "tags": [
+          "Epidemics"
+        ],
+        "summary": "Importer plusieurs epidemics",
+        "description": "Importe plusieurs epidemics à la fois.\n\nArgs:\n    <body> payload (list[CreateEpidemicPayload]): La liste des epidemics à importer.\n\nReturns:\n    JSONResponse: Une réponse contenant le résultat de l'importation.",
+        "operationId": "endpoint_usecase_import_continents_epidemics_import_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/CreateEpidemicPayload"
+                },
+                "type": "array",
+                "title": "Payload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint Usecase Get All Users",
+        "description": "Récupère les détails des utilisateurs spécifiques.\n\nArgs:\n\nReturns:\n    JSONResponse: Une réponse contenant les détails des utilisateurs.",
+        "operationId": "endpoint_usecase_get_all_users_users_get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/users/id/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint Usecase Get User By Id",
+        "description": "Récupère les détails d'un utilisateur spécifique.\n\nArgs:\n    <header> id (int): L'ID de l'utilisateur à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails de l'utilisateur.",
+        "operationId": "endpoint_usecase_get_user_by_id_users_id__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/username/{username}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint Usecase Get User By Username",
+        "description": "Récupère les détails d'un utilisateur spécifique.\n\nArgs:\n    <header> username (int): Le username de l'utilisateur à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails de l'utilisateur.",
+        "operationId": "endpoint_usecase_get_user_by_username_users_username__username__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Endpoint Usecase Delete User By Id",
+        "description": "Supprime un utilisateur existant.\n\nArgs:\n    <header> id (int): L'ID de l'utilisateur à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_delete_user_by_id_users__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Récupérer tous les rôles",
+        "description": "Récupère tous les roles disponibles.\n\nReturns:\n    JSONResponse: Une réponse contenant la liste des roles et leur nombre.",
+        "operationId": "endpoint_usecase_get_all_roles_roles_get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Créer un nouveau role",
+        "description": "Crée un nouveau role.\n\nArgs:\n    <body> payload: CreateRolePayload --> Les données nécessaires pour créer un role.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation et l'ID du role créé.",
+        "operationId": "endpoint_usecase_add_role_roles_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRolePayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/roles/{id}": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Récupérer un role par son ID",
+        "description": "Récupère les détails d'un role spécifique.\n\nArgs:\n    <header> id (int): L'ID du role à récupérer.\n\nReturns:\n    JSONResponse: Une réponse contenant les détails du role.",
+        "operationId": "endpoint_usecase_get_role_by_id_roles__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Mettre à jour un role",
+        "description": "Met à jour les informations d'un role existant.\n\nArgs:\n    <header> id (int): L'ID du role à mettre à jour.\n    <body> payload (UpdateRolePayload): Les nouvelles données pour le role.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_patch_role_by_id_roles__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRolePayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Supprimer un role",
+        "description": "Supprime un role existant.\n\nArgs:\n    <header> id (int): L'ID du role à supprimer.\n\nReturns:\n    JSONResponse: Une réponse contenant un message de confirmation.",
+        "operationId": "endpoint_usecase_delete_role_by_id_roles__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/roles/import": {
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Importer plusieurs roles",
+        "description": "Importe plusieurs roles à la fois.\n\nArgs:\n    <body> payload (list[CreateRolePayload]): La liste des roles à importer.\n\nReturns:\n    JSONResponse: Une réponse contenant le résultat de l'importation.",
+        "operationId": "endpoint_usecase_import_roles_roles_import_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/CreateRolePayload"
+                },
+                "type": "array",
+                "title": "Payload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register User",
+        "operationId": "register_user_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login User",
+        "operationId": "login_user_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/auth/verify-token": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Verify Token",
+        "operationId": "verify_token_auth_verify_token_post",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Forgot Password",
+        "operationId": "forgot_password_auth_forgot_password_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset Password",
+        "operationId": "reset_password_auth_reset_password_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          },
+          {
+            "name": "new_password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "New Password"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/machine-learning/ask": {
+      "post": {
+        "tags": [
+          "Machine Learning"
+        ],
+        "summary": "Endpoint Ask Prediction To Machine Learning",
+        "description": "Demande une prédiction au modèle de machine learning.\n\nReturns:\n    JSONResponse: TODO : Décrire la réponse",
+        "operationId": "endpoint_ask_prediction_to_machine_learning_machine_learning_ask_post",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/machine-learning/export": {
+      "post": {
+        "tags": [
+          "Machine Learning"
+        ],
+        "summary": "Endpoint Export Data For Machine Learning",
+        "description": "Export de donnée pour le modèle de machine learning.\n\nReturns:\n    StreamingResponse: Fichier CSV contenant les données exportées",
+        "operationId": "endpoint_export_data_for_machine_learning_machine_learning_export_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
     }
   },
   "components": {
     "schemas": {
+      "Column": {
+        "properties": {
+          "column": {
+            "type": "string",
+            "title": "Column"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          }
+        },
+        "type": "object",
+        "required": [
+          "column",
+          "label",
+          "model"
+        ],
+        "title": "Column",
+        "description": "Définition d'une colonne à inclure dans les résultats.\n\nAttributes:\n    column (str): Nom de la colonne à sélectionner\n    label (str): Nom d'affichage de la colonne dans les résultats\n    model (str): Nom du modèle contenant la colonne\n\nExamples:\n    ```json\n    {\n        \"column\": \"value\",\n        \"label\": \"total_vaccinations\",\n        \"model\": \"Statistic\"\n    }\n    ```"
+      },
       "CreateContinentPayload": {
         "properties": {
           "name": {
@@ -1182,6 +2479,30 @@
         ],
         "title": "CreateEpidemicPayload"
       },
+      "CreateRolePayload": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "CreateRolePayload"
+      },
       "CreateVaccinePayload": {
         "properties": {
           "name": {
@@ -1249,6 +2570,139 @@
         ],
         "title": "CreateVaccinePayload"
       },
+      "FilterItem": {
+        "properties": {
+          "column": {
+            "type": "string",
+            "title": "Column"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "items": {},
+                "type": "array"
+              }
+            ],
+            "title": "Value"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          }
+        },
+        "type": "object",
+        "required": [
+          "column",
+          "operator",
+          "value",
+          "model"
+        ],
+        "title": "FilterItem",
+        "description": "Représente un filtre à appliquer sur les données.\n\nAttributes:\n    column (str): Nom de la colonne sur laquelle appliquer le filtre\n    label (Optional[str]): Label spécifique pour les statistiques\n    operator (Operator): Opérateur de comparaison à utiliser\n    value (Union[str, int, float, List[Any]]): Valeur(s) à comparer\n    model (str): Nom du modèle sur lequel appliquer le filtre\n\nExamples:\n    ```json\n    {\n        \"column\": \"value\",\n        \"label\": \"totalVaccination\",\n        \"operator\": \">\",\n        \"value\": 1000,\n        \"model\": \"Statistic\"\n    }\n    ```"
+      },
+      "FilterRequest": {
+        "properties": {
+          "filters": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/FilterItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filters",
+            "default": [
+              {
+                "column": "",
+                "label": "",
+                "operator": "=",
+                "value": "",
+                "model": ""
+              }
+            ]
+          },
+          "sort": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SortOption"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": {
+              "column": "",
+              "model": "",
+              "direction": ""
+            }
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Pagination"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": {
+              "page": 1,
+              "per_page": 20
+            }
+          },
+          "columns": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Column"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Columns",
+            "default": [
+              {
+                "column": "",
+                "label": "",
+                "model": ""
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "FilterRequest",
+        "description": "Payload principal pour les requêtes de filtrage et d'export de données.\n\nCe payload permet de :\n1. Filtrer les données avec des conditions complexes\n2. Trier les résultats\n3. Paginer les résultats\n4. Sélectionner les colonnes spécifiques à exporter\n\nAttributes:\n    filters (Optional[List[FilterItem]]): Liste des filtres à appliquer\n    sort (Optional[SortOption]): Options de tri\n    pagination (Optional[Pagination]): Options de pagination\n    columns (Optional[List[Column]]): Liste des colonnes à sélectionner\n\nExamples:\n    ```json\n    {\n        \"filters\": [\n            {\n                \"column\": \"value\",\n                \"label\": \"totalVaccination\",\n                \"operator\": \">\",\n                \"value\": 1000,\n                \"model\": \"Statistic\"\n            }\n        ],\n        \"sort\": {\n            \"column\": \"value\",\n            \"model\": \"Statistic\",\n            \"direction\": \"desc\"\n        },\n        \"pagination\": {\n            \"page\": 1,\n            \"per_page\": 20\n        },\n        \"columns\": [\n            {\n                \"column\": \"value\",\n                \"label\": \"total_vaccinations\",\n                \"model\": \"Statistic\"\n            },\n            {\n                \"column\": \"date\",\n                \"label\": \"date\",\n                \"model\": \"DailyWise\"\n            }\n        ]\n    }\n    ```\n\nNotes:\n    - Les dates sont automatiquement converties en nombre de jours depuis le 1er janvier 1970\n    - Les valeurs textuelles sont converties en entiers via un hash MD5\n    - Les valeurs numériques sont conservées telles quelles\n    - Les valeurs NULL sont converties en 0"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1261,6 +2715,200 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "LoginPayload": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginPayload"
+      },
+      "LoginResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "firstname": {
+            "type": "string",
+            "title": "Firstname"
+          },
+          "lastname": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role_id": {
+            "type": "integer",
+            "title": "Role Id"
+          },
+          "country_id": {
+            "type": "integer",
+            "title": "Country Id"
+          },
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "firstname",
+          "lastname",
+          "username",
+          "email",
+          "role_id",
+          "country_id",
+          "access_token"
+        ],
+        "title": "LoginResponse"
+      },
+      "Operator": {
+        "type": "string",
+        "enum": [
+          "=",
+          "!=",
+          "<",
+          "<=",
+          ">",
+          ">=",
+          "like",
+          "in",
+          "between"
+        ],
+        "title": "Operator",
+        "description": "Opérateurs de comparaison disponibles pour les filtres.\n\nAttributes:\n    eq: Égal à (=)\n    ne: Différent de (!=)\n    lt: Inférieur à (<)\n    lte: Inférieur ou égal à (<=)\n    gt: Supérieur à (>)\n    gte: Supérieur ou égal à (>=)\n    like: Contient (LIKE en SQL)\n    in_: Dans une liste de valeurs (IN en SQL)\n    between: Entre deux valeurs (BETWEEN en SQL)"
+      },
+      "Pagination": {
+        "properties": {
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Per Page",
+            "default": 20
+          }
+        },
+        "type": "object",
+        "title": "Pagination",
+        "description": "Options de pagination pour les résultats.\n\nAttributes:\n    page (int): Numéro de la page (commence à 1)\n    per_page (int): Nombre d'éléments par page\n\nExamples:\n    ```json\n    {\n        \"page\": 1,\n        \"per_page\": 20\n    }\n    ```"
+      },
+      "RegisterPayload": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "role_id": {
+            "type": "integer",
+            "title": "Role Id"
+          },
+          "country_id": {
+            "type": "integer",
+            "title": "Country Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password",
+          "role_id",
+          "country_id"
+        ],
+        "title": "RegisterPayload"
+      },
+      "RegisterResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "firstname": {
+            "type": "string",
+            "title": "Firstname"
+          },
+          "lastname": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role_id": {
+            "type": "integer",
+            "title": "Role Id"
+          },
+          "country_id": {
+            "type": "integer",
+            "title": "Country Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "firstname",
+          "lastname",
+          "username",
+          "email",
+          "role_id",
+          "country_id"
+        ],
+        "title": "RegisterResponse"
+      },
+      "SortOption": {
+        "properties": {
+          "column": {
+            "type": "string",
+            "title": "Column"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "direction": {
+            "type": "string",
+            "title": "Direction",
+            "default": "asc"
+          }
+        },
+        "type": "object",
+        "required": [
+          "column",
+          "model"
+        ],
+        "title": "SortOption",
+        "description": "Options de tri pour les données.\n\nAttributes:\n    column (str): Nom de la colonne sur laquelle trier\n    model (str): Nom du modèle contenant la colonne\n    direction (str): Direction du tri (\"asc\" ou \"desc\")\n\nExamples:\n    ```json\n    {\n        \"column\": \"value\",\n        \"model\": \"Statistic\",\n        \"direction\": \"desc\"\n    }\n    ```"
       },
       "UpdateContinentPayload": {
         "properties": {
@@ -1492,6 +3140,34 @@
         ],
         "title": "UpdateEpidemicPayload"
       },
+      "UpdateRolePayload": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "title": "UpdateRolePayload"
+      },
       "UpdateVaccinePayload": {
         "properties": {
           "name": {
@@ -1616,6 +3292,12 @@
           "type"
         ],
         "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
   }
