@@ -156,7 +156,8 @@
   - Ce que l'IA a propose / garde / rejete / verifie
   - Rapport : `docs/audit/PHASE4_SYNTHESE.md` > 4.5
 
-- [ ] **4.6** Preparer le support de soutenance (10min max)
+- [x] **4.6** Support de soutenance prepare (6 slides, 10min)
+  - Rapport : `docs/audit/SOUTENANCE.md`
 
 ---
 
