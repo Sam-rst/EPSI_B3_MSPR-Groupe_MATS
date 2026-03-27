@@ -448,13 +448,26 @@ Verification par analyse statique (grep/recherche dans le code) pour confirmer q
 - Dependencies non pinees (C7) -> necessite migration Poetry
 - Containers root (C8) -> necessite tests en staging
 - Port PostgreSQL expose (C8) -> necessite docker-compose.prod.yml
+- Valeurs pre-remplies `"postgres"` dans le formulaire GUI ETL (`main_window.py`) -> risque mineur, visible par l'utilisateur
 
 ### Ce qui peut etre accepte temporairement
 
-- JWT en body (pas en cookie HttpOnly) -> rate limiting en place, token 1h
-- Pas de refresh token -> re-login toutes les heures
-- Pas de lockout -> rate limiting 5/min en compensatoire
-- Port 5432 expose en dev local uniquement
+- JWT en body (pas en cookie HttpOnly) -> rate limiting en place, token 1h, mesure compensatoire suffisante a court terme
+- Pas de refresh token -> re-login toutes les heures, acceptable pour un usage interne
+- Pas de lockout -> rate limiting 5/min en compensatoire, lockout risque de DoS sans anti-bot
+- Port 5432 expose en dev local uniquement -> bloque en staging/prod via docker-compose.prod.yml
+- Valeurs par defaut GUI ETL -> application desktop locale, l'utilisateur voit et modifie les champs avant connexion
+
+### Bilan chiffre
+
+| Metrique | Avant audit | Apres remediation |
+|----------|-------------|-------------------|
+| Constats critiques (C3, C4) | 2 | **0** (corriges) |
+| Constats eleves (C2, C5, C6, C7, C8) | 5 | **2 restants** (C7, C8 partiels) |
+| Constats moyens (C1) | 1 | 1 (inchange) |
+| Actions immediates realisees | 0/8 | **8/8** |
+| Headers de securite | 0 | **7** |
+| Fallbacks credentials hardcodes | 3 fichiers | **0** |
 
 ---
 
@@ -462,9 +475,9 @@ Verification par analyse statique (grep/recherche dans le code) pour confirmer q
 
 | Date | Commit | Description |
 |------|--------|-------------|
-| 27/03/2026 | - | Creation du fichier REMEDIATION.md |
-| | | Correction 1 : IDOR + masquage password |
-| | | Correction 2 : Security headers + /docs + error handler |
-| | | Correction 3 : bcrypt + suppression fallbacks + message uniforme |
-| | | Verification post-corrections |
-| | | Plan de securisation final + soutenance 7 slides |
+| 27/03/2026 | `cc4cd6d` | Phase 5 : Roadmap remediation - plan, suivi avant/apres/validation |
+| 27/03/2026 | `a2bf8a3` | Correction 1 : Fix IDOR + masquage password (C3/C4) |
+| 27/03/2026 | `83f0a3b` | Correction 2 : Security headers + /docs + error handler (C2) |
+| 27/03/2026 | `4f4eb54` | Correction 3 : bcrypt + suppression fallbacks + anti-enumeration (C4/C5/C6) |
+| 27/03/2026 | `c526217` | Verification post-correction : 3/3 conformes |
+| 27/03/2026 | - | Mise a jour plan de securisation final |
