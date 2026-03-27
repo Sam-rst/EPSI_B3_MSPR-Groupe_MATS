@@ -120,17 +120,15 @@
   - Resultat : Memes regles securite detectees (S2068, S6470, S6471, S5332). Issues supplementaires de maintenabilite (S108, S112, S1066)
   - Rapport : `docs/audit/PHASE2_SUPPLY_CHAIN.md` > 2.5
 
-### Phase 3 : Tests dynamiques
+### Phase 3 : Tests dynamiques - TERMINEE
 
-- [ ] **3.1** Tester les endpoints API avec curl/Postman
-  - Tenter des requetes sans token
-  - Tenter des requetes avec token expire/invalide
-  - Tester le rate limiting (depasser les limites)
-  - Tester les injections via les champs de saisie
+- [x] **3.1** Tester les endpoints API avec curl
+  - Resultat : 401 OK sans token. Stack traces SQL fuites (CRITIQUE). IDOR confirme (suppression cross-user). Hash mdp retourne dans les reponses API. Enumeration d'utilisateurs confirmee. Rate limiting fonctionnel (429)
+  - Rapport : `docs/audit/PHASE3_TESTS_DYNAMIQUES.md`
 
-- [ ] **3.2** Verifier les cookies et sessions
-  - Flags HttpOnly, Secure, SameSite
-  - Comportement du token JWT cote client
+- [x] **3.2** Verifier cookies et sessions
+  - Resultat : Aucun cookie (token en body JSON). Zero headers securite (CSP, HSTS, X-Frame-Options absents). JWT contient donnees personnelles en clair. BDD accessible directement sur port 5432
+  - Rapport : `docs/audit/PHASE3_TESTS_DYNAMIQUES.md`
 
 ### Phase 4 : Synthese et livrables
 
