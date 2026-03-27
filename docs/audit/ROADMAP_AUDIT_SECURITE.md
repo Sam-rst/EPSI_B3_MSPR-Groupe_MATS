@@ -130,33 +130,33 @@
   - Resultat : Aucun cookie (token en body JSON). Zero headers securite (CSP, HSTS, X-Frame-Options absents). JWT contient donnees personnelles en clair. BDD accessible directement sur port 5432
   - Rapport : `docs/audit/PHASE3_TESTS_DYNAMIQUES.md`
 
-### Phase 4 : Synthese et livrables
+### Phase 4 : Synthese et livrables - TERMINEE
 
-- [ ] **4.1** Rediger les 6+ fiches de constat
-  - Pour chaque constat : preuve, scenario d'exploitation, impact, vraisemblance, priorite
-  - Corrections : immediate, durable, methode de verification
+- [x] **4.1** Rediger les 8 fiches de constat (C1-C8)
+  - Chaque constat : preuve, scenario d'exploitation, impact, vraisemblance, priorite, corrections
+  - Rapport : `docs/audit/PHASE4_SYNTHESE.md` > 4.1
 
-- [ ] **4.2** Construire la matrice de priorisation des risques
-  - Axes : vraisemblance x impact
-  - Classifier chaque constat
+- [x] **4.2** Matrice de priorisation des risques
+  - 4 constats en zone CRITIQUE (C4, C3, C2, C8), 3 en ELEVE (C5, C6, C7), 1 en MOYEN (C1)
+  - Rapport : `docs/audit/PHASE4_SYNTHESE.md` > 4.2
 
-- [ ] **4.3** Definir le top 3 des risques prioritaires
+- [x] **4.3** Top 3 des risques prioritaires
+  - #1 : SHA256 + IDOR (C4+C3) - compromission de tous les comptes
+  - #2 : BDD exposee + infra non securisee (C8+C5) - acces direct aux donnees
+  - #3 : Pas de defense en profondeur API (C2+C6) - reconnaissance + exploitation facilitees
+  - Rapport : `docs/audit/PHASE4_SYNTHESE.md` > 4.3
 
-- [ ] **4.4** Rediger le plan d'actions
-  - Court terme (corrections immediates)
-  - Moyen terme (corrections durables)
-  - Structurel (mesures de fond)
+- [x] **4.4** Plan d'actions (22 actions)
+  - Court terme : 7 actions (1-2 jours)
+  - Moyen terme : 7 actions (1-2 semaines)
+  - Structurel : 8 actions (1-3 mois)
+  - Rapport : `docs/audit/PHASE4_SYNTHESE.md` > 4.4
 
-- [ ] **4.5** Preparer le support de soutenance (10min max)
-  - Contexte + perimetre
-  - 6 constats
-  - Top 3 risques
-  - 1 minute Supply Chain (SonarQube + Dependency-Check)
-  - Plan de securisation
+- [x] **4.5** Usage de l'IA documente
+  - Ce que l'IA a propose / garde / rejete / verifie
+  - Rapport : `docs/audit/PHASE4_SYNTHESE.md` > 4.5
 
-- [ ] **4.6** Documenter l'usage de l'IA
-  - Ce que l'IA a propose
-  - Ce qui a ete garde / rejete / verifie
+- [ ] **4.6** Preparer le support de soutenance (10min max)
 
 ---
 
