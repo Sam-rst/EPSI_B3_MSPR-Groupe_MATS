@@ -323,20 +323,77 @@ os.environ["ADMIN_PASSWORD"]         # KeyError si non defini
 
 ---
 
+## Verification post-correction (analyse statique du code)
+
+### Methode
+
+Verification par analyse statique (grep/recherche dans le code) pour confirmer que les patterns vulnerables ont ete supprimes et que les correctifs sont en place. Les tests dynamiques (curl) necessitent un deploiement local qui n'est pas operationnel au moment de la verification.
+
+### Correction 1 - IDOR + masquage password
+
+| Verification | Commande | Resultat |
+|-------------|----------|----------|
+| `hashlib.sha256` absent du user repo | `grep "hashlib.sha256" apps/api/` | **0 match** - supprime |
+| `import hashlib` absent du user repo | `grep "import hashlib" apps/api/` | **1 match** dans `machine_learning_repo` (hors perimetre user) |
+| `SENSITIVE_FIELDS` applique sur tous les GET users | `grep "exclude=SENSITIVE" apps/api/` | **3 matches** : GET all, GET by_id, GET by_username |
+| Verification ownership sur DELETE | `grep "current_user.*role_id" apps/api/` | **1 match** : `router.py:161` - check `id != id and role_id != 1` |
+
+**Verdict : CONFORME** - Le champ password est exclu de toutes les reponses user. L'IDOR sur DELETE est corrige.
+
+### Correction 2 - Security headers + /docs + error handler
+
+| Verification | Commande | Resultat |
+|-------------|----------|----------|
+| `SecurityHeadersMiddleware` enregistre | `grep "SecurityHeadersMiddleware" main.py` | **Present** ligne 36 |
+| `/docs` desactive en prod | `grep "docs_url.*None" main.py` | **Present** ligne 30 : `docs_url=None if is_prod` |
+| Error handler global | `grep "global_exception_handler" main.py` | **Present** ligne 61 |
+| `CORSMiddleware` active | `grep "CORSMiddleware" main.py` | **Present** ligne 45 |
+| 7 headers de securite dans le middleware | Lecture `security_headers.py` | **7 headers** : X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, HSTS, CSP, Referrer-Policy, Permissions-Policy |
+
+**Verdict : CONFORME** - Les 4 mesures sont en place dans `main.py`.
+
+### Correction 3 - bcrypt + secrets + enumeration
+
+| Verification | Commande | Resultat |
+|-------------|----------|----------|
+| `bcrypt` dans requirements.txt | `grep "bcrypt" requirements.txt` | **Present** ligne 11 |
+| `bcrypt.hashpw` dans create | `grep "bcrypt" user_repo_in_postgres.py` | **3 matches** : import, hashpw L33-34, checkpw L128 |
+| 12 rounds configures | `grep "rounds=12" user_repo_in_postgres.py` | **Present** ligne 34 |
+| Messages d'erreur login uniformes | `grep "n'existe pas\|incorrect\|firstname" login_user_usecase.py` | **0 match** - messages distincts supprimes |
+| Message unique `"Identifiants invalides."` | `grep "Identifiants invalides" login_user_usecase.py` | **Present** (variable `invalid_credentials_msg`) |
+| Fallbacks seeder supprimes | `grep 'getenv.*"' seeder/main.py` | **1 match** : `API_URL` (non sensible) - credentials OK |
+| Fallbacks ETL supprimes | `grep '"postgres"' apps/etl/` | **2 matches** dans `main_window.py` (valeurs pre-remplies GUI Tkinter) |
+
+**Note :** `main_window.py` contient encore `"postgres"` comme valeur par defaut des champs de saisie Tkinter. C'est un formulaire visible par l'utilisateur (pas un fallback silencieux). Classe comme risque residuel mineur.
+
+**Verdict : CONFORME** - SHA256 remplace par bcrypt 12 rounds, enumeration bloquee, fallbacks critiques supprimes.
+
+### Synthese verification
+
+| Correction | Nature | Verdict |
+|-----------|--------|---------|
+| 1 - IDOR + password | Code applicatif / Controle d'acces | **CONFORME** |
+| 2 - Headers + /docs + errors | Configuration securite / Headers | **CONFORME** |
+| 3 - bcrypt + secrets + enum | Authentification / Secrets | **CONFORME** |
+
+**Risque residuel identifie :** Valeurs pre-remplies `"postgres"` dans le formulaire GUI ETL (`main_window.py`). Impact faible (visible, modifiable, application desktop locale).
+
+---
+
 ## Plan de securisation final
 
 ### Immediat (cette session - corrige aujourd'hui)
 
 | # | Action | Correction | Statut |
 |---|--------|------------|--------|
-| 1 | Supprimer password des reponses API | Correction 1 | [ ] |
-| 2 | Ajouter verification ownership (IDOR) | Correction 1 | [ ] |
-| 3 | Middleware security headers | Correction 2 | [ ] |
-| 4 | Desactiver /docs en production | Correction 2 | [ ] |
-| 5 | Handler d'erreur global | Correction 2 | [ ] |
-| 6 | Migrer SHA256 vers bcrypt | Correction 3 | [ ] |
-| 7 | Supprimer fallbacks credentials | Correction 3 | [ ] |
-| 8 | Uniformiser messages d'erreur login | Correction 3 | [ ] |
+| 1 | Supprimer password des reponses API | Correction 1 | [x] |
+| 2 | Ajouter verification ownership (IDOR) | Correction 1 | [x] |
+| 3 | Middleware security headers | Correction 2 | [x] |
+| 4 | Desactiver /docs en production | Correction 2 | [x] |
+| 5 | Handler d'erreur global | Correction 2 | [x] |
+| 6 | Migrer SHA256 vers bcrypt | Correction 3 | [x] |
+| 7 | Supprimer fallbacks credentials | Correction 3 | [x] |
+| 8 | Uniformiser messages d'erreur login | Correction 3 | [x] |
 
 ### Moyen terme (1-2 semaines)
 
