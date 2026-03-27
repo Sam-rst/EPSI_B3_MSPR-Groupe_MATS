@@ -229,6 +229,41 @@ Toutes les 7 issues concernent la meme regle : **"Credentials should not be hard
 
 ---
 
+## 2.5 SonarLint (IDE) - Comparaison avec SonarQube Cloud (Bonus)
+
+### Issues detectees en local (fichiers ouverts)
+
+| Fichier | Nb issues | Regles detectees |
+|---------|-----------|-----------------|
+| `apps/api/Dockerfile` | 2 | docker:S6471 (image root), docker:S6470 (COPY recursif) |
+| `user_repo_in_postgres.py` | 1 | python:S108 (bloc de code vide, L57) |
+| `apps/seeder/src/main.py` | 3 | python:S2068 (password hardcode), python:S112 (exception generique), python:S5332 (HTTP non securise) |
+| `apps/etl/src/app/auth/db_connector.py` | 4 | python:S2068 (password), 3x python:S1066 (if statements a fusionner) |
+
+### Ce qui est commun entre IDE et Cloud
+
+- **Memes regles de securite detectees** : python:S2068 (credentials hardcodees), docker:S6470 (COPY recursif), docker:S6471 (containers root), python:S5332 (HTTP insecure)
+- Les issues de securite sont coherentes entre les deux environnements
+- SonarLint en mode connecte synchronise les regles et la configuration du Quality Profile avec SonarQube Cloud
+
+### Ce qui differe et pourquoi
+
+| Difference | Explication |
+|-----------|-------------|
+| **Scope** : Cloud analyse tout le projet (16k lignes, 297 issues), SonarLint ne montre que les fichiers ouverts | SonarLint est concu pour l'analyse en temps reel, fichier par fichier, pendant le developpement |
+| **Issues supplementaires en local** : python:S108 (bloc vide), python:S112 (exception generique), python:S1066 (if a fusionner) | Ce sont des regles de maintenabilite/fiabilite que SonarLint detecte aussi mais qui ne sont pas forcement mises en avant dans le dashboard Cloud securite |
+| **Temps reel vs batch** : SonarLint analyse a la frappe, Cloud necessite un push + analyse | SonarLint permet de corriger avant le commit, Cloud donne une vue globale post-push |
+| **Security Hotspots** : affiches en local avec le meme detail que dans Cloud | En mode connecte, SonarLint recupere les regles de hotspots depuis le serveur Cloud |
+
+### Conclusion
+
+SonarLint et SonarQube Cloud sont **complementaires** :
+- **SonarLint** = filet de securite en amont (pendant le developpement, temps reel)
+- **SonarQube Cloud** = vue globale du projet (analyse complete, Quality Gate, suivi dans le temps)
+- En mode connecte, les deux partagent la meme configuration de regles, ce qui garantit la coherence
+
+---
+
 ## Note sur OWASP Dependency-Check
 
 A executer manuellement :

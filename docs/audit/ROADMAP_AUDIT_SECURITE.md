@@ -116,8 +116,9 @@
 - [ ] **2.4** SonarQube Cloud (a faire manuellement)
   - Importer le depot, lancer l'analyse sur `main`, relever Quality Gate et Security Hotspots
 
-- [ ] **2.5** (Bonus) SonarLint dans l'IDE
-  - Comparer avec SonarQube Cloud
+- [x] **2.5** (Bonus) SonarLint dans l'IDE
+  - Resultat : Memes regles securite detectees (S2068, S6470, S6471, S5332). Issues supplementaires de maintenabilite (S108, S112, S1066)
+  - Rapport : `docs/audit/PHASE2_SUPPLY_CHAIN.md` > 2.5
 
 ### Phase 3 : Tests dynamiques
 
