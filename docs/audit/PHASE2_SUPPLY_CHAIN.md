@@ -160,22 +160,81 @@ Le code de sortie 5 (= aucun test trouve) est accepte silencieusement. Les tests
 
 ---
 
-## Note sur SonarQube et OWASP Dependency-Check
+## 2.4 SonarQube Cloud - Resultats
 
-Les outils SonarQube Cloud et OWASP Dependency-Check doivent etre executes manuellement par l'etudiant :
+### Dashboard principal
 
-**SonarQube Cloud :**
-1. Se connecter sur sonarcloud.io avec GitHub
-2. Importer le depot `Sam-rst/EPSI_B3_MSPR-Groupe_MATS`
-3. Lancer l'analyse sur `main`
-4. Relever Quality Gate, issues et Security Hotspots
-5. Selectionner 5 elements pertinents max
+- **Projet** : Samuel RESSIOT / EPSI_B3_MSPR-Groupe_MATS (Public, 16k lignes de code)
+- **Quality Gate** : Not computed (pas d'analyse sur new code)
+- **Open Issues** : 297
+- **Duplications** : 1.4%
+- **Coverage** : Aucune donnee (pas de tests de couverture configures)
 
-**OWASP Dependency-Check :**
+| Metrique | Rating | Issues | Repartition severite |
+|----------|--------|--------|---------------------|
+| **Security** | **C** | 7 | 100% Medium |
+| **Security Hotspots** | **E** | 7 (100% To Review) | 5 Medium, 2 Low |
+| **Reliability** | **E** | 99 | 53% Blocker, 40% High, 1% Medium, 6% Low |
+| **Maintainability** | **A** | 232 | - |
+
+### 7 Security Issues (Vulnerabilities) - Regle python:S2068
+
+Toutes les 7 issues concernent la meme regle : **"Credentials should not be hard-coded"** (python:S2068, CWE tagged).
+
+| # | Fichier | Ligne | Code detecte | Classification |
+|---|---------|-------|-------------|----------------|
+| 1 | `apps/.../translations.py` | L13 | `"password": "Mot de passe"` | **Faux positif** - label UI francais |
+| 2 | `apps/.../translations.py` | L77 | `"password": "Contraseña"` | **Faux positif** - label UI espagnol |
+| 3 | `apps/.../translations.py` | L141 | `"password": "Passwort"` | **Faux positif** - label UI allemand |
+| 4 | `apps/.../app/auth/db_connect...` | L23 | `os.environ.get("ETL_POSTGRES_PASSWORD", "postgres")` | **Risque securite** - fallback credential en dur |
+| 5 | `apps/.../load.py` | L16 | `password="postgres"` (defaut constructeur) | **Risque securite** - credential hardcodee |
+| 6 | `apps/.../loader.py` | L13 | `"password": "?"` | **Dette technique** - placeholder |
+| 7 | `apps/.../src/main.py` (seeder) | L8 | `os.getenv("ADMIN_PASSWORD", "admin")` | **Risque securite** - fallback admin password |
+
+**Analyse :**
+- **3 vrais risques securite** (issues 4, 5, 7) : credentials par defaut en fallback dans le code source. Si les variables d'environnement ne sont pas definies, le systeme utilise des mots de passe triviaux (`postgres`, `admin`)
+- **3 faux positifs** (issues 1, 2, 3) : SonarQube detecte le mot-cle `"password"` dans un dictionnaire de traductions UI. Ce ne sont pas des credentials mais des labels d'interface
+- **1 dette technique** (issue 6) : placeholder `"?"` non fonctionnel
+
+### 7 Security Hotspots
+
+| # | Regle | Fichier | Ligne | Priorite | Categorie | Classification |
+|---|-------|---------|-------|----------|-----------|----------------|
+| 1 | **docker:S6470** | `apps/api/Dockerfile` | L7 | Medium | Permission | **Risque securite** - `COPY . .` copie potentiellement des secrets (.env, cles) dans l'image |
+| 2 | **docker:S6470** | `apps/frontend/Dockerfile` | L13 | Medium | Permission | **Risque securite** - meme probleme |
+| 3 | **docker:S6471** | `apps/api/Dockerfile` | L1 | Medium | Permission | **Risque securite** - `FROM python:3.10` execute en root |
+| 4 | **docker:S6471** | `apps/frontend/Dockerfile` | L20 | Medium | Permission | **Risque securite** - `FROM node:20-alpine` execute en root |
+| 5 | **docker:S6471** | `apps/seeder/Dockerfile` | L2 | Medium | Permission | **Risque securite** - `FROM python:3.11-slim` execute en root |
+| 6 | **python:S5332** | `apps/seeder/src/main.py` | L6 | Low | Encryption | **Risque securite** - `http://api:8000` au lieu de HTTPS |
+| 7 | **python:S4790** | `machine_learning_repo_in_postgres.py` | L97 | Low | Others | **Dette technique** - `hashlib.md5()` utilise pour hash de donnees (pas pour crypto) |
+
+**Analyse :**
+- **6 vrais risques securite** (hotspots 1-6) : tous lies a notre constat C8 (Docker non securise) et confirment les problemes identifies dans notre analyse manuelle
+- **1 dette technique** (hotspot 7) : MD5 utilise pour hasher des valeurs en entier dans le module ML, pas pour de la cryptographie - risque faible
+
+### 5 elements retenus pour l'audit (comme demande par le sujet)
+
+| # | Element SonarQube | Type | Lien avec nos constats |
+|---|-------------------|------|----------------------|
+| 1 | **Issues 4, 5, 7** : Credentials hardcodees avec fallback (python:S2068) | Risque securite | Renforce **C5** (secrets en clair) |
+| 2 | **Hotspots 3, 4, 5** : Containers Docker executent en root (docker:S6471) | Risque securite | Renforce **C8** (images Docker non securisees) |
+| 3 | **Hotspots 1, 2** : `COPY . .` sans .dockerignore (docker:S6470) | Risque securite | Renforce **C8** (pas de .dockerignore) |
+| 4 | **Hotspot 6** : Communication HTTP non chiffree (python:S5332) | Risque securite | Nouveau constat - lien avec **C2** (pas de HTTPS/HSTS) |
+| 5 | **Reliability E** : 99 issues dont 53% Blocker | Dette technique | Non securite mais indicateur de qualite de code preoccupant |
+
+**Elements ecartes :**
+- Issues 1, 2, 3 (translations.py) : faux positifs, simples labels UI
+- Issue 6 (loader.py) : placeholder non fonctionnel
+- Hotspot 7 (MD5 dans ML) : usage non cryptographique, risque faible
+
+---
+
+## Note sur OWASP Dependency-Check
+
+A executer manuellement :
+
 ```bash
-# Installation
-# Telecharger depuis https://owasp.org/www-project-dependency-check/
-# Ou via Docker :
+# Via Docker :
 docker run --rm -v $(pwd):/src owasp/dependency-check --scan /src --format HTML --out /src/docs/audit/
 ```
 
