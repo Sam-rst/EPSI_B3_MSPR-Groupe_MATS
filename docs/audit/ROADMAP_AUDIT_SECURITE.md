@@ -81,50 +81,43 @@
 
 ## 5. Roadmap des taches
 
-### Phase 1 : Analyse statique du code (Chapitre 4)
+### Phase 1 : Analyse statique du code (Chapitre 4 + 5) - TERMINEE
 
-- [ ] **1.1** Scanner les secrets dans l'historique Git avec `gitleaks` ou `trufflehog`
-  - Cible : `.env`, `config/env/`, commits passes
-  - Preuve : liste des secrets trouves + commits concernes
+- [x] **1.1** Scanner les secrets dans l'historique Git
+  - Resultat : `.env` jamais commite (`.gitignore` OK). Secrets en clair dans `.env` local uniquement
+  - Rapport : `docs/audit/PHASE1_ANALYSE_STATIQUE.md` > C5
 
-- [ ] **1.2** Auditer le mecanisme d'authentification
-  - Verifier le hashage des mots de passe (bcrypt ? argon2 ? clair ?)
-  - Verifier la creation/validation JWT (algorithme, expiration, claims)
-  - Verifier l'absence de refresh token et de revocation
-  - Cible : `apps/api/src/app/auth/`, `apps/api/src/core/auth/`
+- [x] **1.2** Auditer le mecanisme d'authentification
+  - Resultat : **SHA256 sans salt** au lieu de bcrypt (CRITIQUE). Enumeration d'utilisateurs, pas de refresh token/blacklist/lockout
+  - Rapport : `docs/audit/PHASE1_ANALYSE_STATIQUE.md` > C4, C6
 
-- [ ] **1.3** Auditer la validation des entrees
-  - Verifier les schemas Pydantic sur chaque endpoint
-  - Tester les injections SQL via SQLAlchemy (ORM vs raw queries)
-  - Verifier les endpoints d'import en masse (bulk import)
-  - Cible : tous les routers et usecases dans `apps/api/src/app/`
+- [x] **1.3** Auditer la validation des entrees
+  - Resultat : Pydantic sans contraintes (pas de max_length/pattern). ORM SQLAlchemy OK (pas de SQLi). IDOR sur tous les endpoints CRUD
+  - Rapport : `docs/audit/PHASE1_ANALYSE_STATIQUE.md` > C1, C3
 
-- [ ] **1.4** Verifier les headers de securite HTTP
-  - CORS : origines autorisees ?
-  - CSP, X-Content-Type-Options, X-Frame-Options, Strict-Transport-Security
-  - Cible : `apps/api/src/main.py`, configuration Next.js
+- [x] **1.4** Verifier les headers de securite HTTP
+  - Resultat : **Zero headers de securite**. CORS non configure. `/docs` expose. 49+ fichiers leakent les stack traces
+  - Rapport : `docs/audit/PHASE1_ANALYSE_STATIQUE.md` > C2
 
-### Phase 2 : Analyse supply chain (Chapitre 5)
+### Phase 2 : Analyse supply chain (Chapitre 5) - TERMINEE
 
-- [ ] **2.1** Lancer OWASP Dependency-Check
-  - Analyser `apps/api/requirements.txt`
-  - Analyser `apps/frontend/package.json` + `package-lock.json`
-  - Selectionner les 3 CVE les plus critiques
+- [x] **2.1** Analyser les dependances (OWASP Dependency-Check)
+  - Resultat : API = 10/10 deps non pinees, pas de lock file Python. Frontend = OK (package-lock.json)
+  - Rapport : `docs/audit/PHASE2_SUPPLY_CHAIN.md` > C7
 
-- [ ] **2.2** Analyser les images Docker
-  - Verifier les versions pinees vs `latest`
-  - Scanner avec `trivy` les images utilisees
-  - Identifier les vulnerabilites dans les images de base
+- [x] **2.2** Analyser les images Docker
+  - Resultat : 5 images non pinees, port BDD expose, containers root, pas de .dockerignore
+  - Rapport : `docs/audit/PHASE2_SUPPLY_CHAIN.md` > C8
 
-- [ ] **2.3** Configurer et lancer SonarQube Cloud
-  - Importer le depot sur SonarQube Cloud
-  - Lancer l'analyse sur `main`
-  - Relever Quality Gate, issues, Security Hotspots
-  - Selectionner 5 elements max pertinents pour l'audit
+- [x] **2.3** Analyser la pipeline CI/CD
+  - Resultat : SSH sans StrictHostKeyChecking, images CI non pinees, tests securite ignores
+  - Rapport : `docs/audit/PHASE2_SUPPLY_CHAIN.md`
 
-- [ ] **2.4** (Bonus) Installer SonarLint dans l'IDE
-  - Comparer les resultats IDE vs Cloud
-  - Expliquer les differences
+- [ ] **2.4** SonarQube Cloud (a faire manuellement)
+  - Importer le depot, lancer l'analyse sur `main`, relever Quality Gate et Security Hotspots
+
+- [ ] **2.5** (Bonus) SonarLint dans l'IDE
+  - Comparer avec SonarQube Cloud
 
 ### Phase 3 : Tests dynamiques
 
@@ -168,25 +161,18 @@
 
 ---
 
-## 6. Premiers constats deja identifies (pre-audit)
+## 6. Synthese des constats confirmes
 
-> Ces constats sont issus de la lecture initiale du code et doivent etre confirmes par des preuves.
-
-### CRITIQUE - Secrets commites dans Git
-- **Preuve** : Le fichier `.env` est dans `.gitignore` MAIS les valeurs sont visibles dans les fichiers `config/env/*.conf` commites, et surtout le `.env` a potentiellement ete commite dans l'historique
-- **Donnees exposees** : `JWT_SECRET_KEY`, `ADMIN_PASSWORD`, `SONAR_TOKEN`, `MB_DB_PASS`
-- **Impact** : Compromission totale de l'authentification si la cle JWT est connue
-
-### ELEVE - Mot de passe admin faible et en dur
-- **Preuve** : `ADMIN_USERNAME=admin.admin`, `ADMIN_PASSWORD=Admin54321!` dans `.env`
-- **Impact** : Acces administrateur par defaut si non change en production
-
-### MOYEN - Images Docker non pinees
-- **Preuve** : `postgres:latest`, `metabase/metabase:latest` dans `docker-compose.yml`
-- **Impact** : Regression de securite silencieuse, supply chain attack possible
-
-### A VERIFIER - Hashage des mots de passe
-- **A confirmer** : Lecture du code d'enregistrement dans `apps/api/src/app/auth/`
+| # | Constat | Chapitre | Severite | OWASP | Phase |
+|---|---------|----------|----------|-------|-------|
+| C4 | SHA256 sans salt au lieu de bcrypt | Chap 5 | CRITIQUE | A02 | Phase 1 |
+| C3 | IDOR - aucun controle d'acces sur 20+ endpoints | Chap 4 | ELEVEE | A01 | Phase 1 |
+| C2 | Zero headers securite, CORS absent, `/docs` expose | Chap 4 | ELEVEE | A05 | Phase 1 |
+| C6 | JWT sans refresh/blacklist, enumeration de comptes | Chap 5 | ELEVEE | A07 | Phase 1 |
+| C5 | Secrets en clair, mdp admin faible, pas de rotation | Chap 5 | ELEVEE | A05 | Phase 1 |
+| C1 | Validation Pydantic insuffisante (pas de contraintes) | Chap 4 | MOYENNE | A03 | Phase 1 |
+| C7 | 100% deps API non pinees, pas de lock file Python | Supply chain | ELEVEE | A06 | Phase 2 |
+| C8 | Images Docker latest, port BDD expose, containers root | Supply chain | ELEVEE | A08 | Phase 2 |
 
 ---
 
