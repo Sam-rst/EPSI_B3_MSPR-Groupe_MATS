@@ -244,39 +244,82 @@ os.getenv("ADMIN_PASSWORD", "admin")
 
 ### CORRECTION
 
-- [ ] Remplacer `hashlib.sha256()` par `bcrypt.hashpw(password, bcrypt.gensalt(rounds=12))`
-- [ ] Ajouter `bcrypt` a `requirements.txt`
-- [ ] Supprimer tous les fallbacks de credentials hardcodes (lever une exception si non defini)
-- [ ] Uniformiser le message d'erreur login : `"Identifiants invalides."`
-- [ ] Utiliser `bcrypt.checkpw()` pour la verification (comparaison en temps constant)
+- [x] Remplacer `hashlib.sha256()` par `bcrypt.hashpw(password, bcrypt.gensalt(rounds=12))` dans `user_repo_in_postgres.py`
+- [x] Remplacer `user.password == password_hashed` par `bcrypt.checkpw()` (comparaison en temps constant)
+- [x] Ajouter `bcrypt` a `requirements.txt`
+- [x] Supprimer les fallbacks hardcodes dans 3 fichiers :
+  - `apps/etl/src/app/auth/db_connector.py` : `os.environ["ETL_POSTGRES_USER"]` / `os.environ["ETL_POSTGRES_PASSWORD"]`
+  - `apps/etl/src/app/pipelines/load.py` : suppression des parametres `user="postgres"` et `password="postgres"`
+  - `apps/seeder/src/main.py` : `os.environ["ADMIN_USERNAME"]` / `os.environ["ADMIN_PASSWORD"]`
+- [x] Uniformiser le message d'erreur login : `"Identifiants invalides."` pour les 3 cas (format, username, password)
+
+**Fichiers modifies :**
+- `apps/api/src/app/user/infrastructure/repository/user_repo_in_postgres.py` (bcrypt)
+- `apps/api/src/app/auth/application/usecase/login_user_usecase.py` (message unique)
+- `apps/api/requirements.txt` (ajout bcrypt)
+- `apps/etl/src/app/auth/db_connector.py` (suppression fallback)
+- `apps/etl/src/app/pipelines/load.py` (suppression fallback)
+- `apps/seeder/src/main.py` (suppression fallback)
+
+**Diff principal :**
+```python
+# AVANT (user_repo_in_postgres.py) :
+import hashlib
+password_hashed = hashlib.sha256(payload.password.encode()).hexdigest()
+# Verification :
+return user.password == password_hashed
+
+# APRES :
+import bcrypt
+password_hashed = bcrypt.hashpw(payload.password.encode(), bcrypt.gensalt(rounds=12)).decode()
+# Verification (temps constant) :
+return bcrypt.checkpw(password_to_verify.encode(), user.password.encode())
+
+# AVANT (login_user_usecase.py) - 3 messages differents :
+detail="Le username doit etre au format 'firstname.lastname'."
+detail="Le username n'existe pas."
+detail="Mot de passe incorrect."
+
+# APRES - message unique :
+detail="Identifiants invalides."
+
+# AVANT (seeder/main.py) :
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin")
+
+# APRES :
+ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]  # KeyError si non defini
+```
 
 ### APRES
 
 ```python
-# Apres correction :
-import bcrypt
-hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=12))
-# -> "$2b$12$..." (bcrypt, 60 chars, salt inclus)
+# Hash bcrypt en BDD :
+# -> "$2b$12$K8GpQzL..." (60 chars, salt inclus, 12 rounds)
+# vs avant : "64eb837..." (64 chars hex, SHA256, pas de salt)
 ```
 
 ```bash
-# Messages d'erreur uniformises :
+# Messages d'erreur uniformises (anti-enumeration) :
+POST /auth/login (mauvais format)   -> 401 "Identifiants invalides."
 POST /auth/login (mauvais username) -> 401 "Identifiants invalides."
 POST /auth/login (mauvais password) -> 401 "Identifiants invalides."
 ```
 
 ```python
-# Fallbacks supprimes :
+# Fallbacks supprimes - l'app echoue si les secrets ne sont pas definis :
 os.environ["ETL_POSTGRES_PASSWORD"]  # KeyError si non defini
+os.environ["ADMIN_PASSWORD"]         # KeyError si non defini
 ```
 
 ### VALIDATION
 
-- [ ] Verifier hash en BDD : doit commencer par `$2b$12$`
-- [ ] Test login avec mauvais username ET mauvais password : meme message d'erreur
-- [ ] L'application refuse de demarrer si les variables d'environnement critiques manquent
+- [x] `hashlib.sha256` remplace par `bcrypt.hashpw` avec 12 rounds + salt automatique
+- [x] `bcrypt.checkpw` pour verification en temps constant (anti timing attack)
+- [x] Message d'erreur login identique pour les 3 cas d'echec
+- [x] 3 fichiers nettoyes des fallbacks credentials hardcodes
+- [ ] Test post-deploiement : hash en BDD commence par `$2b$12$`
 
-**Statut :** EN ATTENTE
+**Statut :** CORRIGE (code modifie, validation deploiement en attente)
 
 ---
 
