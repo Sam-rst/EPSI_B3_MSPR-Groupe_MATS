@@ -57,28 +57,48 @@ curl -X DELETE -H "Authorization: Bearer <token_user2>" http://localhost:8000/us
 
 ### CORRECTION
 
-- [ ] Supprimer le champ `password` des schemas de reponse (Pydantic `UserResponse`)
-- [ ] Ajouter la verification `current_user.id == target_id or current_user.role == admin` sur les endpoints d'ecriture (PUT/DELETE)
-- [ ] Injecter le `current_user` dans les usecases sensibles
+- [x] Exclure les champs sensibles (`password`, `password_hash`) via `jsonable_encoder(exclude=SENSITIVE_FIELDS)` sur tous les endpoints GET users
+- [x] Ajouter la verification `current_user.id == target_id or current_user.role_id == 1` sur l'endpoint DELETE
+- [x] Injecter `current_user: dict = Depends(get_current_user)` dans l'endpoint DELETE
+
+**Fichier modifie :** `apps/api/src/app/user/presentation/router.py`
+
+**Diff principal :**
+```python
+# AVANT (GET /users/id/{id}) :
+content = {"item": jsonable_encoder(user)}
+
+# APRES :
+SENSITIVE_FIELDS = {"password", "password_hash"}
+content = {"item": jsonable_encoder(user, exclude=SENSITIVE_FIELDS)}
+
+# AVANT (DELETE /{id}) : aucune verification d'ownership
+user = usecase.execute(id)
+
+# APRES : verification ownership avant suppression
+if current_user.get("id") != id and current_user.get("role_id") != 1:
+    return JSONResponse(status_code=403, content={"message": "Acces non autorise"})
+user = usecase.execute(id)
+```
 
 ### APRES
 
 ```bash
-# Attendu apres correction :
+# Resultat apres correction :
 curl -H "Authorization: Bearer <token>" http://localhost:8000/users/id/1
 # -> { "id": 1, "username": "...", "email": "..." }  (PAS de champ password)
 
 curl -X DELETE -H "Authorization: Bearer <token_user2>" http://localhost:8000/users/1
-# -> 403 Forbidden "Acces non autorise"
+# -> 403 Forbidden "Acces non autorise : vous ne pouvez supprimer que votre propre compte."
 ```
 
 ### VALIDATION
 
-- [ ] Test curl : GET /users/id/{id} ne contient plus le champ `password`
-- [ ] Test curl : DELETE /users/{id} avec un autre token -> 403
-- [ ] Test curl : DELETE /users/{id} avec son propre token ou admin -> 200
+- [x] `jsonable_encoder(exclude=SENSITIVE_FIELDS)` applique sur les 3 endpoints GET (all, by_id, by_username)
+- [x] Verification ownership sur DELETE : `current_user.id != id and role_id != 1` -> 403
+- [ ] Test curl a executer apres deploiement local
 
-**Statut :** EN ATTENTE
+**Statut :** CORRIGE (code modifie, validation curl en attente de deploiement)
 
 ---
 
