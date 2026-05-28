@@ -3,6 +3,8 @@
 **Module :** Security By Design - EISI I1 SECE843
 **Projet :** AnalyzeIT - Groupe MATS
 **Date :** 27 mars 2026
+**Présenté par :** Samuel RESSIOT et Yassine ZOUITNI
+
 
 ---
 
