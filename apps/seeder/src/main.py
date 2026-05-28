@@ -4,8 +4,9 @@ import json
 import time
 
 BASE_URL = os.getenv("API_URL", "http://api:8000")
-ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin.admin")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin")
+# Les credentials admin sont obligatoires via variables d'environnement (fix C5)
+ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
+ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
 
 def wait_for_api(max_retries=10, delay=3):

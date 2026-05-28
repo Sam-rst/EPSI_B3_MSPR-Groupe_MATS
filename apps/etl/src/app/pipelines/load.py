@@ -12,19 +12,17 @@ class PostgresConnector:
         self,
         host="localhost",
         database="mspr",
-        user="postgres",
-        password="postgres",
         port=5432,
     ):
         """
-        Initialise la connexion à PostgreSQL avec les valeurs par défaut
-        fournies ou des valeurs d'environnement si disponibles
+        Initialise la connexion a PostgreSQL.
+        Les credentials sont obligatoirement fournis par variables d'environnement (fix C5).
         """
         self.connection_params = {
             "host": os.environ.get("ETL_POSTGRES_HOST", host),
             "database": os.environ.get("ETL_POSTGRES_DB", database),
-            "user": os.environ.get("ETL_POSTGRES_USER", user),
-            "password": os.environ.get("ETL_POSTGRES_PASSWORD", password),
+            "user": os.environ["ETL_POSTGRES_USER"],
+            "password": os.environ["ETL_POSTGRES_PASSWORD"],
             "port": int(os.environ.get("ETL_POSTGRES_PORT", port)),
         }
         self.connection = None

@@ -18,6 +18,9 @@ from src.app.user.application.usecase.find_user_by_username_usecase import (
 from src.app.user.application.usecase.delete_user_usecase import DeleteUserUseCase
 from src.app.user.application.usecase.find_all_users_usecase import FindAllUsersUseCase
 
+# Champs sensibles a exclure des reponses API (C3/C4 - ne jamais exposer le hash)
+SENSITIVE_FIELDS = {"password", "password_hash"}
+
 
 user_router = APIRouter(
     dependencies=[Depends(get_current_user)],
@@ -53,7 +56,10 @@ def endpoint_usecase_get_all_users(
     """
     try:
         users = usecase.execute()
-        content = {"count": len(users), "items": jsonable_encoder(users)}
+        content = {
+            "count": len(users),
+            "items": jsonable_encoder(users, exclude=SENSITIVE_FIELDS),
+        }
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -86,7 +92,7 @@ def endpoint_usecase_get_user_by_id(
     """
     try:
         user = usecase.execute(id)
-        content = {"item": jsonable_encoder(user)}
+        content = {"item": jsonable_encoder(user, exclude=SENSITIVE_FIELDS)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -119,7 +125,7 @@ def endpoint_usecase_get_user_by_username(
     """
     try:
         user = usecase.execute(username)
-        content = {"item": jsonable_encoder(user)}
+        content = {"item": jsonable_encoder(user, exclude=SENSITIVE_FIELDS)}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:
         return JSONResponse(
@@ -137,10 +143,12 @@ def endpoint_usecase_get_user_by_username(
 def endpoint_usecase_delete_user_by_id(
     request: Request,
     id: int,
+    current_user: dict = Depends(get_current_user),
     usecase: DeleteUserUseCase = Depends(Provide[UserContainer.delete_user_usecase]),
 ):
     """
     Supprime un utilisateur existant.
+    Seul l'utilisateur lui-meme ou un admin (role_id=1) peut supprimer un compte.
 
     Args:
         <header> id (int): L'ID de l'utilisateur à supprimer.
@@ -149,9 +157,16 @@ def endpoint_usecase_delete_user_by_id(
         JSONResponse: Une réponse contenant un message de confirmation.
     """
     try:
+        # Verification d'ownership : seul le proprietaire ou un admin peut supprimer (fix IDOR C3)
+        if current_user.get("id") != id and current_user.get("role_id") != 1:
+            return JSONResponse(
+                status_code=status.HTTP_403_FORBIDDEN,
+                content={"message": "Acces non autorise : vous ne pouvez supprimer que votre propre compte."},
+            )
+
         user = usecase.execute(id)
         content = {
-            "message": f"L'utilisateur '{user.firstname} {user.lastname}' a bien été supprimé."
+            "message": f"L'utilisateur '{user.firstname} {user.lastname}' a bien ete supprime."
         }
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
     except HTTPException as http_exc:

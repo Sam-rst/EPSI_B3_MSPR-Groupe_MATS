@@ -40,26 +40,29 @@ class LoginUserUseCase(BaseUseCase):
 
     def execute(self, payload: LoginPayload) -> LoginResponse:
         try:
-            # Déduire le firstname et le lastname à partir du username
+            # Message d'erreur unique pour tous les cas (fix C6 - anti-enumeration)
+            invalid_credentials_msg = "Identifiants invalides."
+
+            # Valider le format du username
             if "." not in payload.username:
                 raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Le username doit être au format 'firstname.lastname'.",
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=invalid_credentials_msg,
                 )
 
-            # Vérifier si un utilisateur avec ce username existe déjà
+            # Verifier si un utilisateur avec ce username existe
             user = self.user_repository.find_by_username(payload.username)
             if not user:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Le username n'existe pas.",
+                    detail=invalid_credentials_msg,
                 )
 
-            # Vérifier si le mot de passe est correct
+            # Verifier si le mot de passe est correct
             if not self.user_repository.verify_password(user, payload.password):
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Mot de passe incorrect.",
+                    detail=invalid_credentials_msg,
                 )
 
             return LoginResponse(

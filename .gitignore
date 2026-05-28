@@ -26,6 +26,12 @@ dist/
 # JetBrains IDE
 .idea/
 
+# IDE / tooling local (config par developpeur)
+.claude/
+.vscode/
+.sonarlint/
+.github/instructions/
+
 # Unit test reports
 TEST*.xml
 

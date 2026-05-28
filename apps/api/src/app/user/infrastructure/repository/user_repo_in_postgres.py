@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-import hashlib
+import bcrypt
 
 from src.config.database import db
 from src.app.user.domain.interface.user_repository import UserRepository
@@ -30,7 +30,9 @@ class UserRepositoryInPostgres(UserRepository):
             firstname, lastname = payload.username.split(".", 1)
             firstname = firstname.capitalize()
             lastname = lastname.capitalize()
-            password_hashed = hashlib.sha256(payload.password.encode()).hexdigest()
+            password_hashed = bcrypt.hashpw(
+                payload.password.encode(), bcrypt.gensalt(rounds=12)
+            ).decode()
 
             # Créer le modèle utilisateur
             model = UserModel(
@@ -123,8 +125,9 @@ class UserRepositoryInPostgres(UserRepository):
 
     def verify_password(self, user: UserModel, password_to_verify: str) -> bool:
         try:
-            password_hashed = hashlib.sha256(password_to_verify.encode()).hexdigest()
-            return user.password == password_hashed
+            return bcrypt.checkpw(
+                password_to_verify.encode(), user.password.encode()
+            )
         except Exception as e:
             self.session.rollback()
             raise e
